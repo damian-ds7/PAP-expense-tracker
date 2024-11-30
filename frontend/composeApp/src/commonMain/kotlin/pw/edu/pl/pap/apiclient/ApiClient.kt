@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import pw.edu.pl.pap.data.InitialExpenses
 import pw.edu.pl.pap.data.Record
 
-class ApiClient {
+class ApiClient(private val baseUrl: String = "http://localhost:8080") {
     private val httpClient = HttpClient() {
         install(ContentNegotiation) {
             json(Json {
@@ -19,8 +19,6 @@ class ApiClient {
             })
         }
     }
-
-    private val baseUrl = "http://localhost:8080"
 
     suspend fun getHome(userEmail: String): InitialExpenses {
         return httpClient.get("$baseUrl/expense/initial/$userEmail").body()

@@ -18,6 +18,6 @@ fun main() = application {
         state = state,
     ) {
         window.minimumSize = Dimension(500, 600)
-        App()
+        App("http://localhost:8080")
     }
 }
