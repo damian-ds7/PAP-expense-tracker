@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.*
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -48,6 +49,13 @@ kotlin {
     }
 }
 
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 android {
     namespace = "pw.edu.pl.pap"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -58,6 +66,11 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"${localProperties.getProperty("baseUrl", "localhost:8090")}\""
+        )
     }
     packaging {
         resources {
@@ -69,6 +82,10 @@ android {
             isMinifyEnabled = false
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -88,5 +105,11 @@ compose.desktop {
             packageName = "pw.edu.pl.pap"
             packageVersion = "1.0.0"
         }
+    }
+}
+
+tasks.withType<ProcessResources> {
+    filesMatching("res/xml/network_security_config.xml") {
+        expand("ip" to localProperties.getProperty("baseUrl", "localhost:8090"))
     }
 }
