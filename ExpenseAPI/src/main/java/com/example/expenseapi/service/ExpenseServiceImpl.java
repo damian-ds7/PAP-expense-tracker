@@ -31,7 +31,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public Expense save(Expense entity) {
         if (entity.getCategory() == null) {
-            entity.setCategory(categoryRepository.findById(1L).get());
+            if (categoryRepository.findById(1L).isPresent())
+                entity.setCategory(categoryRepository.findById(1L).get());
+            else {
+                categoryRepository.save(new Category());
+                entity.setCategory(categoryRepository.findById(1L).get());
+            }
         }
         return super.save(entity);
     }
