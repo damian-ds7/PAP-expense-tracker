@@ -11,7 +11,7 @@ import pw.edu.pl.pap.data.Home
 import pw.edu.pl.pap.data.Record
 
 class ApiClient {
-    private val httpClient = HttpClient {
+    private val httpClient = HttpClient() {
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
@@ -20,16 +20,14 @@ class ApiClient {
         }
     }
 
-    private val baseUrl = "localhost:8080/"
+    private val baseUrl = "http://localhost:8080"
 
     suspend fun getHome(userEmail: String): Home {
-        val homeList: List<Home> = httpClient.get(baseUrl + "initial/$userEmail").body()
-
-        return homeList.firstOrNull() ?: throw IllegalStateException("No Home objects found in the response")
+        return httpClient.get("$baseUrl/expense/initial/$userEmail").body()
     }
 
     private suspend fun getRecordsApi(): List<Record> {
-        return httpClient.get(baseUrl + "expense/all").body()
+        return httpClient.get("$baseUrl/expense/all").body()
     }
 
     fun getRecords() = flow {
