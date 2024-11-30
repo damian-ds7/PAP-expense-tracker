@@ -21,7 +21,7 @@ public class Expense {
     @Column(name = "price", nullable = false)
     private double price;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
