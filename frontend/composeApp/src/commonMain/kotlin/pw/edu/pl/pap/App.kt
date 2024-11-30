@@ -8,8 +8,8 @@ import pw.edu.pl.pap.viewmodel.HomeViewModel
 
 @Composable
 fun App() {
-    val apiClient = ApiClient()
-    val viewModel = HomeViewModel(apiClient)
+    val apiClient = remember { ApiClient() }
+    val viewModel = remember(apiClient) { HomeViewModel(apiClient) }
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold { HomeScreen(viewModel) }
