@@ -9,4 +9,5 @@ public interface ExpenseService {
     List<Expense> getAllExpenses();
     Expense saveExpense(Expense expense);
     void deleteExpense(Long id);
+    List<Expense> getExpensesByEmail(String email);
 }

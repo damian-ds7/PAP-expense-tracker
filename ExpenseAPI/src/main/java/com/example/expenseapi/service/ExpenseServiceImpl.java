@@ -6,6 +6,7 @@ import com.example.expenseapi.repository.ExpenseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,18 @@ public class ExpenseServiceImpl implements ExpenseService{
     public void deleteExpense(Long id) {
         expenseRepository.deleteById(id);
     }
+
+    @Override
+    public List<Expense> getExpensesByEmail(String email) {
+        Iterable<Expense> expenses = expenseRepository.findAll();
+        List<Expense> expenseList = new ArrayList<>();
+        for (Expense expense : expenses) {
+            if (expense.getUser().getEmail().equals(email))
+                    expenseList.add(expense);
+        }
+        return expenseList;
+    }
+
     static Expense unwrapExpense(Optional<Expense> expense, Long id) {
         if (expense.isPresent()) return expense.get();
         else throw new ExpenseNotFound(id);
