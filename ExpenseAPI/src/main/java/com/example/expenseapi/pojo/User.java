@@ -18,14 +18,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String name;
 
-    @Column(name = "surname", nullable = false)
+    @Column(name = "surname", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String surname;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
+
+    public User(String name, String surname, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+    }
 }
