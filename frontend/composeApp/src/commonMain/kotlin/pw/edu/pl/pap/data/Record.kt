@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Record(
     val id: Int,
     val price: Float,
-    val user: String,
+    val user: User,
 )
