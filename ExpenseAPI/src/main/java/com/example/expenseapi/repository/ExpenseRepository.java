@@ -1,8 +1,10 @@
 package com.example.expenseapi.repository;
 
-import org.springframework.stereotype.Repository;
 
-@Repository
-public class ExpenseRepository {
+import com.example.expenseapi.pojo.Expense;
+import org.springframework.data.repository.CrudRepository;
+
+public interface ExpenseRepository extends CrudRepository<Expense, Long> {
+
 
 }
