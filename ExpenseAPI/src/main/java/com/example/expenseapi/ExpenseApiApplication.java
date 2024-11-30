@@ -31,9 +31,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
         };
         userRepository.saveAll(Arrays.asList(users));
         Expense[] expenses = new Expense[]{
-                new Expense(100),
-                new Expense(200),
-                new Expense(300),
+                new Expense(100, users[0]),
+                new Expense(200, users[1]),
+                new Expense(300, users[2]),
         };
         expenseRepository.saveAll(Arrays.asList(expenses));
 

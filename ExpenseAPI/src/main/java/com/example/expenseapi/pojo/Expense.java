@@ -3,8 +3,6 @@ package com.example.expenseapi.pojo;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -21,8 +19,13 @@ public class Expense {
     @Column(name = "price", nullable = false)
     private double price;
 
-    @ManyToOne(optional = true)
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    public Expense(double price, @NonNull User user) {
+        this.price = price;
+        this.user = user;
+    }
 }
