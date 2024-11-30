@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,8 +27,8 @@ public class User {
     @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
 
-    public User(String name, String surname, String email) {
-        this.name = name;
+    public User(String username, String surname, String email) {
+        this.name = username;
         this.surname = surname;
         this.email = email;
     }

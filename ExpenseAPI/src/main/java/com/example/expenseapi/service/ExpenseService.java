@@ -1,12 +1,8 @@
 package com.example.expenseapi.service;
 
+import java.util.List;
 import com.example.expenseapi.pojo.Expense;
 
-import java.util.List;
-
-public interface ExpenseService {
-    Expense getExpense(Long id);
-    List<Expense> getAllExpenses();
-    Expense saveExpense(Expense expense);
-    void deleteExpense(Long id);
+public interface ExpenseService extends GenericService<Expense, Long> {
+    public List<Expense> getExpensesByEmail(String email);
 }
