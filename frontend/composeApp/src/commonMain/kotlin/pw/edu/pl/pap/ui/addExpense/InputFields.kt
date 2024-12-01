@@ -35,6 +35,7 @@ fun createFields(inputFieldsdata: List<InputFieldData>) {
 
 @Composable
 fun createField(data: InputFieldData) {
+    println("Parameter passed: " + data.record.value.price)
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
@@ -51,7 +52,7 @@ fun createField(data: InputFieldData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = data.title)
-            TextField(value = data.parameter, onValueChange = {newParameter -> data.onChange(newParameter)})
+            TextField(value = data.record.value.price.toString(), onValueChange = {newParameter -> data.onChange(newParameter)})
         }
     }
 }

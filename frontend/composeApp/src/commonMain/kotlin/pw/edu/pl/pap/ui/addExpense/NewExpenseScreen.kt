@@ -12,7 +12,6 @@ fun NewExpenseScreen(onClose: () -> Unit){
     var addButtonClicked by remember { mutableStateOf(false) }
     var viewModel by remember { mutableStateOf(NewExpenseViewModel(NewExpenseApiClient()))}
 
-    viewModel.setupInputFieldsData()
 
 
 
