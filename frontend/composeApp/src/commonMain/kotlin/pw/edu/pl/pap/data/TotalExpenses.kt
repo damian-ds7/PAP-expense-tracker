@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class InitialExpenses(
+data class TotalExpenses(
+    val groupExpenses: Double? = null,
     val userExpenses: Double? = null,
-    val expenses: Double? = null,
 )

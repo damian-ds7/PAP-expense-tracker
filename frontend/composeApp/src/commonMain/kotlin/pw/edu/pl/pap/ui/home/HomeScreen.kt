@@ -10,14 +10,15 @@ import pw.edu.pl.pap.ui.common.LoadingScreen
 import androidx.compose.foundation.lazy.items
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
-
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     var showAddExpenseScreen by remember { mutableStateOf(false)}
     var isLoading by remember { mutableStateOf(true) }
     val homeInfo = viewModel.expensesInfo.collectAsState().value
-    val records = viewModel.records.collectAsState().value
+    val groupedRecords = viewModel.groupedRecords.collectAsState().value
 
     LaunchedEffect(Unit) {
         viewModel.fetchHomeInfo()
@@ -28,15 +29,19 @@ fun HomeScreen(viewModel: HomeViewModel) {
     if (isLoading) {
         LoadingScreen()
     } else if (homeInfo != null && !showAddExpenseScreen) {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            TopSection(homeInfo)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+            item {
+                TopSection(homeInfo)
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
-            LazyColumn {
-                items(records) { record ->
-                    RecordBlock(record)
-                }
+            item {
+                GroupedRecordsList(groupedRecords) {}
             }
         }
         PlusButton(showAddExpenseScreen, onUpdate = {showAddExpenseScreen = !showAddExpenseScreen})
@@ -44,6 +49,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
         NewExpenseScreen(
             viewModel = NewExpenseViewModel(viewModel.passApiClient()),
             onClose = { showAddExpenseScreen = false }
+    } else {
+        Text(
+            text = "No data available",
+            modifier = Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center
         )
     }
 }

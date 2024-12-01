@@ -4,7 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Record(
-    val id: Int,
+    val id: Long,
     val price: Float,
+    val date: String,
     val user: User,
+    val category: Category,
 )

@@ -7,18 +7,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.*
+import java.time.format.DateTimeFormatter
 
 class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
-    private val _expensesInfo = MutableStateFlow<InitialExpenses?>(null)
-    val expensesInfo: StateFlow<InitialExpenses?> = _expensesInfo
-
-    private val _records = MutableStateFlow<List<Record>>(emptyList())
-    val records: StateFlow<List<Record>> = _records
+    private val _expensesInfo = MutableStateFlow<TotalExpenses?>(null)
+    val expensesInfo: StateFlow<TotalExpenses?> = _expensesInfo
 
     fun fetchHomeInfo() {
         viewModelScope.launch {
             try {
-                val homeData = apiClient.getHome("herkules1@gmail.com")
+                val homeData = apiClient.getTotalExpenses("family", "herkules1@gmail.com")
                 _expensesInfo.value = homeData
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -26,19 +24,28 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
         }
     }
 
+    private val _groupedRecords = MutableStateFlow<Map<String, List<Record>>>(emptyMap())
+    val groupedRecords: StateFlow<Map<String, List<Record>>> = _groupedRecords
+
     fun fetchRecords() {
         viewModelScope.launch {
             try {
                 apiClient.getRecords().collect { recordList ->
-                    _records.value = recordList
+                    _groupedRecords.value = groupRecordsByDate(recordList)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-
     fun passApiClient(): ApiClient {
         return apiClient
+
+
+    private fun groupRecordsByDate(records: List<Record>): Map<String, List<Record>> {
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return records.groupBy { record ->
+            record.date.format(dateFormatter)
+        }
     }
 }

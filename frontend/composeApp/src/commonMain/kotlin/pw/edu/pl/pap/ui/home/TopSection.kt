@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pw.edu.pl.pap.data.InitialExpenses
+import pw.edu.pl.pap.data.TotalExpenses
 
 @Composable
-fun TopSection(homeInfo: InitialExpenses) {
+fun TopSection(homeInfo: TotalExpenses) {
     Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -33,7 +33,7 @@ fun TopSection(homeInfo: InitialExpenses) {
                 fontWeight = FontWeight.Medium
             )
             Text(
-                text = "${homeInfo.expenses} zł",
+                text = "${homeInfo.groupExpenses} zł",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Medium
             )

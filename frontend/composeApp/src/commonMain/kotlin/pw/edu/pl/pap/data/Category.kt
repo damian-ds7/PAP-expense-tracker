@@ -3,9 +3,7 @@ package pw.edu.pl.pap.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(
+data class Category(
     val id: Long,
     val name: String,
-    val surname: String,
-    val email: String,
 )
