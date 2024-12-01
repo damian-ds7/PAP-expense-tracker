@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,12 +36,21 @@ fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = record.user.name,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Light,
-                color = Color.Gray
-            )
+            Column {
+                Text(
+                    text = record.category.name,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = record.user.name,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light,
+                    color = Color.Gray
+                )
+            }
+
             Text(
                 text = "${record.price} zł",
                 fontSize = 18.sp,
