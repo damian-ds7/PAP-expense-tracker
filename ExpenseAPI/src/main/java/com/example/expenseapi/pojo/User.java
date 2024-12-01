@@ -27,9 +27,14 @@ public class User {
     @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
 
-    public User(String username, String surname, String email) {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    private Group group;
+
+    public User(String username, String surname, String email, Group group) {
         this.name = username;
         this.surname = surname;
         this.email = email;
+        this.group = group;
     }
 }
