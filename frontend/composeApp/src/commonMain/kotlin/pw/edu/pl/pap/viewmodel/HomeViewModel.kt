@@ -37,4 +37,8 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
             }
         }
     }
+
+    fun passApiClient(): ApiClient {
+        return apiClient
+    }
 }

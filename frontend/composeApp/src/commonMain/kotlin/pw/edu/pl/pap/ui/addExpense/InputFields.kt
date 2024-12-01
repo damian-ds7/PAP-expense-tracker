@@ -15,13 +15,10 @@ import androidx.compose.material3.TextField
 import kotlinx.coroutines.flow.StateFlow
 import pw.edu.pl.pap.data.InputFieldData
 
-@Composable
-fun InputFields(inputFieldsdata: List<InputFieldData>) {
-    createFields(inputFieldsdata)
-}
+
 
 @Composable
-fun createFields(inputFieldsdata: List<InputFieldData>) {
+fun InputFields(inputFieldsdata: List<InputFieldData>) {
     Box(
         modifier = Modifier.offset(x = 0.dp, y = 100.dp)
     ){
@@ -35,7 +32,7 @@ fun createFields(inputFieldsdata: List<InputFieldData>) {
 
 @Composable
 fun createField(data: InputFieldData) {
-    println("Parameter passed: " + data.record.value.price)
+//    println("Parameter passed: " + data.record.value.price)
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier

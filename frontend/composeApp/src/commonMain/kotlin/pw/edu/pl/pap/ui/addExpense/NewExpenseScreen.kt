@@ -8,12 +8,8 @@ import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
 import pw.edu.pl.pap.apiclient.NewExpenseApiClient
 
 @Composable
-fun NewExpenseScreen(onClose: () -> Unit){
+fun NewExpenseScreen(viewModel: NewExpenseViewModel, onClose: () -> Unit){
     var addButtonClicked by remember { mutableStateOf(false) }
-    var viewModel by remember { mutableStateOf(NewExpenseViewModel(NewExpenseApiClient()))}
-
-
-
 
     Header()
     InputFields(viewModel.inputFieldsData)
@@ -22,7 +18,7 @@ fun NewExpenseScreen(onClose: () -> Unit){
 
 
     if (addButtonClicked) {
-        //add to database
+        viewModel.expenseConfirmed()
         onClose()
     }
 }

@@ -9,6 +9,7 @@ import pw.edu.pl.pap.viewmodel.HomeViewModel
 import pw.edu.pl.pap.ui.common.LoadingScreen
 import androidx.compose.foundation.lazy.items
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
+import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
 
 
 @Composable
@@ -41,6 +42,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
         PlusButton(showAddExpenseScreen, onUpdate = {showAddExpenseScreen = !showAddExpenseScreen})
     } else if (showAddExpenseScreen) {
         NewExpenseScreen(
+            viewModel = NewExpenseViewModel(viewModel.passApiClient()),
             onClose = { showAddExpenseScreen = false }
         )
     }
