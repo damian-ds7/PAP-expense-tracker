@@ -1,6 +1,8 @@
 package com.example.expenseapi.service;
 
 import java.util.List;
+
+import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
 
 public interface ExpenseService extends GenericService<Expense, Long> {
@@ -13,4 +15,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesWherePriceIsGreater(double price);
 
     List<Expense> getExpensesForGroup(String name);
+
+    ExpInfo getExpInfo(String name, String userId);
 }

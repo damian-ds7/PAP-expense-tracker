@@ -1,4 +1,5 @@
 package com.example.expenseapi.web;
+import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,6 +78,13 @@ public class ExpenseController extends GenericController<Expense, Long> {
     @ApiResponse(responseCode = "200", description = "List of expense object for given user group", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
     public ResponseEntity<List<Expense>> getByGroup(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/state/group/{name}/user/{userId}")
+    @Operation(summary = "Returns sum of expenses for given group and user")
+    @ApiResponse(responseCode = "200", description = "Sum of expenses for given group and user", content = @Content(schema = @Schema(implementation = ExpInfo.class)))
+    public ResponseEntity<ExpInfo> getState(@PathVariable String name, @PathVariable String userId) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpInfo(name, userId), HttpStatus.OK);
     }
 
 }

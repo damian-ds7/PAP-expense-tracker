@@ -103,4 +103,15 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .filter(expense -> expense.getUser().getUserGroup().getName().equals(name))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ExpInfo getExpInfo(String name, String email) {
+        List<Expense> groupExpenses = getExpensesForGroup(name);
+        List<Expense> userExpenses = groupExpenses.stream()
+                .filter(expense -> expense.getUser().getEmail().equals(email))
+                .toList();
+        double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        return new ExpInfo(groupSum, userSum);
+    }
 }
