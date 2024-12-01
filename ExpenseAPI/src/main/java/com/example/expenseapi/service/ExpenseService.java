@@ -6,4 +6,6 @@ import com.example.expenseapi.pojo.Expense;
 public interface ExpenseService extends GenericService<Expense, Long> {
     public List<Expense> getExpensesByEmail(String email);
     public List<Expense> getExpensesByCategory(String category);
+    public List<Expense> getExpensesByDate(String date);
+    public List<Expense> getExpensesByPeriod(String begin, String end);
 }
