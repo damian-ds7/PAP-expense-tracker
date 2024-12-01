@@ -7,7 +7,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+})
+
 public class Category {
     @Id
     @GeneratedValue
