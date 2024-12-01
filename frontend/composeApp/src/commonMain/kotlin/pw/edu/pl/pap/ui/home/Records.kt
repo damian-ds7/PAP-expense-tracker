@@ -17,6 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.util.formatDate
+
 
 @Composable
 fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
@@ -62,5 +64,28 @@ fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
     }
 }
 
-//@Composable
-//fun RecordList()
+@Composable
+fun DateHeader(date: String) {
+    Text(
+        text = formatDate(date, "yyyy-MM-dd", "dd MMMM yyyy"),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        fontSize = 16.sp,
+        color = MaterialTheme.colorScheme.onBackground
+    )
+}
+
+@Composable
+fun GroupedRecordsList(
+    groupedRecords: Map<String, List<Record>>,
+    onRecordClick: (Record) -> Unit
+) {
+    groupedRecords.forEach { (date, recordsForDate) ->
+        DateHeader(date)
+
+        recordsForDate.forEach { record ->
+            RecordBlock(record, onClick = onRecordClick)
+        }
+    }
+}

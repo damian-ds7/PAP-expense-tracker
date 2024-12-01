@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 fun HomeScreen(viewModel: HomeViewModel) {
     var isLoading by remember { mutableStateOf(true) }
     val homeInfo = viewModel.expensesInfo.collectAsState().value
-    val records = viewModel.records.collectAsState().value
+    val groupedRecords = viewModel.groupedRecords.collectAsState().value
 
     LaunchedEffect(Unit) {
         viewModel.fetchHomeInfo()
@@ -37,10 +37,8 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            items(records) { record ->
-                RecordBlock(record) { clickedRecord ->
-                    println("Clicked record: $clickedRecord")
-                }
+            item {
+                GroupedRecordsList(groupedRecords) {}
             }
         }
     } else {
