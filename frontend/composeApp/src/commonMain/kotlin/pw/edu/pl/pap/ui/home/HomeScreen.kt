@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
-    var showAddExpenseScreen by remember { mutableStateOf(false)}
+    var showAddExpenseScreen by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(true) }
     val homeInfo = viewModel.expensesInfo.collectAsState().value
     val groupedRecords = viewModel.groupedRecords.collectAsState().value
@@ -44,11 +44,11 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 GroupedRecordsList(groupedRecords) {}
             }
         }
-        PlusButton(showAddExpenseScreen, onUpdate = {showAddExpenseScreen = !showAddExpenseScreen})
+        PlusButton(showAddExpenseScreen, onUpdate = { showAddExpenseScreen = !showAddExpenseScreen })
     } else if (showAddExpenseScreen) {
         NewExpenseScreen(
             viewModel = NewExpenseViewModel(viewModel.passApiClient()),
-            onClose = { showAddExpenseScreen = false } )
+            onClose = { showAddExpenseScreen = false })
     } else {
         Text(
             text = "No data available",

@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.*
-import java.time.format.DateTimeFormatter
 
 class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
     private val _expensesInfo = MutableStateFlow<TotalExpenses?>(null)
@@ -24,29 +24,28 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
         }
     }
 
-    private val _groupedRecords = MutableStateFlow<Map<String, List<Record>>>(emptyMap())
-    val groupedRecords: StateFlow<Map<String, List<Record>>> = _groupedRecords
+    private val _groupedRecords = MutableStateFlow<Map<LocalDate, List<Record>>>(emptyMap())
+    val groupedRecords: StateFlow<Map<LocalDate, List<Record>>> = _groupedRecords
 
     fun fetchRecords() {
         viewModelScope.launch {
             try {
-                apiClient.getRecords().collect { recordList ->
-                    _groupedRecords.value = groupRecordsByDate(recordList)
+                apiClient.getRecords().collect { records ->
+                    _groupedRecords.value = records
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
     fun passApiClient(): ApiClient {
         return apiClient
     }
 
-
-    private fun groupRecordsByDate(records: List<Record>): Map<String, List<Record>> {
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private fun groupRecordsByDate(records: List<Record>): Map<LocalDate, List<Record>> {
         return records.groupBy { record ->
-            record.date.format(dateFormatter)
+            record.date
         }
     }
 }

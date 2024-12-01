@@ -9,6 +9,7 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.*
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.InputFieldData
 import pw.edu.pl.pap.data.Record
@@ -62,7 +63,8 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         // download to set ID
         // find user
         // save record
-        val record = Record(0, price.value.toFloat(), "", User(0, "", "", ""), Category(0, "") )
+        val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
+        val record = Record(0, price.value.toFloat(), date, User(0, "", "", ""), Category(0, "") )
         println("confirmed " + record.price)
     }
 }

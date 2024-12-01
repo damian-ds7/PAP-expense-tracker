@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.Record
 import pw.edu.pl.pap.util.formatDate
 
@@ -65,9 +66,9 @@ fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
 }
 
 @Composable
-fun DateHeader(date: String) {
+fun DateHeader(date: LocalDate) {
     Text(
-        text = formatDate(date, "yyyy-MM-dd", "dd MMMM yyyy"),
+        text = formatDate(date, "dd MMMM yyyy"),
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -78,7 +79,7 @@ fun DateHeader(date: String) {
 
 @Composable
 fun GroupedRecordsList(
-    groupedRecords: Map<String, List<Record>>,
+    groupedRecords: Map<LocalDate, List<Record>>,
     onRecordClick: (Record) -> Unit
 ) {
     groupedRecords.forEach { (date, recordsForDate) ->
