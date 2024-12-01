@@ -95,4 +95,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public List<Expense> getExpensesWherePriceIsGreater(double price) {
         return getExpensesWherePriceInRange(price, Double.POSITIVE_INFINITY);
     }
+
+    @Override
+    public List<Expense> getExpensesForGroup(String name) {
+        Iterable<Expense> expenses = expenseRepository.findAll();
+        return StreamSupport.stream(expenses.spliterator(), false)
+                .filter(expense -> expense.getUser().getUserGroup().getName().equals(name))
+                .collect(Collectors.toList());
+    }
 }

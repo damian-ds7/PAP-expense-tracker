@@ -12,4 +12,5 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesWherePriceIsLower(double price);
     List<Expense> getExpensesWherePriceIsGreater(double price);
 
+    List<Expense> getExpensesForGroup(String name);
 }

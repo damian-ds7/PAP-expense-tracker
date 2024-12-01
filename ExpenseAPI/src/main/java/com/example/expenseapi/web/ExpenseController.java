@@ -72,4 +72,9 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesWherePriceIsGreater(price), HttpStatus.OK);
     }
 
+    @GetMapping("/group/{name}")
+    public ResponseEntity<List<Expense>> getByGroup(@PathVariable String name) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(name), HttpStatus.OK);
+    }
+
 }
