@@ -50,4 +50,26 @@ public class ExpenseController extends GenericController<Expense, Long> {
     public ResponseEntity<List<Expense>> getByPeriod(@PathVariable String begin, @PathVariable String end) {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesByPeriod(begin, end), HttpStatus.OK);
     }
+
+    @GetMapping("/price/{begin}/{end}")
+    @Operation(summary = "Retrieves expenses between given prices")
+    @ApiResponse(responseCode = "200", description = "List of expense object between given prices", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    public ResponseEntity<List<Expense>> getByPriceRange(@PathVariable double begin, @PathVariable double end) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesWherePriceInRange(begin, end), HttpStatus.OK);
+    }
+
+    @GetMapping("/price/lower/{price}")
+    @Operation(summary = "Retrieves expenses lower than given price")
+    @ApiResponse(responseCode = "200", description = "List of expense object which price is lower than given", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    public ResponseEntity<List<Expense>> getByPriceLowerThan(@PathVariable double price) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesWherePriceIsLower(price), HttpStatus.OK);
+    }
+
+    @GetMapping("/price/greater/{price}")
+    @Operation(summary = "Retrieves expenses greater than given price")
+    @ApiResponse(responseCode = "200", description = "List of expense object which price is greater than given", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    public ResponseEntity<List<Expense>> getByPriceGreaterThan(@PathVariable double price) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesWherePriceIsGreater(price), HttpStatus.OK);
+    }
+
 }
