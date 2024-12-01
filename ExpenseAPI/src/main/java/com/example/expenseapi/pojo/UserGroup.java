@@ -19,7 +19,7 @@ public class UserGroup {
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String name = "family";
 
-    public UserGroup(String name) {
+    public UserGroup(@NonNull String name) {
         this.name = name;
     }
 }

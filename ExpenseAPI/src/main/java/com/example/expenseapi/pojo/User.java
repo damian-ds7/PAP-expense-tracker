@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -27,6 +29,9 @@ public class User {
     @NonNull
     @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
+
+    @Column(name = "creationDate", nullable = false)
+    private LocalDate creationDate = LocalDate.now();
 
     @NonNull
     @ManyToOne(optional = false)

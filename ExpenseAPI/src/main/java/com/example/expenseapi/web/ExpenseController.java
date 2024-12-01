@@ -1,4 +1,5 @@
 package com.example.expenseapi.web;
+import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
 import com.example.expenseapi.service.ExpenseService;
@@ -48,11 +49,18 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getExpInfo(name, userId), HttpStatus.OK);
     }
 
-    @GetMapping("/all/map")
+    @GetMapping("/all/dateMap")
     @Operation(summary = "Returns all objects grouped by date")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by date")
-    public ResponseEntity<Map<LocalDate, List<Expense>>> getAllMap() {
-        return new ResponseEntity<>(((ExpenseService) service).getAllAsMap(), HttpStatus.OK);
+    public ResponseEntity<Map<LocalDate, List<Expense>>> getDateExpensesMap() {
+        return new ResponseEntity<>(((ExpenseService) service).getDateExpenseAsMap(), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/categoryMap")
+    @Operation(summary = "Returns all objects grouped by category")
+    @ApiResponse(responseCode = "200", description = "All expenses grouped by category")
+    public ResponseEntity<Map<Category, List<Expense>>> getCategoryExpenseMap() {
+        return new ResponseEntity<>(((ExpenseService) service).getCategoryExpenseAsMap(), HttpStatus.OK);
     }
 
 }

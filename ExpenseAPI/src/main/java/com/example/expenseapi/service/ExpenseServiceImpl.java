@@ -113,12 +113,20 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<LocalDate, List<Expense>> getAllAsMap() {
+    public Map<LocalDate, List<Expense>> getDateExpenseAsMap() {
         return StreamSupport.stream(expenseRepository.findAll().spliterator(), false)
                 .collect(Collectors.groupingBy(
                         Expense::getDate,
                         () -> new TreeMap<>(Comparator.reverseOrder()),
                         Collectors.toList()
+                ));
+    }
+
+    @Override
+    public Map<Category, List<Expense>> getCategoryExpenseAsMap() {
+        return StreamSupport.stream(expenseRepository.findAll().spliterator(), false)
+                .collect(Collectors.groupingBy(
+                        Expense::getCategory
                 ));
     }
 }

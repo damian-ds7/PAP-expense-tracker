@@ -25,14 +25,14 @@ public abstract class GenericController<T, ID> {
         return new ResponseEntity<>(service.get(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/insert")
     @Operation(summary = "Add object to database")
     @ApiResponse(responseCode = "201", description = "Newly created object in database")
     public ResponseEntity<T> save(@RequestBody T entity) {
         return new ResponseEntity<>(service.save(entity), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete object with given id")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> delete(@PathVariable ID id) {
@@ -40,7 +40,7 @@ public abstract class GenericController<T, ID> {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/all")
+    @DeleteMapping("/delete/all")
     @Operation(summary = "Delete all objects from the table")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteAll() {
@@ -48,7 +48,7 @@ public abstract class GenericController<T, ID> {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     @Operation(summary = "Update object with given id")
     @ApiResponse(responseCode = "200", description = "Updated object")
     public ResponseEntity<T> update(@PathVariable ID id, @RequestBody T entity) {

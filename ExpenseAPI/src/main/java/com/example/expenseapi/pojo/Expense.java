@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "expenses")
 public class Expense {
@@ -17,19 +18,21 @@ public class Expense {
     @Column(name = "id")
     private Long id;
 
+    @NonNull
     @Column(name = "price", nullable = false)
     private double price;
+
+    @NonNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @Column(name = "date", nullable = false)
     private LocalDate date = LocalDate.now();
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @ManyToOne(optional = false)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private Category category;
+    private Category category = new Category();
 
     public Expense(double price, @NonNull User user, Category category) {
         this.price = price;
@@ -40,9 +43,5 @@ public class Expense {
     public Expense(double price, @NonNull User user, Category category, LocalDate date) {
         this(price, user, category);
         this.setDate(date);
-    }
-
-    public Expense(double price, @NonNull User user) {
-        this(price, user, new Category());
     }
 }
