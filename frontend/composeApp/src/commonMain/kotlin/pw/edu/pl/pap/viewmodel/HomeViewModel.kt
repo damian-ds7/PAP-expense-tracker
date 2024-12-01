@@ -38,6 +38,10 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
             }
         }
     }
+    fun passApiClient(): ApiClient {
+        return apiClient
+
+
     private fun groupRecordsByDate(records: List<Record>): Map<String, List<Record>> {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return records.groupBy { record ->
