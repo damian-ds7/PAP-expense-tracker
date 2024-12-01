@@ -112,6 +112,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .toList();
         double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
-        return new ExpInfo(groupSum, userSum);
+        return new ExpInfo(userSum, groupSum);
     }
 }

@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class ExpInfo {
     private double userExpenses;
-    private double expenses;
+    private double groupExpenses;
     public ExpInfo(double userExpenses, double expenses) {
         this.userExpenses = userExpenses;
-        this.expenses = expenses;
+        this.groupExpenses = expenses;
     }
 
 }
