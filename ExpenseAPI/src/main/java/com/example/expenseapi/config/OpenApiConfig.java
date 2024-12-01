@@ -11,7 +11,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Expense API")
+                        .title("ExpenseAPI")
                         .version("1.0")
                         .description("An API that can manage expenses")
                 );
