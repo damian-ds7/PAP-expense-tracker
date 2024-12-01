@@ -66,4 +66,22 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .filter(expense -> !expense.getDate().isBefore(beginDate) && !expense.getDate().isAfter(endDate))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Expense> getExpensesWherePriceInRange(double left_end, double right_end) {
+        Iterable<Expense> expenses = expenseRepository.findAll();
+        return StreamSupport.stream(expenses.spliterator(), false)
+                .filter(expense -> expense.getPrice() >= left_end && expense.getPrice() <= right_end)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Expense> getExpensesWherePriceIsLower(double price) {
+        return getExpensesWherePriceInRange(0, price);
+    }
+
+    @Override
+    public List<Expense> getExpensesWherePriceIsGreater(double price) {
+        return getExpensesWherePriceInRange(price, Double.POSITIVE_INFINITY);
+    }
 }

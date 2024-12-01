@@ -8,4 +8,8 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesByCategory(String category);
     List<Expense> getExpensesByDate(String date);
     List<Expense> getExpensesByPeriod(String begin, String end);
+    List<Expense> getExpensesWherePriceInRange(double left_end, double right_end);
+    List<Expense> getExpensesWherePriceIsLower(double price);
+    List<Expense> getExpensesWherePriceIsGreater(double price);
+
 }
