@@ -15,10 +15,7 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesWherePriceInRange(double left_end, double right_end);
     List<Expense> getExpensesWherePriceIsLower(double price);
     List<Expense> getExpensesWherePriceIsGreater(double price);
-
     List<Expense> getExpensesForGroup(String name);
-
     ExpInfo getExpInfo(String name, String userId);
-
     Map<LocalDate, List<Expense>> getAllAsMap();
 }

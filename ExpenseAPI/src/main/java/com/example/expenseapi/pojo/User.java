@@ -28,14 +28,8 @@ public class User {
     @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
 
+    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_group_id", referencedColumnName = "id", nullable = false)
     private UserGroup userGroup;
-
-    public User(String username, String surname, String email, UserGroup userGroup) {
-        this.name = username;
-        this.surname = surname;
-        this.email = email;
-        this.userGroup = userGroup;
-    }
 }

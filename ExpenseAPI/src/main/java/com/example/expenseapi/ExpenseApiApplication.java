@@ -1,13 +1,7 @@
 package com.example.expenseapi;
 
-import com.example.expenseapi.pojo.Expense;
-import com.example.expenseapi.pojo.UserGroup;
-import com.example.expenseapi.pojo.User;
-import com.example.expenseapi.pojo.Category;
-import com.example.expenseapi.repository.ExpenseRepository;
-import com.example.expenseapi.repository.UserGroupRepository;
-import com.example.expenseapi.repository.UserRepository;
-import com.example.expenseapi.repository.CategoryRepository;
+import com.example.expenseapi.pojo.*;
+import com.example.expenseapi.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

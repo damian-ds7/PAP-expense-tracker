@@ -38,10 +38,8 @@ public class Expense {
     }
 
     public Expense(double price, @NonNull User user, Category category, LocalDate date) {
-        this.price = price;
-        this.user = user;
-        this.category = category;
-        this.date = date;
+        this(price, user, category);
+        this.setDate(date);
     }
 
     public Expense(double price, @NonNull User user) {

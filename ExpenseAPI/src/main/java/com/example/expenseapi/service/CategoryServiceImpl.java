@@ -9,5 +9,4 @@ public class CategoryServiceImpl extends GenericServiceImpl<Category, Long> impl
     public CategoryServiceImpl(CategoryRepository repository) {
         super(repository);
     }
-
 }

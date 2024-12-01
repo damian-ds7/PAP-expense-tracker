@@ -1,10 +1,7 @@
 package com.example.expenseapi.pojo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -18,6 +15,7 @@ public class UserGroup {
     @Column(name = "id")
     private Long id;
 
+    @NonNull
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String name = "family";
 

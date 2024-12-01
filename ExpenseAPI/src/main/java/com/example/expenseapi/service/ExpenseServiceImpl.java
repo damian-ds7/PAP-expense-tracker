@@ -1,14 +1,11 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.pojo.*;
-import com.example.expenseapi.repository.CategoryRepository;
-import com.example.expenseapi.repository.ExpenseRepository;
-import com.example.expenseapi.repository.UserGroupRepository;
+import com.example.expenseapi.repository.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.stream.*;
 
 @Service
 public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implements ExpenseService {
