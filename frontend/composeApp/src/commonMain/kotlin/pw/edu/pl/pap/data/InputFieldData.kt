@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class InputFieldData(
     val title: String,
-    var record: MutableState<Record>,
+    var parameter: MutableState<String>,
     val onChange: (String) -> Unit,
 )

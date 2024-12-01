@@ -49,7 +49,7 @@ fun createField(data: InputFieldData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = data.title)
-            TextField(value = data.record.value.price.toString(), onValueChange = {newParameter -> data.onChange(newParameter)})
+            TextField(value = data.parameter.value.toString(), onValueChange = {newParameter -> data.onChange(newParameter)})
         }
     }
 }

@@ -21,6 +21,8 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         Record(0, 0f, User(0, "", "", ""))
     )
 
+    var price: MutableState<String> = mutableStateOf("")
+
     init {
         setupInputFields()
     }
@@ -30,7 +32,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
             listOf(
                 InputFieldData(
                     title = "Price: ",
-                    record = record,
+                    parameter = price,
                     onChange = { newParameter ->
                         updatePrice(newParameter)
                     }
@@ -49,9 +51,8 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 
     private fun updatePrice(newPrice: String) {
         try {
-            val updatedRecord = record.value.copy(price = newPrice.toFloat())
-            record.value = updatedRecord
-            println("Updated record " + record.value.price)
+            price.value = newPrice
+            println("Updated record " + price.value)
         } catch (e: Exception) {
             println("Incorrect")
         }
@@ -63,7 +64,8 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         // download to set ID
         // find user
         // save record
-        println("confirmed")
+        val record = Record(0, price.value.toFloat(), User(0, "", "", ""))
+        println("confirmed " + record.price)
     }
 }
 
