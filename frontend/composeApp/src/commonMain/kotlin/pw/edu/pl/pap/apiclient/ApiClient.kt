@@ -4,6 +4,8 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.flow.flow
@@ -31,5 +33,13 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
 
     fun getRecords() = flow {
         emit(getRecordsApi())
+    }
+
+    suspend fun postNewExpense(record: Record){
+        val response: HttpResponse = httpClient.post("$baseUrl/expense/insert") {
+            contentType(ContentType.Application.Json)
+            setBody(record)
+        }
+        println(response)
     }
 }

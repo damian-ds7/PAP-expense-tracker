@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalDate
 data class Record(
     val id: Long,
     val price: Float,
-    val date: LocalDate,
     val user: User,
+    val date: LocalDate,
     val category: Category,
 )
