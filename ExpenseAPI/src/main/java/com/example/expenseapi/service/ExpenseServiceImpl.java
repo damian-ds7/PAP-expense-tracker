@@ -123,4 +123,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                         Expense::getCategory
                 ));
     }
+
+    @Override
+    public Optional<Expense> getRecentExpense() {
+        return StreamSupport.stream(expenseRepository.findAll().spliterator(), false)
+                .max(Comparator.comparingLong(Expense::getId));
+    }
 }
