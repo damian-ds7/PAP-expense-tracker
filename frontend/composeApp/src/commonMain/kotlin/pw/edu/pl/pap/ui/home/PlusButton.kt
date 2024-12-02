@@ -30,12 +30,19 @@ fun PlusButton(buttonClicked: Boolean, onUpdate: (Boolean) -> Unit): Unit {
             contentPadding = PaddingValues(0.dp),
             onClick = {onUpdate(buttonClicked)}
         ) {
-            Text(
-                text = "+",
-                fontSize = 50.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.offset(x = 0.dp, y = (-10).dp)
-            )
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ){
+                Text(
+                    text = "+",
+                    fontSize = 50.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .offset(x = 0.dp, y = (-10).dp)
+                )
+            }
+
         }
     }
 

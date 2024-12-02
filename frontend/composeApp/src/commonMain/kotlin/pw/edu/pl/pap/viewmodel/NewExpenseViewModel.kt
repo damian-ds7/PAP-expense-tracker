@@ -68,7 +68,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         val user: User = User(5, "Marcinek", "Marcinkowski", "Kaczka2137@gmail.com")
         val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
         val category: Category = Category(5, "Test")
-        val record: Record = Record(id, price.value.toFloat(), user, date, category )
+        val record: Record = Record(id, price.value.toFloat(), date, user, category )
         scope.launch{apiClient.postNewExpense(record)}
         println("confirmed " + record.price)
     }

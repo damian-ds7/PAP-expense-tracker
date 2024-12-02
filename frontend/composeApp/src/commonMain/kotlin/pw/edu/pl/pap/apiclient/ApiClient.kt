@@ -28,7 +28,7 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
     }
 
     private suspend fun getRecordsApi(): Map<LocalDate, List<Record>> {
-        return httpClient.get("$baseUrl/expense/all/map").body()
+        return httpClient.get("$baseUrl/expense/all/dateMap").body()
     }
 
     fun getRecords() = flow {

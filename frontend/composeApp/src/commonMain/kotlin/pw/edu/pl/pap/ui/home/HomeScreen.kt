@@ -20,6 +20,8 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val homeInfo = viewModel.expensesInfo.collectAsState().value
     val groupedRecords = viewModel.groupedRecords.collectAsState().value
 
+    println(groupedRecords)
+
     LaunchedEffect(Unit) {
         viewModel.fetchHomeInfo()
         viewModel.fetchRecords()
