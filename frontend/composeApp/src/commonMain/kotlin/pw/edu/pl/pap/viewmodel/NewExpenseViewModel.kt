@@ -59,7 +59,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 
 
     @Composable
-    fun expenseConfirmed() {
+    fun expenseConfirmed(onClose: () -> Unit) {
         val scope = rememberCoroutineScope()
         // download to set ID
         // find user
@@ -68,8 +68,13 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         val user: User = User(5, "Marcinek", "Marcinkowski", "Kaczka2137@gmail.com")
         val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
         val category: Category = Category(5, "Test")
-        val record: Record = Record(id, price.value.toFloat(), date, user, category )
-        scope.launch{apiClient.postNewExpense(record)}
+        val record: Record = Record(id, price.value.toFloat(), user, date, category )
+
+        scope.launch{
+            apiClient.postNewExpense(record)
+            onClose()
+        }
+
         println("confirmed " + record.price)
     }
 }

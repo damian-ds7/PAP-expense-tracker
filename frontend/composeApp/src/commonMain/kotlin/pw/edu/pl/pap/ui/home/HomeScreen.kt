@@ -20,7 +20,10 @@ fun HomeScreen(viewModel: HomeViewModel) {
     val homeInfo = viewModel.expensesInfo.collectAsState().value
     val groupedRecords = viewModel.groupedRecords.collectAsState().value
 
-    println(groupedRecords)
+
+//    var homeInfo by remember { mutableStateOf(viewModel.expensesInfo.collectAsState().value)}
+//    var groupedRecords by remember { mutableStateOf(viewModel.groupedRecords.collectAsState().value)}
+
 
     LaunchedEffect(Unit) {
         viewModel.fetchHomeInfo()
@@ -50,7 +53,9 @@ fun HomeScreen(viewModel: HomeViewModel) {
     } else if (showAddExpenseScreen) {
         NewExpenseScreen(
             viewModel = NewExpenseViewModel(viewModel.passApiClient()),
-            onClose = { showAddExpenseScreen = false })
+            onClose = {
+                showAddExpenseScreen = false
+            })
     } else {
         Text(
             text = "No data available",

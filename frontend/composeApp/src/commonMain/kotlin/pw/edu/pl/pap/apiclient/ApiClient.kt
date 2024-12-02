@@ -36,10 +36,14 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
     }
 
     suspend fun postNewExpense(record: Record){
+
+        println("record to be uploaded  " + record)
+
         val response: HttpResponse = httpClient.post("$baseUrl/expense/insert") {
             contentType(ContentType.Application.Json)
             setBody(record)
         }
-        println(response)
+
+        println("Response  " + response.body())
     }
 }

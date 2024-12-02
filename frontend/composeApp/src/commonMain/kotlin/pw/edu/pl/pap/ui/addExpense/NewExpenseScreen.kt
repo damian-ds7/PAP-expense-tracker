@@ -18,7 +18,6 @@ fun NewExpenseScreen(viewModel: NewExpenseViewModel, onClose: () -> Unit){
 
 
     if (addButtonClicked) {
-        viewModel.expenseConfirmed()
-        onClose()
+        viewModel.expenseConfirmed(onClose = onClose)
     }
 }
