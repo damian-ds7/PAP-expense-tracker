@@ -19,7 +19,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
     var showAddExpenseScreen by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(true) }
     val homeInfo = viewModel.expensesInfo.collectAsState().value
-    var groupedRecords = viewModel.groupedRecords.collectAsState().value
+    val groupedRecords = viewModel.groupedRecords.collectAsState().value
 
 
 //    var homeInfo by remember { mutableStateOf(viewModel.expensesInfo.collectAsState().value)}
@@ -55,7 +55,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
         NewExpenseScreen(
             viewModel = NewExpenseViewModel(viewModel.passApiClient()),
             onClose =  {
-                viewModel.updateLatestRecord()
+                viewModel.updateRecentRecord()
                 showAddExpenseScreen = false
             })
     } else {
