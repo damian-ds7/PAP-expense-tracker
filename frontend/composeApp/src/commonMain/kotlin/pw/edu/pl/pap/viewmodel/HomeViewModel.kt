@@ -39,7 +39,7 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
         }
     }
 
-    fun updateLatestRecord() {
+    fun updateRecentRecord() {
         viewModelScope.launch {
             try {
                 apiClient.getRecentRecord().collect { record: Record ->
