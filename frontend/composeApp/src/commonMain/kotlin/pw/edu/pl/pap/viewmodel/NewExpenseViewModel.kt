@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.InputFieldData
-import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.User
 import pw.edu.pl.pap.data.Category
 
@@ -64,18 +64,19 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
         // download to set ID
         // find user
         // save record
-        val id: Long = 5
-        val user: User = User(5, "Marcinek", "Marcinkowski", "Kaczka2137@gmail.com")
+//        val id: Long = 5
+        val user: User = User(1, "Marcinek", "Marcinkowski", "Kaczka2137@gmail.com")
         val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
-        val category: Category = Category(5, "Test")
-        val record: Record = Record(id, price.value.toFloat(), user, date, category )
+//        val category: Category = Category(5, "Test")
+//        val record: Record = Record(id, price.value.toFloat(), user, date, category )
+        val newExpense: NewExpense = NewExpense(price.value.toFloat(), date, user)
 
         scope.launch{
-            apiClient.postNewExpense(record)
+            apiClient.postNewExpense(newExpense)
             onClose()
         }
 
-        println("confirmed " + record.price)
+        println("confirmed " + newExpense.price)
     }
 }
 

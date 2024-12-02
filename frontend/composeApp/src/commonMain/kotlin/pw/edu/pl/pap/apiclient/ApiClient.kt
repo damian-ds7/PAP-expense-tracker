@@ -10,6 +10,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDate
+import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.TotalExpenses
 import pw.edu.pl.pap.data.Record
 
@@ -35,13 +36,13 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
         emit(getRecordsApi())
     }
 
-    suspend fun postNewExpense(record: Record){
+    suspend fun postNewExpense(newExpense: NewExpense){
 
-        println("record to be uploaded  " + record)
+        println("record to be uploaded  " + newExpense)
 
         val response: HttpResponse = httpClient.post("$baseUrl/expense/insert") {
             contentType(ContentType.Application.Json)
-            setBody(record)
+            setBody(newExpense)
         }
 
         println("Response  " + response.body())
