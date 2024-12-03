@@ -1,3 +1,12 @@
+## Uruchomienie aplikacji:
+
+Dla uruchomienia prototypu konieczne jest posiadanie zaistalowanej Javy w wersji 21.
+
+- Linux   - ./start.sh
+- Windows - ./start.bat
+
+
+
 ## PAP grupa 17
 - Michał Suski		331439
 - Michał Szwejk		331445
