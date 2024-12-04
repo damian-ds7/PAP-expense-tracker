@@ -13,6 +13,7 @@ import pw.edu.pl.pap.data.InputFieldData
 import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.User
 import pw.edu.pl.pap.data.Category
+import pw.edu.pl.pap.util.updatePrice
 
 
 class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
@@ -71,12 +72,5 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 }
 
 
-suspend fun updatePrice(newPrice: String, price: MutableState<String>) {
-    try {
-        price.value = newPrice
-        println("Updated record " + price.value)
-    } catch (e: Exception) {
-        println("Incorrect")
-    }
-}
+
 
