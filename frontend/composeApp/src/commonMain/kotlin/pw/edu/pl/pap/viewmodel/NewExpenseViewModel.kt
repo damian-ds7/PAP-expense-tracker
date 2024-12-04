@@ -59,7 +59,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 
 
     @Composable
-    fun expenseConfirmed(onClose: () -> Unit) {
+    fun expenseConfirmed(onConfirm: () -> Unit) {
         val scope = rememberCoroutineScope()
         // download to set ID
         // find user
@@ -73,7 +73,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 
         scope.launch{
             apiClient.postNewExpense(newExpense)
-            onClose()
+            onConfirm()
         }
 
         println("confirmed " + newExpense.price)

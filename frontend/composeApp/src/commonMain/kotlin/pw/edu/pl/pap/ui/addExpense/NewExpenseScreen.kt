@@ -9,7 +9,11 @@ import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
 import pw.edu.pl.pap.apiclient.NewExpenseApiClient
 
 @Composable
-fun NewExpenseScreen(viewModel: NewExpenseViewModel, onClose: () -> Unit){
+fun NewExpenseScreen(
+    viewModel: NewExpenseViewModel,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit
+    ){
     var addButtonClicked by remember { mutableStateOf(false) }
     var backButtonClicked by remember { mutableStateOf(false) }
 
@@ -21,12 +25,12 @@ fun NewExpenseScreen(viewModel: NewExpenseViewModel, onClose: () -> Unit){
 
 
     if (addButtonClicked) {
-        viewModel.expenseConfirmed(onClose = onClose)
+        viewModel.expenseConfirmed(onConfirm = onConfirm)
     }
 
     if (backButtonClicked) {
         rememberCoroutineScope().launch {
-            onClose()
+            onCancel()
         }
     }
 }
