@@ -1,9 +1,10 @@
-package pw.edu.pl.pap.ui.addExpense
+package pw.edu.pl.pap.ui.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -17,12 +18,12 @@ import pw.edu.pl.pap.data.InputFieldData
 
 
 @Composable
-fun InputFields(inputFieldsdata: List<InputFieldData>) {
+fun InputFields(inputFieldsData: List<InputFieldData>) {
     Box(
         modifier = Modifier.offset(x = 0.dp, y = 100.dp)
     ){
         LazyColumn {
-            items(inputFieldsdata) {
+            items(inputFieldsData) {
                 data -> createField(data)
             }
         }
@@ -48,7 +49,11 @@ fun createField(data: InputFieldData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = data.title)
-            TextField(value = data.parameter.value.toString(), onValueChange = {newParameter -> data.onChange(newParameter)})
+            TextField(
+                value = data.parameter.value.toString(),
+                onValueChange = {newParameter -> data.onChange(newParameter)},
+                keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default
+            )
         }
     }
 }

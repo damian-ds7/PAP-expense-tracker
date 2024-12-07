@@ -6,6 +6,7 @@ import pw.edu.pl.pap.navigation.NewExpenseScreenComponent
 import pw.edu.pl.pap.ui.common.ConfirmButton
 import pw.edu.pl.pap.ui.common.BackButton
 import pw.edu.pl.pap.ui.common.Header
+import pw.edu.pl.pap.ui.common.InputFields
 
 @Composable
 fun NewExpenseScreen(
