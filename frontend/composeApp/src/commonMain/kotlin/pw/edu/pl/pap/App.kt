@@ -16,20 +16,20 @@ import pw.edu.pl.pap.viewmodel.HomeViewModel
 fun App(rootComponent: RootComponent) {
 
 
-
-
     MaterialTheme(colorScheme = darkColorScheme()) {
-        val childStack = rootComponent.childStack.subscribeAsState()
-        Children(
-            stack = childStack.value,
-            animation = stackAnimation(slide()),
-        ) { child ->
-            when (val instance = child.instance) {
-                is RootComponent.Child.HomeScreen ->
-                    HomeScreen(instance.component)
+        Scaffold {
+            val childStack = rootComponent.childStack.subscribeAsState()
+            Children(
+                stack = childStack.value,
+                animation = stackAnimation(slide()),
+            ) { child ->
+                when (val instance = child.instance) {
+                    is RootComponent.Child.HomeScreen ->
+                        HomeScreen(instance.component)
 
-                is RootComponent.Child.NewExpenseScreen ->
-                    NewExpenseScreen(instance.component)
+                    is RootComponent.Child.NewExpenseScreen ->
+                        NewExpenseScreen(instance.component)
+                }
             }
         }
     }
