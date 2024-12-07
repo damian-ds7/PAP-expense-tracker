@@ -2,9 +2,7 @@ package pw.edu.pl.pap.ui.addExpense
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.navigation.NewExpenseScreenComponent
-import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
 
 @Composable
 fun NewExpenseScreen(

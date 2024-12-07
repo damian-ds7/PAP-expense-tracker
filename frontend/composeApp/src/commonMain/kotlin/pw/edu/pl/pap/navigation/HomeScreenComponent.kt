@@ -1,11 +1,6 @@
 package pw.edu.pl.pap.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.viewModelScope
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.router.stack.pushNew
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +9,6 @@ import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.Record
 import pw.edu.pl.pap.data.TotalExpenses
-import pw.edu.pl.pap.navigation.RootComponent.Child
-import pw.edu.pl.pap.navigation.RootComponent.Configuration
 
 class HomeScreenComponent (
     componentContext: ComponentContext,

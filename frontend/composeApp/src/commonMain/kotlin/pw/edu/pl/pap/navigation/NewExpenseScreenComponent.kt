@@ -1,7 +1,6 @@
 package pw.edu.pl.pap.navigation
 
 import androidx.compose.runtime.*
-import androidx.lifecycle.viewModelScope
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

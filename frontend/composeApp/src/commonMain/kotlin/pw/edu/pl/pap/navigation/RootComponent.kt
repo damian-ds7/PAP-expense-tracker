@@ -1,7 +1,5 @@
 package pw.edu.pl.pap.navigation
 
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
@@ -13,8 +11,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import pw.edu.pl.pap.apiclient.ApiClient
-import pw.edu.pl.pap.ui.home.HomeScreen
-import pw.edu.pl.pap.viewmodel.HomeViewModel
 
 class RootComponent(
     componentContext: ComponentContext,

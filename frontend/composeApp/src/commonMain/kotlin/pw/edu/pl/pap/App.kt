@@ -6,11 +6,9 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.navigation.RootComponent
 import pw.edu.pl.pap.ui.home.HomeScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
-import pw.edu.pl.pap.viewmodel.HomeViewModel
 
 @Composable
 fun App(rootComponent: RootComponent) {
