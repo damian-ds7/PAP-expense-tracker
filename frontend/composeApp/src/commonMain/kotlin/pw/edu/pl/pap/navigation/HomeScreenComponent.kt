@@ -1,20 +1,27 @@
-package pw.edu.pl.pap.viewmodel
+package pw.edu.pl.pap.navigation
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.apiclient.ApiClient
-import pw.edu.pl.pap.data.*
+import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.data.TotalExpenses
 
-class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
+class HomeScreenComponent (
+    componentContext: ComponentContext,
+    private val apiClient: ApiClient,
+    private val coroutineScope: CoroutineScope,
+    val onAddExpenseButtonClicked: () -> Unit
+) : ComponentContext by componentContext {
+
     private val _expensesInfo = MutableStateFlow<TotalExpenses?>(null)
     val expensesInfo: StateFlow<TotalExpenses?> = _expensesInfo
 
     fun fetchHomeInfo() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             try {
                 val homeData = apiClient.getTotalExpenses("family", "herkules1@gmail.com")
                 _expensesInfo.value = homeData
@@ -28,7 +35,7 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
     val groupedRecords: StateFlow<Map<LocalDate, List<Record>>> = _groupedRecords
 
     fun fetchRecords() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             try {
                 apiClient.getRecords().collect { records ->
                     _groupedRecords.value = records
@@ -40,7 +47,7 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
     }
 
     fun updateRecentRecord() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             try {
                 apiClient.getRecentRecord().collect { record: Record ->
                     val currentMap = _groupedRecords.value
@@ -53,7 +60,6 @@ class HomeViewModel(private val apiClient: ApiClient) : ViewModel() {
         }
     }
 
-    fun passApiClient(): ApiClient {
-        return apiClient
-    }
+
+
 }

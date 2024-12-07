@@ -1,30 +1,33 @@
-package pw.edu.pl.pap.viewmodel
+package pw.edu.pl.pap.navigation
 
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.ktor.utils.io.core.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.InputFieldData
 import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.User
-import pw.edu.pl.pap.data.Category
 import pw.edu.pl.pap.util.updatePrice
 
+class NewExpenseScreenComponent (
+    componentContext: ComponentContext,
+    private val apiClient: ApiClient,
+    private val coroutineScope: CoroutineScope,
+    val onBack: () -> Unit
+) : ComponentContext by componentContext {
 
-class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
     private val _inputFieldsData = mutableStateListOf<InputFieldData>() // Backing mutable state
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData // Immutable public view
 
 
-    var price: MutableState<String> = mutableStateOf("")
+    private var price: MutableState<String> = mutableStateOf("")
 
 
-    @Composable
     fun setupInputFields() {
         _inputFieldsData.addAll(
             listOf(
@@ -32,7 +35,7 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
                     title = "Price: ",
                     parameter = price,
                     onChange = { newParameter ->
-                        viewModelScope.launch { updatePrice(newParameter, price) }
+                        coroutineScope.launch { updatePrice(newParameter, price) }
                     }
                 )
 //                ,
@@ -50,7 +53,6 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 
 
 
-    @Composable
     fun expenseConfirmed(onConfirm: () -> Unit) {
         // download to set ID
         // find user
@@ -62,15 +64,12 @@ class NewExpenseViewModel(private val apiClient: ApiClient) : ViewModel() {
 //        val record: Record = Record(id, price.value.toFloat(), user, date, category )
         val newExpense: NewExpense = NewExpense(price.value.toFloat(), date, user)
 
-        viewModelScope.launch{
+        coroutineScope.launch{
             apiClient.postNewExpense(newExpense)
             onConfirm()
         }
 
         println("confirmed " + newExpense.price)
     }
+
 }
-
-
-
-
