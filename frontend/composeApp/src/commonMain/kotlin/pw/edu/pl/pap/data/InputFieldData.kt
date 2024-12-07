@@ -8,6 +8,5 @@ data class InputFieldData(
     val title: String,
     var parameter: MutableState<String>,
     val onChange: (String) -> Unit,
-    val defaultValue: String = "",
     val keyboardOptions: KeyboardOptions? = null,  // Optional keyboard options, used for number only keyboard
 )
