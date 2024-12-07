@@ -13,9 +13,9 @@ import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.viewmodel.HomeViewModel
 
 @Composable
-fun App(baseUrl: String, rootComponent: RootComponent) {
-    val apiClient = remember { ApiClient(baseUrl) }
-    val viewModel = remember(apiClient) { HomeViewModel(apiClient) }
+fun App(rootComponent: RootComponent) {
+
+
 
 
     MaterialTheme(colorScheme = darkColorScheme()) {

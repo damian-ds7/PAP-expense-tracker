@@ -13,28 +13,28 @@ import pw.edu.pl.pap.viewmodel.NewExpenseViewModel
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.style.TextAlign
 import pw.edu.pl.pap.data.NewExpense
+import pw.edu.pl.pap.navigation.HomeScreenComponent
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
-    var showAddExpenseScreen by remember { mutableStateOf(false) }
+fun HomeScreen(component: HomeScreenComponent) {
     var isLoading by remember { mutableStateOf(true) }
-    val homeInfo = viewModel.expensesInfo.collectAsState().value
-    val groupedRecords = viewModel.groupedRecords.collectAsState().value
+    val homeInfo = component.expensesInfo.collectAsState().value
+    val groupedRecords = component.groupedRecords.collectAsState().value
 
 
-//    var homeInfo by remember { mutableStateOf(viewModel.expensesInfo.collectAsState().value)}
-//    var groupedRecords by remember { mutableStateOf(viewModel.groupedRecords.collectAsState().value)}
+//    var homeInfo by remember { mutableStateOf(component.expensesInfo.collectAsState().value)}
+//    var groupedRecords by remember { mutableStateOf(component.groupedRecords.collectAsState().value)}
 
 
     LaunchedEffect(Unit) {
-        viewModel.fetchHomeInfo()
-        viewModel.fetchRecords()
+        component.fetchHomeInfo()
+        component.fetchRecords()
         isLoading = false
     }
 
     if (isLoading) {
         LoadingScreen()
-    } else if (homeInfo != null && !showAddExpenseScreen) {
+    } else if (homeInfo != null) {
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
@@ -50,15 +50,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
                 GroupedRecordsList(groupedRecords) {}
             }
         }
-        PlusButton(showAddExpenseScreen, onUpdate = { showAddExpenseScreen = !showAddExpenseScreen })
-    } else if (showAddExpenseScreen) {
-        NewExpenseScreen(
-            viewModel = NewExpenseViewModel(viewModel.passApiClient()),
-            onConfirm =  {
-                viewModel.updateRecentRecord()
-                showAddExpenseScreen = false
-            },
-            onCancel = { showAddExpenseScreen = false })
+        PlusButton(onUpdate = { component.onAddExpenseButtonClicked() } )
     } else {
         Text(
             text = "No data available",

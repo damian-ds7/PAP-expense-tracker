@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.*
 
 @Composable
-fun AddButton(buttonClicked: Boolean, onUpdate: (Boolean) -> Unit): Unit {
+fun AddButton(onUpdate: () -> Unit): Unit {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -27,7 +27,7 @@ fun AddButton(buttonClicked: Boolean, onUpdate: (Boolean) -> Unit): Unit {
                 .offset(x= 0.dp, y= (-30).dp),
             colors = ButtonColors(Color.DarkGray, Color.Cyan, Color.DarkGray, Color.Cyan),
             contentPadding = PaddingValues(0.dp),
-            onClick = {onUpdate(buttonClicked)}
+            onClick = {onUpdate()}
         ) {
             Text(
                 text = "ADD",

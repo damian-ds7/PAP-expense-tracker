@@ -11,12 +11,13 @@ class MainActivity : ComponentActivity() {
 
         val rootComponent = retainedComponent { componentContext ->
             RootComponent(
-                componentContext = componentContext
+                componentContext = componentContext,
+                baseUrl = BuildConfig.BASE_URL
             )
         }
 
         setContent {
-            App(BuildConfig.BASE_URL, rootComponent)
+            App(rootComponent)
         }
     }
 }

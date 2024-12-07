@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.*
 
 @Composable
-fun BackButton(buttonClicked: Boolean, onUpdate: (Boolean) -> Unit): Unit {
+fun BackButton(onUpdate: () -> Unit): Unit {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -28,7 +28,7 @@ fun BackButton(buttonClicked: Boolean, onUpdate: (Boolean) -> Unit): Unit {
                 .offset(x= 30.dp, y= (-30).dp),
             colors = ButtonColors(Color.DarkGray, Color.Cyan, Color.DarkGray, Color.Cyan),
             contentPadding = PaddingValues(0.dp),
-            onClick = {onUpdate(buttonClicked)}
+            onClick = {onUpdate()}
         ) {
             Text(
                 text = "BACK",
