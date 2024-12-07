@@ -7,7 +7,6 @@ import pw.edu.pl.pap.navigation.ExpenseDetailsScreenComponent
 @Composable
 fun ExpenseDetailsScreen(
     component: ExpenseDetailsScreenComponent,
-    expense: Expense,
 ) {
 
 }

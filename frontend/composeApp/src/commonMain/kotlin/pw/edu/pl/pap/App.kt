@@ -30,7 +30,7 @@ fun App(rootComponent: RootComponent) {
                         NewExpenseScreen(instance.component)
 
                     is RootComponent.Child.ExpenseDetailsScreen ->
-                        ExpenseDetailsScreen(instance.component, instance.component.expense)
+                        ExpenseDetailsScreen(instance.component)
                 }
             }
         }
