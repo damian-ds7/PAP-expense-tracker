@@ -24,7 +24,7 @@ class RootComponent(
     @Serializable
     sealed class Configuration {
         @Serializable
-        data class HomeScreen(val onAddExpenseButtonClicked: () -> Unit) : Configuration()
+        data object HomeScreen : Configuration()
 
         @Serializable
         data object NewExpenseScreen : Configuration()
@@ -64,9 +64,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.HomeScreen(onAddExpenseButtonClicked = {
-            navigation.pushNew(Configuration.NewExpenseScreen)
-        }),
+        initialConfiguration = Configuration.HomeScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
