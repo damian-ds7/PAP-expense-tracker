@@ -10,7 +10,7 @@ import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.Expense
 import pw.edu.pl.pap.data.TotalExpenses
 
-class HomeScreenComponent (
+class HomeScreenComponent(
     componentContext: ComponentContext,
     private val apiClient: ApiClient,
     private val coroutineScope: CoroutineScope,
@@ -19,7 +19,7 @@ class HomeScreenComponent (
 ) : ComponentContext by componentContext {
 
     private val _expensesInfo = MutableStateFlow<TotalExpenses?>(null)
-    val expensesInfo: StateFlow<TotalExpenses?> = _expensesInfo
+    val expensesInfo: StateFlow<TotalExpenses?> get() = _expensesInfo
 
     fun fetchHomeInfo() {
         coroutineScope.launch {
@@ -33,9 +33,10 @@ class HomeScreenComponent (
     }
 
     private val _groupedExpenses = MutableStateFlow<Map<LocalDate, List<Expense>>>(emptyMap())
-    val groupedExpenses: StateFlow<Map<LocalDate, List<Expense>>> = _groupedExpenses
+    val groupedExpenses: StateFlow<Map<LocalDate, List<Expense>>> get() = _groupedExpenses
 
-    fun fetchExpenses() {
+    fun fetchAllExpenses() {
+        println("FETCHEXP")
         coroutineScope.launch {
             try {
                 apiClient.getAllExpenses().collect { expenses ->
@@ -60,7 +61,4 @@ class HomeScreenComponent (
             }
         }
     }
-
-
-
 }
