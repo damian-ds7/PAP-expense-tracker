@@ -7,7 +7,7 @@ import pw.edu.pl.pap.ui.common.BackButton
 import pw.edu.pl.pap.ui.common.ConfirmButton
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
-import pw.edu.pl.pap.util.DismissChangesPopup
+import pw.edu.pl.pap.ui.common.DismissChangesPopup
 
 @Composable
 fun ExpenseDetailsScreen(
@@ -20,9 +20,9 @@ fun ExpenseDetailsScreen(
     component.setupInputFields()
     InputFields(component.inputFieldsData)
 
-    ConfirmButton("SAVE", component.canSave) {
+    ConfirmButton("SAVE", component.canConfirm) {
         scope.launch {
-            component.confirmChanges()
+            component.confirm()
         }
     }
 

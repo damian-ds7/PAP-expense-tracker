@@ -18,9 +18,9 @@ fun NewExpenseScreen(
     component.setupInputFields()
     InputFields(component.inputFieldsData)
 
-    ConfirmButton("ADD") {
+    ConfirmButton("ADD", component.canConfirm) {
         scope.launch{
-            component.expenseConfirmed(onConfirm = component.onBack)
+            component.confirm(onConfirm = component.onBack)
         }
     }
     BackButton(onUpdate = {
