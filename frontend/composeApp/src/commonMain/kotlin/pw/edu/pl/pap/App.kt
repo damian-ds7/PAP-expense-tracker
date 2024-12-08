@@ -9,6 +9,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.navigation.RootComponent
 import pw.edu.pl.pap.ui.home.HomeScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
+import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 
 @Composable
 fun App(rootComponent: RootComponent) {
@@ -27,6 +28,9 @@ fun App(rootComponent: RootComponent) {
 
                     is RootComponent.Child.NewExpenseScreen ->
                         NewExpenseScreen(instance.component)
+
+                    is RootComponent.Child.ExpenseDetailsScreen ->
+                        ExpenseDetailsScreen(instance.component)
                 }
             }
         }

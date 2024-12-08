@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
 
 @Serializable
-data class Record(
+data class Expense(
     val id: Long,
     val price: Float,
     val user: User,

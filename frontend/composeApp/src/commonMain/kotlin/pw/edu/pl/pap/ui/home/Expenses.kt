@@ -17,20 +17,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.LocalDate
-import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.data.Expense
 import pw.edu.pl.pap.util.formatDate
 import pw.edu.pl.pap.util.formatNumber
 
 
 @Composable
-fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
+fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .height(50.dp)
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick(record) },
+            .clickable { onClick(expense) },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -42,13 +42,13 @@ fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
         ) {
             Column {
                 Text(
-                    text = record.category.name,
+                    text = expense.category.name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = record.user.name,
+                    text = expense.user.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Light,
                     color = Color.Gray
@@ -56,7 +56,7 @@ fun RecordBlock(record: Record, onClick: (Record) -> Unit) {
             }
 
             Text(
-                text = "${formatNumber(record.price)} zł",
+                text = "${formatNumber(expense.price)} zł",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Light,
                 color = Color.Gray,
@@ -79,15 +79,15 @@ fun DateHeader(date: LocalDate) {
 }
 
 @Composable
-fun GroupedRecordsList(
-    groupedRecords: Map<LocalDate, List<Record>>,
-    onRecordClick: (Record) -> Unit
+fun GroupedExpensesList(
+    groupedExpenses: Map<LocalDate, List<Expense>>,
+    onExpenseClick: (Expense) -> Unit
 ) {
-    groupedRecords.forEach { (date, recordsForDate) ->
+    groupedExpenses.forEach { (date, expenseForDate) ->
         DateHeader(date)
 
-        recordsForDate.forEach { record ->
-            RecordBlock(record, onClick = onRecordClick)
+        expenseForDate.forEach { expense ->
+            ExpenseBlock(expense, onClick = onExpenseClick)
         }
     }
 }

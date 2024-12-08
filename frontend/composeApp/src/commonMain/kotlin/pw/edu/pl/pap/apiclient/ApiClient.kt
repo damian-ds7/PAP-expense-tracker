@@ -7,13 +7,12 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.TotalExpenses
-import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.data.Expense
 
 class ApiClient(private val baseUrl: String = "http://localhost:8080") {
     private val httpClient = HttpClient() {
@@ -29,25 +28,36 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
         return httpClient.get("$baseUrl/expense/state/group/$userGroup/user/$userEmail").body()
     }
 
-    private suspend fun getRecordsApi(): Map<LocalDate, List<Record>> {
+    private suspend fun getAllExpensesApi(): Map<LocalDate, List<Expense>> {
         return httpClient.get("$baseUrl/expense/all/dateMap").body()
     }
 
-    fun getRecords() = flow {
-        emit(getRecordsApi())
+    fun getAllExpenses() = flow {
+        emit(getAllExpensesApi())
     }
 
-    private suspend fun getRecentRecordApi(): Record {
+    suspend fun getExpense(id: Long): Expense {
+        return httpClient.get("$baseUrl/expense/$id").body()
+    }
+
+    private suspend fun getRecentExpenseApi(): Expense {
         return httpClient.get("$baseUrl/expense/recent").body()
     }
 
-    fun getRecentRecord() = flow {
-        emit(getRecentRecordApi())
+    fun getRecentExpense() = flow {
+        emit(getRecentExpenseApi())
+    }
+
+    suspend fun updateExpense(expense: Expense): HttpResponse {
+        return httpClient.put("$baseUrl/expense/update/${expense.id}") {
+            contentType(ContentType.Application.Json)
+            setBody(expense)
+        }
     }
 
     suspend fun postNewExpense(newExpense: NewExpense){
 
-        println("record to be uploaded  " + newExpense)
+        println("expense to be uploaded  " + newExpense)
 
         val response: HttpResponse = httpClient.post("$baseUrl/expense/insert") {
             contentType(ContentType.Application.Json)

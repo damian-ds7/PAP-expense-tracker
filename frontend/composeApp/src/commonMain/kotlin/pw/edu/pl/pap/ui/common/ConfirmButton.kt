@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.addExpense
+package pw.edu.pl.pap.ui.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.*
 
 @Composable
-fun AddButton(onUpdate: () -> Unit): Unit {
+fun ConfirmButton(text: String, onUpdate: () -> Unit): Unit {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -30,7 +30,7 @@ fun AddButton(onUpdate: () -> Unit): Unit {
             onClick = {onUpdate()}
         ) {
             Text(
-                text = "ADD",
+                text = text,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Medium,
             )

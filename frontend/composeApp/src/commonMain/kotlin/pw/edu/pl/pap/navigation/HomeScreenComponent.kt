@@ -7,14 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.apiclient.ApiClient
-import pw.edu.pl.pap.data.Record
+import pw.edu.pl.pap.data.Expense
 import pw.edu.pl.pap.data.TotalExpenses
 
 class HomeScreenComponent (
     componentContext: ComponentContext,
     private val apiClient: ApiClient,
     private val coroutineScope: CoroutineScope,
-    val onAddExpenseButtonClicked: () -> Unit
+    val onAddExpenseButtonClicked: () -> Unit,
+    val onExpenseClick: (Expense) -> Unit
 ) : ComponentContext by componentContext {
 
     private val _expensesInfo = MutableStateFlow<TotalExpenses?>(null)
@@ -31,14 +32,14 @@ class HomeScreenComponent (
         }
     }
 
-    private val _groupedRecords = MutableStateFlow<Map<LocalDate, List<Record>>>(emptyMap())
-    val groupedRecords: StateFlow<Map<LocalDate, List<Record>>> = _groupedRecords
+    private val _groupedExpenses = MutableStateFlow<Map<LocalDate, List<Expense>>>(emptyMap())
+    val groupedExpenses: StateFlow<Map<LocalDate, List<Expense>>> = _groupedExpenses
 
-    fun fetchRecords() {
+    fun fetchExpenses() {
         coroutineScope.launch {
             try {
-                apiClient.getRecords().collect { records ->
-                    _groupedRecords.value = records
+                apiClient.getAllExpenses().collect { expenses ->
+                    _groupedExpenses.value = expenses
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -46,13 +47,13 @@ class HomeScreenComponent (
         }
     }
 
-    fun updateRecentRecord() {
+    fun updateRecentExpense() {
         coroutineScope.launch {
             try {
-                apiClient.getRecentRecord().collect { record: Record ->
-                    val currentMap = _groupedRecords.value
-                    val currentList = currentMap[record.date] ?: emptyList()
-                    _groupedRecords.value = currentMap + (record.date to currentList + record)
+                apiClient.getRecentExpense().collect { expense: Expense ->
+                    val currentMap = _groupedExpenses.value
+                    val currentList = currentMap[expense.date] ?: emptyList()
+                    _groupedExpenses.value = currentMap + (expense.date to currentList + expense)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
