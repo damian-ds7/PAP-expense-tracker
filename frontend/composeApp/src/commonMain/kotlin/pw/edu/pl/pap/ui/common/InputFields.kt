@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import pw.edu.pl.pap.data.inputFields.DropdownListData
 import pw.edu.pl.pap.data.inputFields.InputFieldData
 import pw.edu.pl.pap.data.inputFields.TextFieldData
@@ -21,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 
 
 @Composable
@@ -118,7 +116,7 @@ fun createDropdownList(
 
                         data.itemList.onEachIndexed { index, item ->
                             if (index != 0) {
-                                Divider(thickness = 1.dp, color = Color.LightGray)
+                                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
                             }
                             Box(
                                 modifier = Modifier
