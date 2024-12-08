@@ -28,6 +28,7 @@ class ExpenseDetailsScreenComponent(
     val canSave by derivedStateOf { newPrice.value.isNotEmpty() }
 
     fun setupInputFields() {
+        _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
                 InputFieldData(
