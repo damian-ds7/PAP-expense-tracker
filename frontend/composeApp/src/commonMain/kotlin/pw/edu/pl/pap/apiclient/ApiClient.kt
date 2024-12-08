@@ -51,7 +51,7 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
     suspend fun updateExpense(expense: Expense): HttpResponse {
         return httpClient.put("$baseUrl/expense/update/${expense.id}") {
             contentType(ContentType.Application.Json)
-            setBody(Expense)
+            setBody(expense)
         }
     }
 
