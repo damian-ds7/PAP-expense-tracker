@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Popup
+import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.inputFields.DatePickerData
 
 
@@ -148,6 +149,9 @@ fun createDatePicker(
     data: DatePickerData
 ){
     var showDatePicker by remember { mutableStateOf(false) }
+    var selectedDate by remember { mutableStateOf<LocalDate>(data.date.value) }
+    val datePickerState = rememberDatePickerState()
+
     Box(
         modifier = Modifier
             .width(250.dp)
@@ -163,7 +167,10 @@ fun createDatePicker(
             onDismissRequest = {showDatePicker = false},
             confirmButton = {
                 TextButton(onClick = {
-//                    data.onDateConfirm()
+                    val millis = datePickerState.selectedDateMillis
+                    if (millis != null) {
+                        data.onDateConfirm(millis)
+                    }
                     showDatePicker = false
                 }) {
                     Text("Confirm")
@@ -176,7 +183,7 @@ fun createDatePicker(
             },
             content = {
                 DatePicker(
-                    state = rememberDatePickerState(),
+                    state = datePickerState,
                     showModeToggle = true // Allows toggling between calendar and text input
                 )
             }

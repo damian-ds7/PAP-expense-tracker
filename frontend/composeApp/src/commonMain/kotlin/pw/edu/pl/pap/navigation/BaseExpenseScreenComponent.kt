@@ -84,7 +84,10 @@ open class BaseExpenseScreenComponent(
                     title = "Date: ",
                     isDatePicker = true,
                     datePickerData = DatePickerData(
-                        date = date
+                        date = date,
+                        onDateConfirm = { millis ->
+                            date.value = LocalDate.fromEpochDays((millis / (24 * 60 * 60 * 1000)).toInt())
+                        }
                     )
                 ),
                 InputFieldData(
