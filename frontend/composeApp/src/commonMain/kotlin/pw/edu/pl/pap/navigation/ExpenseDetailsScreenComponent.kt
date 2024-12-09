@@ -17,9 +17,19 @@ class ExpenseDetailsScreenComponent(
     onBack: () -> Unit
 ) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onBack) {
 
-    override var newPrice: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
+    override var title: MutableState<String> = mutableStateOf("")
+    //TODO fetch title
+    override var categoryIndex: MutableState<Int> = mutableStateOf(expense.category.id.toInt())
 
+    override var date: MutableState<String> = mutableStateOf(expense.date.toString())
+
+    override var newPrice: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
     override var currencyIndex: MutableState<Int> = mutableStateOf(0)
+    //TODO fetch currency
+    override var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
+    //TODO fetch method of payment
+
+    override var userIndex: MutableState<Int> = mutableStateOf(expense.user.id.toInt())
 
     val noChange by derivedStateOf { canConfirm && newPrice.value == formatForTextField(expense.price) }
 

@@ -19,7 +19,6 @@ class NewExpenseScreenComponent(
 ) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onBack) {
 
     fun confirm(onConfirm: () -> Unit) {
-        // download to set ID
         // find user
         // save expense
 //        val id: Long = 5

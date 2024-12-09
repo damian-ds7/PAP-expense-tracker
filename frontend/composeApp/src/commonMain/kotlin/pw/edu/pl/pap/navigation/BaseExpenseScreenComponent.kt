@@ -44,7 +44,7 @@ open class BaseExpenseScreenComponent(
     //TODO fetch methods of payment
     protected open var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
 
-    private val users = listOf("Herkules", "Zeus", "Posejdon")
+    private val users = listOf("Herkules", "Zeus", "Posejdon", "Hefajstos", "Atena", "Hermes")
     //TODO fetch available users
     protected open var userIndex: MutableState<Int> = mutableStateOf(0)
 
