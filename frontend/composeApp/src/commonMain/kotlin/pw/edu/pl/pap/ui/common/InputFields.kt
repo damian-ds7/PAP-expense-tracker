@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.window.Popup
+import pw.edu.pl.pap.data.inputFields.DatePickerData
 
 
 @Composable
@@ -53,10 +54,12 @@ fun createField(data: InputFieldData) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = data.title)
-            if(!data.isDropdownList){
-                createTextField(data.textFieldData!!)
-            } else {
+            if(data.isDropdownList){
                 createDropdownList(data.dropdownListData!!)
+            } else if(data.isDatePicker) {
+                createDatePicker(data.datePickerData!!)
+            } else {
+                createTextField(data.textFieldData!!)
             }
         }
     }
@@ -135,5 +138,20 @@ fun createDropdownList(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun createDatePicker(
+    data: DatePickerData
+){
+    var showDatePicker by remember { mutableStateOf(false) }
+    Box(
+        modifier = Modifier
+            .clickable { showDatePicker = true },
+        contentAlignment = Alignment.Center
+    )
+    {
+        Text(text = data.date.value.toString(), modifier = Modifier.padding(3.dp))
     }
 }

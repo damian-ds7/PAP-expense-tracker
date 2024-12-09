@@ -6,7 +6,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.apiclient.ApiClient
+import pw.edu.pl.pap.data.inputFields.DatePickerData
 import pw.edu.pl.pap.data.inputFields.DropdownListData
 import pw.edu.pl.pap.data.inputFields.InputFieldData
 import pw.edu.pl.pap.data.inputFields.TextFieldData
@@ -30,7 +35,7 @@ open class BaseExpenseScreenComponent(
     protected open var categoryIndex: MutableState<Int> = mutableStateOf(0)
 
 
-    protected open var date: MutableState<String> = mutableStateOf("")
+    protected open var date: MutableState<LocalDate> = mutableStateOf(Clock.System.todayIn(TimeZone.UTC))
     //TODO implement data selection from calendar
 
 
@@ -77,13 +82,9 @@ open class BaseExpenseScreenComponent(
                 ),
                 InputFieldData(
                     title = "Date: ",
-                    textFieldData = TextFieldData(
-                        parameter = date,
-                        onChange = {
-                            coroutineScope.launch { date.value = it }
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        //not sanitizing data input because its a temporary solution (hopefully)
+                    isDatePicker = true,
+                    datePickerData = DatePickerData(
+                        date = date
                     )
                 ),
                 InputFieldData(

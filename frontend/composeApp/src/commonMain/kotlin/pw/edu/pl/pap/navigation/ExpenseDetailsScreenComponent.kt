@@ -5,6 +5,7 @@ import com.arkivanov.decompose.ComponentContext
 import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.apiclient.ApiClient
 import pw.edu.pl.pap.data.Expense
 import pw.edu.pl.pap.util.formatForTextField
@@ -21,7 +22,7 @@ class ExpenseDetailsScreenComponent(
     //TODO fetch title
     override var categoryIndex: MutableState<Int> = mutableStateOf(expense.category.id.toInt())
 
-    override var date: MutableState<String> = mutableStateOf(expense.date.toString())
+    override var date: MutableState<LocalDate> = mutableStateOf(expense.date)
 
     override var newPrice: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
     override var currencyIndex: MutableState<Int> = mutableStateOf(0)
