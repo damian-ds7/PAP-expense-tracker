@@ -142,6 +142,7 @@ fun createDropdownList(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun createDatePicker(
     data: DatePickerData
@@ -156,4 +157,30 @@ fun createDatePicker(
     {
         Text(text = data.date.value.toString(), modifier = Modifier.padding(3.dp))
     }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = {showDatePicker = false},
+            confirmButton = {
+                TextButton(onClick = {
+//                    data.onDateConfirm()
+                    showDatePicker = false
+                }) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancel")
+                }
+            },
+            content = {
+                DatePicker(
+                    state = rememberDatePickerState(),
+                    showModeToggle = true // Allows toggling between calendar and text input
+                )
+            }
+        )
+    }
+
 }
