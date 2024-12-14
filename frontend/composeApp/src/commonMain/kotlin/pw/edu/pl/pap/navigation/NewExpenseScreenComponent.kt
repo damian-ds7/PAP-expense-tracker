@@ -15,10 +15,11 @@ class NewExpenseScreenComponent(
     componentContext: ComponentContext,
     apiClient: ApiClient,
     coroutineScope: CoroutineScope,
-    onBack: () -> Unit
-) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onBack) {
+    onDismiss: () -> Unit,
+    onSave: () -> Unit
+) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onDismiss, onSave) {
 
-    fun confirm(onConfirm: () -> Unit) {
+    override fun confirm() {
         // find user
         // save expense
 //        val id: Long = 5
@@ -30,7 +31,7 @@ class NewExpenseScreenComponent(
 
         coroutineScope.launch{
             apiClient.postNewExpense(newExpense)
-            onConfirm()
+            onSave()
         }
 
         println("confirmed " + newExpense.price)

@@ -64,7 +64,13 @@ class RootComponent(
                     componentContext = componentContext,
                     apiClient = apiClient,
                     coroutineScope = coroutineScope,
-                    onBack = { navigation.pop() }
+                    onDismiss = { navigation.pop() },
+                    onSave = {
+                        navigation.pop()
+                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+                            HomeScreenComponent.NavigationState.FromNewExpenseScreen
+                        )
+                    }
                 )
             )
 
@@ -73,8 +79,14 @@ class RootComponent(
                     componentContext = componentContext,
                     apiClient = apiClient,
                     coroutineScope = coroutineScope,
-                    expense = configuration.expense,
-                    onBack = { navigation.pop() }
+                    onDismiss = { navigation.pop() },
+                    onSave = {
+                        navigation.pop()
+                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreen(configuration.expense)
+                        )
+                    },
+                    expense = configuration.expense
                 )
             )
         }

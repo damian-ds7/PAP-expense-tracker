@@ -14,9 +14,10 @@ class ExpenseDetailsScreenComponent(
     componentContext: ComponentContext,
     apiClient: ApiClient,
     coroutineScope: CoroutineScope,
-    private val expense: Expense,
-    onBack: () -> Unit
-) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onBack) {
+    onDismiss: () -> Unit,
+    onSave: () -> Unit,
+    private val expense: Expense
+    ) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onDismiss, onSave) {
 
     override var title: MutableState<String> = mutableStateOf("")
     //TODO fetch title
@@ -38,13 +39,13 @@ class ExpenseDetailsScreenComponent(
         val newExpense = expense.copy(price = newPrice.value.toFloat())
 
         if (newExpense == expense) {
-            onBack()
+            onDismiss()
             return
         }
 
         coroutineScope.launch {
             if (apiClient.updateExpense(newExpense).status.isSuccess()) {
-                onBack()
+                onSave()
             }
         }
 

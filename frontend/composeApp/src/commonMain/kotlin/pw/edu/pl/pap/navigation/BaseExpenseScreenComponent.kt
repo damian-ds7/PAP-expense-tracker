@@ -22,7 +22,8 @@ open class BaseExpenseScreenComponent(
     componentContext: ComponentContext,
     protected val apiClient: ApiClient,
     protected val coroutineScope: CoroutineScope,
-    val onBack: () -> Unit
+    val onDismiss: () -> Unit,
+    val onSave: () -> Unit
 ) : ComponentContext by componentContext {
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()

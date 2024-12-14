@@ -43,8 +43,12 @@ class ApiClient(private val baseUrl: String = "http://localhost:8080") {
         emit(getAllExpensesApi())
     }
 
-    suspend fun getExpense(id: Long): Expense {
+    suspend fun getExpenseApi(id: Long): Expense {
         return httpClient.get("$baseUrl/expense/$id").body()
+    }
+
+    fun getExpense(id: Long) = flow {
+        emit(getExpenseApi(id))
     }
 
     private suspend fun getRecentExpenseApi(): Expense {

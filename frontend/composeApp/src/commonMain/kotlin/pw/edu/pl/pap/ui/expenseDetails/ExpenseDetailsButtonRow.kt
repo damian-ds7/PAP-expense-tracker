@@ -30,7 +30,7 @@ fun ExpenseDetailsButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete:
         )
 
         ConfirmButton(
-            text = "ADD",
+            text = "SAVE",
             isEnabled = isConfirmEnabled,
             modifier = Modifier.align(Alignment.BottomEnd),
             onUpdate = onConfirm

@@ -34,7 +34,7 @@ fun ExpenseDetailsScreen(
         DismissChangesPopup(
             onDismiss = {
                 showConfirmDialog = false
-                component.onBack()
+                component.onDismiss()
             },
             onConfirm = {
                 showConfirmDialog = false
@@ -45,7 +45,7 @@ fun ExpenseDetailsScreen(
 
 fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (Boolean) -> Unit) {
     if (component.noChange) {
-        component.onBack()
+        component.onDismiss()
     } else {
         showConfirmDialog(true)
     }

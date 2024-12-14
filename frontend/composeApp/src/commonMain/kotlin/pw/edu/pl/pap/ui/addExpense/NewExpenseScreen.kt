@@ -17,8 +17,8 @@ fun NewExpenseScreen(
     InputFields(component.inputFieldsData)
 
     NewExpenseButtonRow(
-        onBack = { scope.launch { component.onBack() } },
-        onConfirm = { scope.launch { component.confirm { component.onBack } } },
+        onBack = { scope.launch { component.onDismiss() } },
+        onConfirm = { scope.launch { component.confirm() } },
         isConfirmEnabled = component.canConfirm
     )
 
