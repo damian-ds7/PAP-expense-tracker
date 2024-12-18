@@ -13,10 +13,10 @@ public class ExpenseApiApplication implements CommandLineRunner {
     final ExpenseRepository expenseRepository;
     final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-    private final UserGroupRepository groupRepository;
+    private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, UserGroupRepository groupRepository, MembershipRepository membershipRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;

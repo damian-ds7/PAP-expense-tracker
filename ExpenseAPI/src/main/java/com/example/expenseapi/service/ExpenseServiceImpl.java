@@ -11,14 +11,14 @@ import java.util.stream.*;
 public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
-    private final UserGroupRepository userGroupRepository;
+    private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, UserGroupRepository userGroupRepository, MembershipRepository membershipRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
-        this.userGroupRepository = userGroupRepository;
+        this.groupRepository = groupRepository;
         this.membershipRepository = membershipRepository;
     }
 
