@@ -1,6 +1,7 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.pojo.*;
+import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -13,13 +14,15 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
+    private final CurrencyRepository currencyRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, CurrencyRepository currencyRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
         this.groupRepository = groupRepository;
         this.membershipRepository = membershipRepository;
+        this.currencyRepository = currencyRepository;
     }
 
     public List<Expense> getExpensesByEmail(String mail) {
@@ -41,6 +44,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 //                    .orElseGet(() -> userGroupRepository.save(new UserGroup()));
 //            entity.getUser().setUserGroup(defaultUserGroup);
 //        }
+        if (entity.getCurrency() == null) {
+            Currency defaultCurrency = currencyRepository.findById(1L)
+                    .orElseGet(() -> currencyRepository.save(new Currency()));
+            entity.setCurrency(defaultCurrency);
+        }
         return super.save(entity);
     }
 
