@@ -2,6 +2,7 @@ package com.example.expenseapi;
 
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.repository.*;
+import com.example.expenseapi.utils.CurrencyRatesFetcher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,14 +17,16 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
     private final ArchivedGroupRepository archivedGroupRepository;
+    private final CurrencyRepository currencyRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.groupRepository = groupRepository;
         this.membershipRepository = membershipRepository;
         this.archivedGroupRepository = archivedGroupRepository;
+        this.currencyRepository = currencyRepository;
     }
 
     public static void main(String[] args) {
@@ -62,12 +65,17 @@ public class ExpenseApiApplication implements CommandLineRunner {
                 new Category("Transport")
         };
         categoryRepository.saveAll((Arrays.asList(categories)));
-
+        Currency[] currencies = new Currency[]{
+                new Currency("Zlotowka", "PLN", 1),
+                new Currency("Dollar", "USD", CurrencyRatesFetcher.getCurrencyRates("USD")),
+                new Currency("Euro", "EUR", CurrencyRatesFetcher.getCurrencyRates("EUR"))
+        };
+        currencyRepository.saveAll(Arrays.asList(currencies));
         Expense[] expenses = new Expense[]{
-                new Expense(100, users[0], categories[0], LocalDate.of(2024, 11, 30)),
-                new Expense(200, users[1], categories[1], LocalDate.of(2024, 11, 30)),
-                new Expense(300, users[2], categories[0]),
-                new Expense(300, users[2], categories[0]),
+                new Expense(100, users[0], categories[0], LocalDate.of(2024, 11, 30), currencies[0]),
+                new Expense(200, users[1], categories[1], LocalDate.of(2024, 11, 30), currencies[1]),
+                new Expense(300, users[2], categories[0], currencies[0]),
+                new Expense(300, users[2], categories[0], currencies[2]),
         };
         expenseRepository.saveAll(Arrays.asList(expenses));
 
