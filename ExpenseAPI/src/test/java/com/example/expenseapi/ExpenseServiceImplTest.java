@@ -2,7 +2,6 @@ package com.example.expenseapi;
 
 import com.example.expenseapi.pojo.Expense;
 import com.example.expenseapi.pojo.User;
-import com.example.expenseapi.pojo.UserGroup;
 import com.example.expenseapi.repository.ExpenseRepository;
 import com.example.expenseapi.service.ExpenseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +29,7 @@ public class ExpenseServiceImplTest {
 
     @Test
     public void testGetExpensesByEmail() {
-        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com", new UserGroup());
+        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com");
         List<Expense> expList = Arrays.asList(new Expense(200, user), new Expense(300, user));
         when(expenseRepository.findAll()).thenReturn(expList);
         List<Expense> result = expenseService.getExpensesByEmail(user.getEmail());
@@ -41,8 +40,8 @@ public class ExpenseServiceImplTest {
 
     @Test
     public void testGEtExpanseByEmailEmpty() {
-        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com", new UserGroup());
-        User user1 = new User("Herkules2", "Herkules2", "herkules2@gmail.com", new UserGroup());
+        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com");
+        User user1 = new User("Herkules2", "Herkules2", "herkules2@gmail.com");
         List<Expense> expList = Arrays.asList(new Expense(200, user), new Expense(300, user));
         when(expenseRepository.findAll()).thenReturn(expList);
         assertEquals(0, expenseService.getExpensesByEmail(user1.getEmail()).size());
