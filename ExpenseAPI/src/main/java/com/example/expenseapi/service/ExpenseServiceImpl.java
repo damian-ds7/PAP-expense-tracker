@@ -39,11 +39,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                     .orElseGet(() -> categoryRepository.save(new Category()));
             entity.setCategory(defaultCategory);
         }
-//        if (entity.getUser() != null && entity.getUser().getUserGroup() == null) {
-//            UserGroup defaultUserGroup = userGroupRepository.findById(1L)
-//                    .orElseGet(() -> userGroupRepository.save(new UserGroup()));
-//            entity.getUser().setUserGroup(defaultUserGroup);
-//        }
         if (entity.getCurrency() == null) {
             Currency defaultCurrency = currencyRepository.findById(1L)
                     .orElseGet(() -> currencyRepository.save(new Currency()));
