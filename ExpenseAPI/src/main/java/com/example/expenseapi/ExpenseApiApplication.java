@@ -15,13 +15,15 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
+    private final ArchivedGroupRepository archivedGroupRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.groupRepository = groupRepository;
         this.membershipRepository = membershipRepository;
+        this.archivedGroupRepository = archivedGroupRepository;
     }
 
     public static void main(String[] args) {
@@ -36,6 +38,11 @@ public class ExpenseApiApplication implements CommandLineRunner {
         };
 
         groupRepository.saveAll(Arrays.asList(groups));
+        ArchivedGroup[] archivedGroups = new ArchivedGroup[]{
+                new ArchivedGroup("family2"),
+                new ArchivedGroup("workers2"),
+        };
+        archivedGroupRepository.saveAll(Arrays.asList(archivedGroups));
         User[] users = new User[]{
             new User("Herkules1", "Herkules1", "herkules1@gmail.com"),
             new User("Herkules2", "Herkules2", "herkules2@gmail.com"),
@@ -45,7 +52,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
         Membership[] memberships = new Membership[]{
                 new Membership(users[0], groups[0], "family"),
                 new Membership(users[1], groups[0], "family"),
-                new Membership(users[2], groups[0], "family"),
+                new Membership(users[2], groups[1], "workers"),
+                new Membership(users[0], archivedGroups[0], "family2"),
+                new Membership(users[1], archivedGroups[1], "workers2"),
         };
         membershipRepository.saveAll(Arrays.asList(memberships));
         Category[] categories = new Category[]{
