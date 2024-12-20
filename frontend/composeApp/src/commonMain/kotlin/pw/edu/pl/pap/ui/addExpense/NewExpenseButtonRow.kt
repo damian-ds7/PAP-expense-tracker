@@ -18,9 +18,10 @@ fun NewExpenseButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, isConfirmEnab
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        BackButton(
-            onUpdate = onBack,
-            modifier = Modifier.align(Alignment.BottomStart)
+        TextButton(
+            text = "BACK",
+            modifier = Modifier.align(Alignment.BottomStart),
+            onUpdate = onBack
         )
 
         TextButton(
