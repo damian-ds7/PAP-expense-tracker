@@ -1,11 +1,11 @@
 package pw.edu.pl.pap.ui.loginSystem
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalMapOf
+import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.navigation.loginSystem.SelectionLoginSignupScreenComponent
 import pw.edu.pl.pap.ui.common.TextButton
 
@@ -18,15 +18,17 @@ fun LogInSignUpSelectionScreen (
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
-        LazyColumn(
+        Column(
             modifier = Modifier
         ){
             TextButton(
                 text = "LOG IN",
+                modifier = Modifier.offset(x = 0.dp, y = (-20).dp),
                 onUpdate = component.onLogInButtonClicked
             )
             TextButton(
                 text = "SIGN UP",
+                modifier = Modifier.offset(x = 0.dp, y = 20.dp),
                 onUpdate = component.onSignupButtonClicked
             )
         }
