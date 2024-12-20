@@ -37,7 +37,6 @@ open class BaseExpenseScreenComponent(
 
 
     protected open var date: MutableState<LocalDate> = mutableStateOf(Clock.System.todayIn(TimeZone.UTC))
-    //TODO implement data selection from calendar
 
 
     protected open var newPrice: MutableState<String> = mutableStateOf("")

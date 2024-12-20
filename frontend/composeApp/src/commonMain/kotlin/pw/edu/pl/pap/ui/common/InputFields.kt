@@ -17,10 +17,15 @@ import pw.edu.pl.pap.data.inputFields.DropdownListData
 import pw.edu.pl.pap.data.inputFields.InputFieldData
 import pw.edu.pl.pap.data.inputFields.TextFieldData
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.window.Popup
 import kotlinx.datetime.LocalDate
+import androidx.compose.ui.res.painterResource
 import pw.edu.pl.pap.data.inputFields.DatePickerData
 
 
@@ -59,6 +64,8 @@ fun createField(data: InputFieldData) {
                 createDropdownList(data.dropdownListData!!)
             } else if(data.isDatePicker) {
                 createDatePicker(data.datePickerData!!)
+            } else if(data.isPassword) {
+                createPasswordField(data.textFieldData!!)
             } else {
                 createTextField(data.textFieldData!!)
             }
@@ -190,4 +197,24 @@ fun createDatePicker(
         )
     }
 
+}
+
+@Composable
+fun createPasswordField(
+    data: TextFieldData
+){
+    var visibility by rememberSaveable { mutableStateOf(false) }
+
+    TextField(
+        value = data.parameter.value,
+        onValueChange = {newParameter -> data.onChange(newParameter)},
+        visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default,
+        trailingIcon = {
+            TextButton(onClick = { visibility = !visibility }) {
+                Text(if (visibility) "Hide" else "Show")
+            }
+        }
+    )
 }

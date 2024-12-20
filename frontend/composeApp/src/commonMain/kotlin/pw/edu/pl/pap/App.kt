@@ -10,6 +10,7 @@ import pw.edu.pl.pap.navigation.RootComponent
 import pw.edu.pl.pap.ui.home.HomeScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
+import pw.edu.pl.pap.ui.loginSystem.*
 
 @Composable
 fun App(rootComponent: RootComponent) {
@@ -31,6 +32,15 @@ fun App(rootComponent: RootComponent) {
 
                     is RootComponent.Child.ExpenseDetailsScreen ->
                         ExpenseDetailsScreen(instance.component)
+
+                    is RootComponent.Child.LogInSignUpSelectionScreen ->
+                        LogInSignUpSelectionScreen(instance.component)
+
+                    is RootComponent.Child.LogInScreen ->
+                        LogInScreen(instance.component)
+
+                    is RootComponent.Child.SignUpScreen ->
+                        SignUpScreen(instance.component)
                 }
             }
         }

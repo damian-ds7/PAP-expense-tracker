@@ -7,4 +7,5 @@ data class TextFieldData (
     var parameter: MutableState<String>,
     val onChange: (String) -> Unit,
     val keyboardOptions: KeyboardOptions? = null,  // Optional keyboard options, used for number only keyboard
+    val password: Boolean = false,
 )

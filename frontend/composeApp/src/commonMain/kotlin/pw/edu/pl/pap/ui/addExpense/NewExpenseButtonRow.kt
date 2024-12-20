@@ -7,8 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.ui.common.BackButton
-import pw.edu.pl.pap.ui.common.ConfirmButton
+import pw.edu.pl.pap.ui.common.TextButton
 
 
 @Composable
@@ -18,12 +17,13 @@ fun NewExpenseButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, isConfirmEnab
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        BackButton(
-            onUpdate = onBack,
-            modifier = Modifier.align(Alignment.BottomStart)
+        TextButton(
+            text = "BACK",
+            modifier = Modifier.align(Alignment.BottomStart),
+            onUpdate = onBack
         )
 
-        ConfirmButton(
+        TextButton(
             text = "ADD",
             isEnabled = isConfirmEnabled,
             modifier = Modifier.align(Alignment.BottomEnd),
