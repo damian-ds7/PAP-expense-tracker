@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.ui.common.BackButton
-import pw.edu.pl.pap.ui.common.ConfirmButton
+import pw.edu.pl.pap.ui.common.TextButton
 import pw.edu.pl.pap.ui.common.DeleteButton
 
 
@@ -29,7 +29,7 @@ fun ExpenseDetailsButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete:
             onUpdate = onDelete
         )
 
-        ConfirmButton(
+        TextButton(
             text = "SAVE",
             isEnabled = isConfirmEnabled,
             modifier = Modifier.align(Alignment.BottomEnd),

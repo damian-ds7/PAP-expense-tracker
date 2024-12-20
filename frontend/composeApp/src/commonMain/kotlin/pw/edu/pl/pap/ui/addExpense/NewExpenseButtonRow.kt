@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.ui.common.BackButton
-import pw.edu.pl.pap.ui.common.ConfirmButton
+import pw.edu.pl.pap.ui.common.TextButton
 
 
 @Composable
@@ -23,7 +23,7 @@ fun NewExpenseButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, isConfirmEnab
             modifier = Modifier.align(Alignment.BottomStart)
         )
 
-        ConfirmButton(
+        TextButton(
             text = "ADD",
             isEnabled = isConfirmEnabled,
             modifier = Modifier.align(Alignment.BottomEnd),

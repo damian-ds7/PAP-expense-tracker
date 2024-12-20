@@ -12,7 +12,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ConfirmButton(text: String, isEnabled: Boolean = true, modifier: Modifier = Modifier, onUpdate: () -> Unit = {}) {
+fun TextButton(
+    text: String,
+    isEnabled: Boolean = true,
+    modifier: Modifier = Modifier,
+    onUpdate: () -> Unit = {}
+) {
     Button(
         shape = RoundedCornerShape(20),
         modifier = modifier
