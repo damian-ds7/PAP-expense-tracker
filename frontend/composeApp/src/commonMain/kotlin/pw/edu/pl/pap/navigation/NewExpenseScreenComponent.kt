@@ -7,17 +7,17 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import pw.edu.pl.pap.apiclient.ApiClient
+import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.NewExpense
 import pw.edu.pl.pap.data.User
 
 class NewExpenseScreenComponent(
     componentContext: ComponentContext,
-    apiClient: ApiClient,
+    apiService: ApiService,
     coroutineScope: CoroutineScope,
     onDismiss: () -> Unit,
     onSave: () -> Unit
-) : BaseExpenseScreenComponent(componentContext, apiClient, coroutineScope, onDismiss, onSave) {
+) : BaseExpenseScreenComponent(componentContext, apiService, coroutineScope, onDismiss, onSave) {
 
     override fun confirm() {
         // find user
@@ -30,7 +30,7 @@ class NewExpenseScreenComponent(
         val newExpense = NewExpense(newPrice.value.toFloat(), date, user)
 
         coroutineScope.launch{
-            apiClient.postNewExpense(newExpense)
+            apiService.expenseApiClient.postNewExpense(newExpense)
             onSave()
         }
 

@@ -6,26 +6,28 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DismissChangesPopup(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+fun ConfirmationPopup(
+    mainText: String,
+    subText: String,
+    onNo: () -> Unit,
+    onYes: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = {},
         title = {
-            Text(text = "Dismiss Changes")
+            Text(mainText)
         }, text = {
-            Text("Are you sure you want to dismiss these changes?")
+            Text(subText)
         }, confirmButton = {
             TextButton(
                 onClick = {
-                    onConfirm()
+                    onNo()
                 }) {
                 Text("No")
             }
         }, dismissButton = {
             TextButton(
-                onClick = { onDismiss() },
+                onClick = { onYes() },
             ) {
                 Text("Yes")
             }

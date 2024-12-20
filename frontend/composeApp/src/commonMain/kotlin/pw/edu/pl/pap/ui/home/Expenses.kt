@@ -8,6 +8,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,9 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.Expense
-import pw.edu.pl.pap.util.formatDate
+import pw.edu.pl.pap.data.ExpenseMap
+import pw.edu.pl.pap.data.forEachList
 import pw.edu.pl.pap.util.formatForDisplay
 
 
@@ -67,9 +70,9 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
 }
 
 @Composable
-fun DateHeader(date: LocalDate) {
+fun Header(key: String) {
     Text(
-        text = formatDate(date, "dd MMMM yyyy"),
+        text = key,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -80,14 +83,18 @@ fun DateHeader(date: LocalDate) {
 
 @Composable
 fun GroupedExpensesList(
-    groupedExpenses: Map<LocalDate, List<Expense>>,
+    groupedExpenses: ExpenseMap,
     onExpenseClick: (Expense) -> Unit
 ) {
-    groupedExpenses.forEach { (date, expenseForDate) ->
-        DateHeader(date)
+    val order by groupedExpenses.groupingOrder.collectAsState()
 
-        expenseForDate.forEach { expense ->
-            ExpenseBlock(expense, onClick = onExpenseClick)
+    key(order) {
+        groupedExpenses.forEachList { (key, expenseList) ->
+            Header(key.asString())
+
+            expenseList.forEach { expense ->
+                ExpenseBlock(expense, onClick = onExpenseClick)
+            }
         }
     }
 }

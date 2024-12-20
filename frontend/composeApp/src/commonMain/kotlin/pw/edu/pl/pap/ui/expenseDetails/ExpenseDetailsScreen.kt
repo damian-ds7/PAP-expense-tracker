@@ -3,16 +3,17 @@ package pw.edu.pl.pap.ui.expenseDetails
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.navigation.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.ui.common.ConfirmationPopup
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
-import pw.edu.pl.pap.ui.common.DismissChangesPopup
 
 @Composable
 fun ExpenseDetailsScreen(
     component: ExpenseDetailsScreenComponent,
 ) {
     val scope = rememberCoroutineScope()
-    var showConfirmDialog by remember { mutableStateOf(false) }
+    var confirmDialogState by remember { mutableStateOf<ConfirmationDialogState>(ConfirmationDialogState.None) }
+    val dialogFactory = remember { ConfirmationDialogFactory(component) }
 
     Header("Expense Details")
     component.setupInputFields()
@@ -21,32 +22,42 @@ fun ExpenseDetailsScreen(
     ExpenseDetailsButtonRow(
         onBack = {
             scope.launch {
-                handleBack(component) { showConfirmDialog = it }
+                handleBack(component) { confirmDialogState = ConfirmationDialogState.GoBack }
             }
         },
-        onConfirm = { scope.launch { component.confirm() } },
-        onDelete = {},
+        onConfirm = {
+            scope.launch {
+                component.confirm()
+            }
+        },
+        onDelete = {
+            confirmDialogState = ConfirmationDialogState.Delete
+        },
         isConfirmEnabled = component.canConfirm
-
     )
 
-    if (showConfirmDialog) {
-        DismissChangesPopup(
-            onDismiss = {
-                showConfirmDialog = false
-                component.onDismiss()
+    dialogFactory.create(confirmDialogState)?.let { config ->
+        ConfirmationPopup(
+            mainText = config.mainText,
+            subText = config.subText,
+            onNo = {
+                confirmDialogState = ConfirmationDialogState.None
+                config.onNo
             },
-            onConfirm = {
-                showConfirmDialog = false
+            onYes = {
+                scope.launch {
+                    confirmDialogState = ConfirmationDialogState.None
+                    config.onYes()
+                }
             }
         )
     }
 }
 
-fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (Boolean) -> Unit) {
+fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
     if (component.noChange) {
         component.onDismiss()
     } else {
-        showConfirmDialog(true)
+        showConfirmDialog(ConfirmationDialogState.GoBack)
     }
 }

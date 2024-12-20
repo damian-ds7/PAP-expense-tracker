@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.Serializable
-import pw.edu.pl.pap.apiclient.ApiClient
+import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.Expense
 
 class RootComponent(
@@ -19,7 +19,7 @@ class RootComponent(
 ) : ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Configuration>()
-    private val apiClient = ApiClient(baseUrl)
+    private val apiService = ApiService(baseUrl)
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @Serializable
@@ -47,7 +47,7 @@ class RootComponent(
                 Child.HomeScreen(
                     component = HomeScreenComponent(
                         componentContext = componentContext,
-                        apiClient = apiClient,
+                        apiService = apiService,
                         coroutineScope = coroutineScope,
                         onAddExpenseButtonClicked = {
                             navigation.pushNew(Configuration.NewExpenseScreen)
@@ -62,7 +62,7 @@ class RootComponent(
             is Configuration.NewExpenseScreen -> Child.NewExpenseScreen(
                 component = NewExpenseScreenComponent(
                     componentContext = componentContext,
-                    apiClient = apiClient,
+                    apiService = apiService,
                     coroutineScope = coroutineScope,
                     onDismiss = { navigation.pop() },
                     onSave = {
@@ -77,13 +77,19 @@ class RootComponent(
             is Configuration.ExpenseDetailsScreen -> Child.ExpenseDetailsScreen(
                 component = ExpenseDetailsScreenComponent(
                     componentContext = componentContext,
-                    apiClient = apiClient,
+                    apiService = apiService,
                     coroutineScope = coroutineScope,
                     onDismiss = { navigation.pop() },
                     onSave = {
                         navigation.pop()
                         (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
-                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreen(configuration.expense)
+                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenEdit(configuration.expense)
+                        )
+                    },
+                    onDelete = {
+                        navigation.pop()
+                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenDelete(configuration.expense)
                         )
                     },
                     expense = configuration.expense
