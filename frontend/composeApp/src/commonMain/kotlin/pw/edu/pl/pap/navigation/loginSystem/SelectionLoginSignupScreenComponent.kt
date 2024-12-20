@@ -1,9 +1,6 @@
 package pw.edu.pl.pap.navigation.loginSystem
 
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
-import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.Expense
 
 class SelectionLoginSignupScreenComponent(
     componentContext: ComponentContext,
