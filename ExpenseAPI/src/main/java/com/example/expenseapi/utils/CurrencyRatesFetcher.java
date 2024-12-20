@@ -7,7 +7,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
 
 public class CurrencyRatesFetcher {
 
@@ -22,8 +21,7 @@ public class CurrencyRatesFetcher {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.body());
-            double rate = root.get("rates").get(0).get("mid").asDouble();
-            return rate;
+            return root.get("rates").get(0).get("mid").asDouble();
         } catch (Exception e) {
             return -1;
         }
