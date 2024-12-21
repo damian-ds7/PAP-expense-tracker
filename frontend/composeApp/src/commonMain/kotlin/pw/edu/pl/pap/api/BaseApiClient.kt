@@ -7,15 +7,20 @@ import io.ktor.http.*
 
 open class BaseApiClient(
     private val baseUrl: String,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
+    private val userToken: String
 ) {
     protected suspend fun get(endpoint: String): HttpResponse {
-        return httpClient.get("$baseUrl$endpoint")
+        return httpClient.get("$baseUrl$endpoint") {
+            contentType(ContentType.Application.Json)
+            bearerAuth(userToken)
+        }
     }
 
     protected suspend fun post(endpoint: String, body: Any): HttpResponse {
         return httpClient.post("$baseUrl$endpoint") {
             contentType(ContentType.Application.Json)
+            bearerAuth(userToken)
             setBody(body)
         }
     }
@@ -23,11 +28,15 @@ open class BaseApiClient(
     protected suspend fun put(endpoint: String, body: Any): HttpResponse {
         return httpClient.put("$baseUrl$endpoint") {
             contentType(ContentType.Application.Json)
+            bearerAuth(userToken)
             setBody(body)
         }
     }
 
     protected suspend fun delete(endpoint: String): HttpResponse {
-        return httpClient.delete("$baseUrl$endpoint")
+        return httpClient.delete("$baseUrl$endpoint") {
+            contentType(ContentType.Application.Json)
+            bearerAuth(userToken)
+        }
     }
 }

@@ -8,6 +8,5 @@ class ApiService(
     baseUrl: String = "http://localhost:8080"
 ) {
 
-    val expenseApiClient = ExpenseApiClient("$baseUrl/expense/", httpClient)
-
+    val expenseApiClient = ExpenseApiClient("$baseUrl/expense/", httpClient, userToken)
 }
