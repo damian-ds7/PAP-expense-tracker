@@ -28,7 +28,7 @@ class RootComponent(
 ) : ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Configuration>()
-    private val apiService = ApiService(baseUrl)
+    private lateinit var apiService: ApiService
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private val httpClient = HttpClient(CIO) {
@@ -95,13 +95,13 @@ class RootComponent(
                 Child.LogInScreen(
                     component = LoginScreenComponent(
                         componentContext = componentContext,
-                        apiService = apiService,
                         coroutineScope = coroutineScope,
+                        apiClient = LoginApi(baseUrl, httpClient),
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
                         setToken = {
-                            newToken -> user_token = newToken
+                            newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )
@@ -111,13 +111,13 @@ class RootComponent(
                 Child.SignUpScreen(
                     component = SignupScreenComponent(
                         componentContext = componentContext,
-                        apiService = apiService,
                         coroutineScope = coroutineScope,
+                        apiClient = SignUpApi(baseUrl, httpClient),
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
                         setToken = {
-                                newToken -> user_token = newToken
+                                newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )
