@@ -53,7 +53,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public List<Expense> getExpensesByCategory(String category) {
-        return expenseRepository.findByCategoryName(category);
+        return getExpensesForGroup().stream()
+                .filter(exp -> exp.getCategory().getName().equals(category))
+                .collect(Collectors.toList());
     }
 
     @Override
