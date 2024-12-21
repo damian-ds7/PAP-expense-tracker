@@ -32,7 +32,7 @@ public class SecurityConfig {
                                 "/v3/api-docs.yaml",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .requestMatchers("/h2").permitAll()
+                        .requestMatchers("/h2/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
