@@ -3,6 +3,8 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
@@ -13,12 +15,14 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final CurrencyRepository currencyRepository;
+    private final UserRepository userRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
         this.currencyRepository = currencyRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -28,6 +32,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public Expense save(Expense entity) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        user.ifPresent(entity::setUser);
         if (entity.getCategory() == null) {
             Category defaultCategory = categoryRepository.findById(1L)
                     .orElseGet(() -> categoryRepository.save(new Category()));
