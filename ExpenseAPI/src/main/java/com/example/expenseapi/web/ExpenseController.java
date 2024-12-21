@@ -2,6 +2,7 @@ package com.example.expenseapi.web;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
+import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -11,6 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,12 +34,13 @@ public class ExpenseController extends GenericController<Expense, Long> {
         super(service);
     }
 
-    @GetMapping("/email/{email}")
-    @Operation(summary = "Retrieves expenses from user with given email")
-    @ApiResponse(responseCode = "200", description = "List of expense objects from the user with given email", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
-    public ResponseEntity<List<Expense>> getByEmail(@PathVariable String email) {
-        return new ResponseEntity<>(((ExpenseService) service).getExpensesByEmail(email), HttpStatus.OK);
+    @GetMapping("/my/expenses")
+    @Operation(summary = "Retrieves expenses from logged user")
+    @ApiResponse(responseCode = "200", description = "List of expense objects from logged user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    public ResponseEntity<List<Expense>> getMyExpenses(@AuthenticationPrincipal UserDetails user) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesByEmail(user.getUsername()), HttpStatus.OK);
     }
+
 
     @GetMapping("/group/{name}")
     @Operation(summary = "Retrieves expenses for given user group")
