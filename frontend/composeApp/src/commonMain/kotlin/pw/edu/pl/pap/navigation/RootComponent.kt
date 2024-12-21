@@ -79,7 +79,7 @@ class RootComponent(
         when (configuration) {
             is Configuration.LogInSignUpSelectionScreen -> {
                 Child.LogInSignUpSelectionScreen(
-                    component= SelectionLoginSignupScreenComponent(
+                    component = SelectionLoginSignupScreenComponent(
                         componentContext = componentContext,
                         onLogInButtonClicked = {
                             navigation.pushNew(Configuration.LogInScreen)
@@ -100,8 +100,8 @@ class RootComponent(
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
-                        setToken = {
-                            newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
+                        setToken = { newToken ->
+                            apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )
@@ -116,8 +116,8 @@ class RootComponent(
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
-                        setToken = {
-                                newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
+                        setToken = { newToken ->
+                            apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )
