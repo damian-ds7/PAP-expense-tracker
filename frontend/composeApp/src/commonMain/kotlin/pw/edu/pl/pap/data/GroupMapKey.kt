@@ -37,7 +37,9 @@ sealed class GroupMapKey : Comparable<GroupMapKey> {
 
         override fun compareTo(other: GroupMapKey): Int {
             return when (other) {
-                is StringKey -> this.name.uppercase(Locale.getDefault()).compareTo(other.name)
+                is StringKey -> this.name.uppercase(Locale.getDefault())
+                    .compareTo(other.name.uppercase(Locale.getDefault()))
+
                 is DateKey -> 1
             }
         }
