@@ -18,9 +18,9 @@ class ExpenseMap(
 
     fun addExpense(key: GroupMapKey, expense: Expense) {
         val expenseList = this[key]?.toMutableList()?.apply {
-            add(expense)
+            add(0, expense)
         } ?: mutableListOf(expense)
-        this[key] = expenseList
+        this[key] = expenseList.toList()
     }
 
     fun deleteExpense(key: GroupMapKey, expenseId: Long) {
