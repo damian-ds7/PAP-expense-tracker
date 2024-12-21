@@ -47,9 +47,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
         };
         archivedGroupRepository.saveAll(Arrays.asList(archivedGroups));
         User[] users = new User[]{
-            new User("Herkules1", "Herkules1", "herkules1@gmail.com"),
-            new User("Herkules2", "Herkules2", "herkules2@gmail.com"),
-            new User("Herkules3", "Herkules3", "herkules3@gmail.com" ),
+            new User("Herkules1", "Herkules1", "herkules1@gmail.com", "123"),
+            new User("Herkules2", "Herkules2", "herkules2@gmail.com", "234"),
+            new User("Herkules3", "Herkules3", "herkules3@gmail.com", "345" ),
         };
         userRepository.saveAll(Arrays.asList(users));
         Membership[] memberships = new Membership[]{
