@@ -1,7 +1,7 @@
 package pw.edu.pl.pap.ui.home
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,8 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.Expense
-import pw.edu.pl.pap.data.ExpenseMap
 import pw.edu.pl.pap.data.forEachList
+import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.util.formatForDisplay
 
 
@@ -83,10 +83,11 @@ fun Header(key: String) {
 
 @Composable
 fun GroupedExpensesList(
-    groupedExpenses: ExpenseMap,
+    component: HomeScreenComponent,
     onExpenseClick: (Expense) -> Unit
 ) {
-    val order by groupedExpenses.groupingOrder.collectAsState()
+    val order by component.currentGroupingOrder.collectAsState()
+    val groupedExpenses by component.groupedExpenses.collectAsState()
 
     key(order) {
         groupedExpenses.forEachList { (key, expenseList) ->

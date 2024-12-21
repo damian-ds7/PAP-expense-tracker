@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
@@ -19,10 +17,10 @@ import pw.edu.pl.pap.ui.common.LoadingScreen
 fun HomeScreen(component: HomeScreenComponent) {
     var isLoading by remember { mutableStateOf(true) }
     var showGroupingMenu by remember { mutableStateOf(false) }
-    val homeInfo = component.homeInfo.collectAsState().value
-    val groupedExpenses = component.groupedExpenses.collectAsState().value
+//    val homeInfo by component.homeInfo.collectAsState()
+//    val groupedExpenses by component.groupedExpenses.collectAsState()
 
-    LaunchedEffect(component.navigationState.collectAsState().value) {
+    LaunchedEffect(component.navigationState.collectAsState()) {
         component.getDataBasedOnState()
         isLoading = false
     }
@@ -31,12 +29,12 @@ fun HomeScreen(component: HomeScreenComponent) {
         when {
             isLoading -> LoadingScreen()
 
-            homeInfo != null -> {
+            else -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize().padding(16.dp)
                 ) {
                     item {
-                        TopSection(homeInfo)
+                        TopSection(component)
                     }
 
                     item {
@@ -44,18 +42,21 @@ fun HomeScreen(component: HomeScreenComponent) {
                     }
 
                     item {
-                        GroupedExpensesList(groupedExpenses, onExpenseClick = { expense ->
-                            component.onExpenseClick(expense)
-                        })
+                        GroupedExpensesList(
+                            component,
+                            onExpenseClick = { expense ->
+                                component.onExpenseClick(expense)
+                            })
                     }
                 }
                 PlusButton(onUpdate = { component.onAddExpenseButtonClicked() })
             }
 
-            else -> Text(
-                text = "No data available", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
-            )
+//            else -> Text(
+//                text = "No data available", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
+//            )
         }
+
 
         AnimatedVisibility(
             visible = showGroupingMenu,
@@ -67,7 +68,6 @@ fun HomeScreen(component: HomeScreenComponent) {
             )
         ) {
             GroupPopup(
-                component.currentGroupKey.value,
                 component = component,
                 onDismiss = { showGroupingMenu = false },
             )

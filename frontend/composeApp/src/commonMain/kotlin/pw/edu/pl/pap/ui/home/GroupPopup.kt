@@ -17,11 +17,14 @@ import pw.edu.pl.pap.navigation.HomeScreenComponent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupPopup(
-    selectedOption: GroupKey,
     component: HomeScreenComponent,
     onDismiss: () -> Unit,
 ) {
     val currentOrder by component.currentGroupingOrder.collectAsState()
+    val selectedOption by component.currentGroupingKey.collectAsState()
+    println("$selectedOption - $currentOrder")
+
+//    println("$selectedOption - $currentOrder")
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -48,7 +51,7 @@ fun GroupPopup(
                     component.sortGroups()
                 }
 
-                GroupAndSortButton(groupKey, isSelected, onGroupClick, currentOrder, onOrderClick)
+                GroupAndSortButton(groupKey, isSelected, currentOrder, onGroupClick, onOrderClick)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -59,8 +62,8 @@ fun GroupPopup(
 private fun GroupAndSortButton(
     groupKey: GroupKey,
     isSelected: Boolean,
-    onGroupKeyChange: () -> Unit,
     currentOrder: Order,
+    onGroupKeyChange: () -> Unit,
     onOrderChange: () -> Unit,
 ) {
     Row(
@@ -87,7 +90,7 @@ private fun GroupButton(
         contentPadding = ButtonDefaults.TextButtonContentPadding,
         colors = ButtonDefaults.textButtonColors(contentColor = color)
     ) {
-        Text(text = groupKey.displayName, style= MaterialTheme.typography.bodyLarge )
+        Text(text = groupKey.displayName, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

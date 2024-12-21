@@ -13,7 +13,7 @@ import pw.edu.pl.pap.navigation.HomeScreenComponent
 
 @Composable
 fun ButtonRow(component: HomeScreenComponent, onGroupClick: () -> Unit) {
-    val currentGroupKey by component.currentGroupKey.collectAsState()
+    val currentGroupKey by component.currentGroupingKey.collectAsState()
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
