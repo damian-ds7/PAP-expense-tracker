@@ -6,7 +6,8 @@ import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.flow
 import pw.edu.pl.pap.data.*
 
-class ExpenseApiClient(baseUrl: String, httpClient: HttpClient) : BaseApiClient(baseUrl, httpClient) {
+class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: String) :
+    BaseApiClient(baseUrl, httpClient, userToken) {
 
     suspend fun getTotalExpenses(userGroup: String, userEmail: String): TotalExpenses {
         return get("state/group/$userGroup/user/$userEmail").body()

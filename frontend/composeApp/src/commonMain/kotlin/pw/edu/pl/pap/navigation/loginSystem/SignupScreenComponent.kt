@@ -5,17 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.api.ApiService
+import pw.edu.pl.pap.api.authApi.UserAuthApi
 import pw.edu.pl.pap.data.inputFields.InputFieldData
 import pw.edu.pl.pap.data.inputFields.TextFieldData
 
 class SignupScreenComponent(
     componentContext: ComponentContext,
-    apiService: ApiService,
     coroutineScope: CoroutineScope,
+    apiClient: UserAuthApi,
     onConfirm: () -> Unit,
     setToken: (String) -> Unit
-) : BaseLoginScreenComponent(componentContext, apiService, coroutineScope, onConfirm, setToken){
+) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, setToken){
 
     private var confirmedPassword: MutableState<String> = mutableStateOf("")
 

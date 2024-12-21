@@ -106,7 +106,7 @@ compose.desktop {
         mainClass = "pw.edu.pl.pap.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.AppImage, TargetFormat.Exe, TargetFormat.Deb)
+            targetFormats(TargetFormat.AppImage, TargetFormat.Exe, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "pw.edu.pl.pap"
             packageVersion = "1.0.0"
         }
@@ -115,6 +115,6 @@ compose.desktop {
 
 tasks.withType<ProcessResources> {
     filesMatching("res/xml/network_security_config.xml") {
-        expand("ip" to localProperties.getProperty("baseUrl", "localhost:8090"))
+        expand("ip" to localProperties.getProperty("baseUrl", "localhost:8080"))
     }
 }
