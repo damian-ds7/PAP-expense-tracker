@@ -3,7 +3,6 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
@@ -13,16 +12,12 @@ import java.util.stream.*;
 public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
-    private final GroupRepository groupRepository;
-    private final MembershipRepository membershipRepository;
     private final CurrencyRepository currencyRepository;
 
     public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, CurrencyRepository currencyRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
-        this.groupRepository = groupRepository;
-        this.membershipRepository = membershipRepository;
         this.currencyRepository = currencyRepository;
     }
 
