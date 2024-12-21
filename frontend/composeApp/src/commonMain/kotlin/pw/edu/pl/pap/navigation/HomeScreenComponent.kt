@@ -118,8 +118,8 @@ class HomeScreenComponent(
             try {
                 apiService.expenseApiClient.getRecentExpense().collect { expense: Expense ->
                     _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
+                    _groupedExpenses.value = _groupedExpenses.value
                 }
-                _groupedExpenses.value = _groupedExpenses.value
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -132,6 +132,7 @@ class HomeScreenComponent(
             try {
                 apiService.expenseApiClient.getExpense(expense.id).collect { updatedExpense ->
                     _groupedExpenses.value.updateExpense(getCurrentKey(updatedExpense), updatedExpense)
+                    _groupedExpenses.value = _groupedExpenses.value
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -17,8 +17,8 @@ import pw.edu.pl.pap.ui.common.LoadingScreen
 fun HomeScreen(component: HomeScreenComponent) {
     var isLoading by remember { mutableStateOf(true) }
     var showGroupingMenu by remember { mutableStateOf(false) }
-//    val homeInfo by component.homeInfo.collectAsState()
-//    val groupedExpenses by component.groupedExpenses.collectAsState()
+    val homeInfo by component.homeInfo.collectAsState()
+    val groupedExpenses by component.groupedExpenses.collectAsState()
 
     LaunchedEffect(component.navigationState.collectAsState()) {
         component.getDataBasedOnState()
@@ -34,7 +34,7 @@ fun HomeScreen(component: HomeScreenComponent) {
                     modifier = Modifier.fillMaxSize().padding(16.dp)
                 ) {
                     item {
-                        TopSection(component)
+                        homeInfo?.let { TopSection(it) }
                     }
 
                     item {
@@ -43,7 +43,7 @@ fun HomeScreen(component: HomeScreenComponent) {
 
                     item {
                         GroupedExpensesList(
-                            component,
+                            groupedExpenses,
                             onExpenseClick = { expense ->
                                 component.onExpenseClick(expense)
                             })

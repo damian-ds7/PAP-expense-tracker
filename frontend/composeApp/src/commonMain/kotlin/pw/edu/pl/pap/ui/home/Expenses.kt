@@ -20,8 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.Expense
+import pw.edu.pl.pap.data.ExpenseMap
 import pw.edu.pl.pap.data.forEachList
-import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.util.formatForDisplay
 
 
@@ -83,11 +83,10 @@ fun Header(key: String) {
 
 @Composable
 fun GroupedExpensesList(
-    component: HomeScreenComponent,
+    groupedExpenses: ExpenseMap,
     onExpenseClick: (Expense) -> Unit
 ) {
-    val order by component.currentGroupingOrder.collectAsState()
-    val groupedExpenses by component.groupedExpenses.collectAsState()
+    val order by groupedExpenses.groupingOrder.collectAsState()
 
     key(order) {
         groupedExpenses.forEachList { (key, expenseList) ->
