@@ -95,6 +95,12 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.2.0</version> <!-- Use the latest version -->
         </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc11</artifactId>
+            <version>21.7.0.0</version>
+            <scope>runtime</scope>
+        </dependency>
 
     </dependencies>
 
