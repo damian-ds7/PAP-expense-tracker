@@ -53,9 +53,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public List<Expense> getExpensesByCategory(String category) {
-        return getExpensesForGroup().stream()
-                .filter(exp -> exp.getCategory().getName().equals(category))
-                .collect(Collectors.toList());
+        return expenseRepository.findByCategoryName(category, getGroupName());
     }
 
     @Override
@@ -127,17 +125,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 ));
     }
 
-    private List<Expense> getExpensesForGroup() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        String name = null;
-        if (user.isPresent()) {
-            name = membershipRepository.findBaseGroupsByUser_Id(user.get().getId()).getFirst().getName();
-        }
-        return getExpensesForGroup(name);
-    }
-
     @Override
     public Map<Category, List<Expense>> getCategoryExpenseAsMap() {
         List<Expense> groupExpenses = getExpensesForGroup();
@@ -150,5 +137,27 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public Optional<Expense> getRecentExpense() {
         return expenseRepository.findTopByOrderByIdDesc();
+    }
+
+    private List<Expense> getExpensesForGroup() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String name = null;
+        if (user.isPresent()) {
+            name = membershipRepository.findBaseGroupsByUser_Id(user.get().getId()).getFirst().getName();
+        }
+        return getExpensesForGroup(name);
+    }
+
+    private String getGroupName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String name = null;
+        if (user.isPresent()) {
+            name = membershipRepository.findBaseGroupsByUser_Id(user.get().getId()).getFirst().getName();
+        }
+        return name;
     }
 }

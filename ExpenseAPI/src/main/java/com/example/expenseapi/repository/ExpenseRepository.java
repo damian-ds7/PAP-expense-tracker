@@ -10,14 +10,20 @@ import java.util.Optional;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByUserEmail(String email);
-    List<Expense> findByCategoryName(String category);
-    List<Expense> findByDate(LocalDate date);
-    List<Expense> findByDateBetween(LocalDate begin, LocalDate end);
-    List<Expense> findByPriceBetween(double leftEnd, double rightEnd);
-    List<Expense> findByPriceLessThan(double price);
-    List<Expense> findByPriceGreaterThan(double price);
-    List<Expense> findAllByOrderByDateDesc();
     Optional<Expense> findTopByOrderByIdDesc();
+
+    @Query("SELECT e FROM Expense e " +
+            "where e.user IN " +
+            "(SELECT m.user FROM Membership m WHERE m.name = :groupName)" +
+            "AND e.category.name = :category")
+    List<Expense> findByCategoryName(String category, String groupName);
+
+//    List<Expense> findByDate(LocalDate date, String groupName);
+//    List<Expense> findByDateBetween(LocalDate begin, LocalDate end, String groupName);
+//    List<Expense> findByPriceBetween(double leftEnd, double rightEnd, String groupName);
+//    List<Expense> findByPriceLessThan(double price, String groupName);
+//    List<Expense> findByPriceGreaterThan(double price, String groupName);
+//    List<Expense> findAllByOrderByDateDesc(String groupName);
 
     @Query("SELECT e FROM Expense e WHERE e.user IN (SELECT m.user FROM Membership m WHERE m.name = :name)")
     List<Expense> findByUserGroupName(String name);
