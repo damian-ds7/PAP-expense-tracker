@@ -23,5 +23,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Map<Category, List<Expense>> getCategoryExpenseAsMap();
     Optional<Expense> getRecentExpense();
 
-    Map<String, Map<LocalDate, List<Expense>>> getGroupExpenseAsMap();
+    Map<LocalDate, List<Expense>> getGroupExpenseAsMap(String name);
+
 }

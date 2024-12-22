@@ -144,15 +144,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<String, Map<LocalDate, List<Expense>>> getGroupExpenseAsMap() {
-        List<BaseGroup> groups = getAllGroups();
-        Map<String, Map<LocalDate, List<Expense>>> groupExpenseAsMap = new HashMap<>();
-        for (BaseGroup baseGroup : groups) {
-            List<Expense> expenses = getExpensesForGroup(baseGroup.getName());
-            Map<LocalDate, List<Expense>> expensesByDate = expenses.stream()
-                    .collect(Collectors.groupingBy(Expense::getDate));
-            groupExpenseAsMap.put(baseGroup.getName(), expensesByDate);
-        }
-        return groupExpenseAsMap;
+    public Map<LocalDate, List<Expense>> getGroupExpenseAsMap(String name) {
+        List<Expense> expenses = getExpensesForGroup(name);
+        return expenses.stream()
+                .collect(Collectors.groupingBy(Expense::getDate));
     }
 }

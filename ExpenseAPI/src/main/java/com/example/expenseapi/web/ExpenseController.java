@@ -81,9 +81,9 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getCategoryExpenseAsMap(), HttpStatus.OK);
     }
 
-    @GetMapping("/all/group/{name}")
+    @GetMapping("/all/dateMap/group/{name}")
     public ResponseEntity<Map<LocalDate, List<Expense>>> getGroupExpenseMap(@PathVariable String name) {
-        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsMap().get(name), HttpStatus.OK);
+        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsMap(name), HttpStatus.OK);
     }
 
     @GetMapping("/recent")
