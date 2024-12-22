@@ -26,9 +26,14 @@ public class Membership {
     @Column(name = "name")
     private String name;
 
-    public Membership(User user, BaseGroup group, String name) {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    private Role role;
+
+    public Membership(User user, BaseGroup group, String name, Role role) {
         this.user = user;
         this.group = group;
         this.name = name;
+        this.role = role;
     }
 }
