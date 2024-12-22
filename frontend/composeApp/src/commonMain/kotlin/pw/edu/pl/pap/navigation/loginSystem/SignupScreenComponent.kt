@@ -24,6 +24,8 @@ class SignupScreenComponent(
 
     private var surname: MutableState<String> = mutableStateOf("")
 
+    var showPasswordsWarning: MutableState<Boolean> = mutableStateOf(false)
+
     override fun setupInputFields() {
         super.setupInputFields()
         _inputFieldsData.addAll(
@@ -61,13 +63,14 @@ class SignupScreenComponent(
     }
 
     override fun confirm() {
-        //TODO verify email
         if (!validateEmail(email.value)) {
             showEmailWarning.value = true
             return
         }
-        //TODO verify passwords
-        //TODO show warning screen if incorrect data
+        if (password.value != confirmedPassword.value) {
+            showPasswordsWarning.value = true
+            return
+        }
         //TODO push new user
         //TODO wait for response
         //TODO set token

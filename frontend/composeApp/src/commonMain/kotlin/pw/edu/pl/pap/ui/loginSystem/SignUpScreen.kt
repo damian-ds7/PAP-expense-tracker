@@ -36,6 +36,14 @@ fun SignUpScreen (
         }
     )
 
+    WarningPopup(
+        subText = "Passwords are not the same.",
+        showWarning = component.showPasswordsWarning.value,
+        onDismiss = {
+            component.showPasswordsWarning.value = (!component.showPasswordsWarning.value)
+        }
+    )
+
 
     Box(
         modifier = Modifier
