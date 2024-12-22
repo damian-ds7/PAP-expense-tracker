@@ -33,6 +33,9 @@ open class BaseLoginScreenComponent(
 
     var showEmailWarning: MutableState<Boolean> = mutableStateOf(false)
 
+    var showFailedLoginWarning: MutableState<Boolean> = mutableStateOf(false)
+    var failedLoginMessage: MutableState<String> = mutableStateOf("")
+
     open fun setupInputFields() {
         _inputFieldsData.clear()
         _inputFieldsData.addAll(

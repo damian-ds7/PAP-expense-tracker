@@ -44,6 +44,16 @@ fun SignUpScreen (
         }
     )
 
+    WarningPopup(
+        mainText = "Sign up failed",
+        subText = component.failedLoginMessage.value,
+        showWarning = component.showFailedLoginWarning.value,
+        onDismiss = {
+            component.showFailedLoginWarning.value = (!component.showFailedLoginWarning.value)
+        }
+    )
+
+
 
     Box(
         modifier = Modifier

@@ -74,6 +74,9 @@ class SignupScreenComponent(
         //TODO push new user
         //TODO wait for response
         //TODO set token
+        showFailedLoginWarning.value = true
+        //TODO set failedLoginMessage
+        failedLoginMessage.value = "Something went wrong"
         onConfirm()
     }
 
