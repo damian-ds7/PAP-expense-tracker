@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.data.inputFields
+package pw.edu.pl.pap.data.uiSetup.inputFields
 
 import androidx.compose.runtime.MutableState
 import kotlinx.datetime.LocalDate

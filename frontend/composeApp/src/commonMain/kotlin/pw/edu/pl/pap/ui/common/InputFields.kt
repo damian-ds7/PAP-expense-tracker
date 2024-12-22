@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import pw.edu.pl.pap.data.inputFields.DropdownListData
-import pw.edu.pl.pap.data.inputFields.InputFieldData
-import pw.edu.pl.pap.data.inputFields.TextFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.window.Popup
 import kotlinx.datetime.LocalDate
 import androidx.compose.ui.res.painterResource
-import pw.edu.pl.pap.data.inputFields.DatePickerData
+import pw.edu.pl.pap.data.uiSetup.inputFields.DatePickerData
 
 
 @Composable

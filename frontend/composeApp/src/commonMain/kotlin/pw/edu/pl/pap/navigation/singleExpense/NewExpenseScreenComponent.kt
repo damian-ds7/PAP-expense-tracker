@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation
+package pw.edu.pl.pap.navigation.singleExpense
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
@@ -8,8 +8,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.NewExpense
-import pw.edu.pl.pap.data.User
+import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
+import pw.edu.pl.pap.data.databaseAssociatedData.User
 
 class NewExpenseScreenComponent(
     componentContext: ComponentContext,

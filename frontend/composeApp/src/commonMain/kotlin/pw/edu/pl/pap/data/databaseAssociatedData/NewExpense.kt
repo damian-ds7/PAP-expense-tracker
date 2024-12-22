@@ -1,13 +1,11 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.data.databaseAssociatedData
 
 import kotlinx.serialization.Serializable
 import kotlinx.datetime.LocalDate
 
 @Serializable
-data class Expense(
-    val id: Long,
+data class NewExpense(
     val price: Float,
-    val user: User,
     val date: LocalDate,
-    val category: Category,
+    val user: User
 )

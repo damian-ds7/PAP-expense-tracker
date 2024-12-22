@@ -6,8 +6,8 @@ import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.api.authApi.UserAuthApi
-import pw.edu.pl.pap.data.inputFields.InputFieldData
-import pw.edu.pl.pap.data.inputFields.TextFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 
 class SignupScreenComponent(
     componentContext: ComponentContext,

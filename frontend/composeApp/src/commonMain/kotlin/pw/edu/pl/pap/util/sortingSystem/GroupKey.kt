@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.util.sortingSystem
 
 enum class GroupKey(val displayName: String) {
     DATE("Date"),

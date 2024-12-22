@@ -1,27 +1,49 @@
-package pw.edu.pl.pap.ui.home
+package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.data.GroupKey
-import pw.edu.pl.pap.data.Order
+import pw.edu.pl.pap.util.sortingSystem.GroupKey
+import pw.edu.pl.pap.util.sortingSystem.Order
 import pw.edu.pl.pap.navigation.HomeScreenComponent
+import pw.edu.pl.pap.ui.common.LoadingPopup
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupPopup(
-    selectedOption: GroupKey,
     component: HomeScreenComponent,
     onDismiss: () -> Unit,
 ) {
     val currentOrder by component.currentGroupingOrder.collectAsState()
+    val selectedOption by component.currentGroupingKey.collectAsState()
+    var isLoading by remember {mutableStateOf(false)}
+    var pendingAction: (() -> Unit)? by remember { mutableStateOf(null) }
+    println("$selectedOption - $currentOrder")
+
+//    println("$selectedOption - $currentOrder")
+    LoadingPopup(
+        isLoading = isLoading
+    )
+
+
+    LaunchedEffect(pendingAction) {
+        pendingAction?.let { action ->
+            isLoading = true
+            kotlinx.coroutines.delay(50)
+
+            try {
+                action()
+            } finally {
+                isLoading = false
+                pendingAction = null
+            }
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -38,17 +60,21 @@ fun GroupPopup(
 
                 val onGroupClick: () -> Unit = if (!isSelected) {
                     {
-                        clickAction(groupKey, component)
+                        pendingAction = {
+                            clickAction(groupKey, component)
+                        }
                     }
                 } else {
                     onDismiss
                 }
 
                 val onOrderClick = {
-                    component.sortGroups()
+                    pendingAction = {
+                        component.sortGroups()
+                    }
                 }
 
-                GroupAndSortButton(groupKey, isSelected, onGroupClick, currentOrder, onOrderClick)
+                GroupAndSortButton(groupKey, isSelected, currentOrder, onGroupClick, onOrderClick)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -59,8 +85,8 @@ fun GroupPopup(
 private fun GroupAndSortButton(
     groupKey: GroupKey,
     isSelected: Boolean,
-    onGroupKeyChange: () -> Unit,
     currentOrder: Order,
+    onGroupKeyChange: () -> Unit,
     onOrderChange: () -> Unit,
 ) {
     Row(
@@ -87,7 +113,7 @@ private fun GroupButton(
         contentPadding = ButtonDefaults.TextButtonContentPadding,
         colors = ButtonDefaults.textButtonColors(contentColor = color)
     ) {
-        Text(text = groupKey.displayName, style= MaterialTheme.typography.bodyLarge )
+        Text(text = groupKey.displayName, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

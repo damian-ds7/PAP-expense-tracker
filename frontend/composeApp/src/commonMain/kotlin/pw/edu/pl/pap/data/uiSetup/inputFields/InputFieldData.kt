@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.data.inputFields
+package pw.edu.pl.pap.data.uiSetup.inputFields
 
 data class InputFieldData(
     val title: String,

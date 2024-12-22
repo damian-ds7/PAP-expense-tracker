@@ -1,7 +1,7 @@
 package pw.edu.pl.pap.ui.expenseDetails
 
-import pw.edu.pl.pap.data.ConfirmationDialogConfig
-import pw.edu.pl.pap.navigation.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
+import pw.edu.pl.pap.navigation.singleExpense.ExpenseDetailsScreenComponent
 
 class ConfirmationDialogFactory(private val component: ExpenseDetailsScreenComponent) {
 

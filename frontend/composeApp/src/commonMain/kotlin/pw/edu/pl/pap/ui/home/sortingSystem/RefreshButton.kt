@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.home
+package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
