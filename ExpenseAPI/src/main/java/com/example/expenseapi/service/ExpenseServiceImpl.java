@@ -3,6 +3,8 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
@@ -13,12 +15,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final CurrencyRepository currencyRepository;
+    private final UserRepository userRepository;
+    private final MembershipRepository membershipRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
         this.currencyRepository = currencyRepository;
+        this.userRepository = userRepository;
+        this.membershipRepository = membershipRepository;
     }
 
     @Override
@@ -28,6 +34,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public Expense save(Expense entity) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        user.ifPresent(entity::setUser);
         if (entity.getCategory() == null) {
             Category defaultCategory = categoryRepository.findById(1L)
                     .orElseGet(() -> categoryRepository.save(new Category()));
@@ -43,35 +53,35 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public List<Expense> getExpensesByCategory(String category) {
-        return expenseRepository.findByCategoryName(category);
+        return expenseRepository.findByCategoryName(category, getGroupName());
     }
 
     @Override
     public List<Expense> getExpensesByDate(String date) {
         LocalDate dateObject = LocalDate.parse(date);
-        return expenseRepository.findByDate(dateObject);
+        return expenseRepository.findByDate(dateObject, getGroupName());
     }
 
     @Override
     public List<Expense> getExpensesByPeriod(String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        return expenseRepository.findByDateBetween(beginDate, endDate);
+        return expenseRepository.findByDateBetween(beginDate, endDate, getGroupName());
     }
 
     @Override
     public List<Expense> getExpensesWherePriceInRange(double left_end, double right_end) {
-        return expenseRepository.findByPriceBetween(left_end, right_end);
+        return expenseRepository.findByPriceBetween(left_end, right_end, getGroupName());
     }
 
     @Override
     public List<Expense> getExpensesWherePriceIsLower(double price) {
-        return expenseRepository.findByPriceLessThan(price);
+        return expenseRepository.findByPriceLessThan(price, getGroupName());
     }
 
     @Override
     public List<Expense> getExpensesWherePriceIsGreater(double price) {
-        return expenseRepository.findByPriceGreaterThan(price);
+        return expenseRepository.findByPriceGreaterThan(price, getGroupName());
     }
 
     @Override
@@ -80,9 +90,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public ExpInfo getExpInfo(String name, String email) {
-        List<Expense> groupExpenses = getExpensesForGroup(name);
-        List<Expense> userExpenses = expenseRepository.findByUserEmail(email);
+    public ExpInfo getExpInfo() {
+        List<Expense> groupExpenses = getExpensesForGroup();
+        List<Expense> userExpenses = expenseRepository.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
@@ -90,17 +100,20 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public Map<LocalDate, List<Expense>> getDateExpenseAsMap() {
-        return expenseRepository.findAllByOrderByDateDesc().stream()
+        List<Expense> groupExpenses = getExpensesForGroup();
+        return groupExpenses.stream()
+                .sorted(Comparator.comparing(Expense::getDate).reversed())
                 .collect(Collectors.groupingBy(
                         Expense::getDate,
-                        () -> new TreeMap<>(Comparator.reverseOrder()),
+                        LinkedHashMap::new,
                         Collectors.toList()
                 ));
     }
 
     @Override
     public Map<Category, List<Expense>> getCategoryExpenseAsMap() {
-        return expenseRepository.findAll().stream()
+        List<Expense> groupExpenses = getExpensesForGroup();
+        return groupExpenses.stream()
                 .collect(Collectors.groupingBy(
                         Expense::getCategory
                 ));
@@ -109,5 +122,20 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public Optional<Expense> getRecentExpense() {
         return expenseRepository.findTopByOrderByIdDesc();
+    }
+
+    private List<Expense> getExpensesForGroup() {
+        return getExpensesForGroup(getGroupName());
+    }
+
+    private String getGroupName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String name = null;
+        if (user.isPresent()) {
+            name = membershipRepository.findBaseGroupsByUser_Id(user.get().getId()).getFirst().getName();
+        }
+        return name;
     }
 }

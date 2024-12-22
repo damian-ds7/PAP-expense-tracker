@@ -32,4 +32,8 @@ public class User {
 
     @Column(name = "creationDate", nullable = false)
     private LocalDate creationDate = LocalDate.now();
+
+    @NonNull
+    @Column(nullable = false)
+    private String password;
 }

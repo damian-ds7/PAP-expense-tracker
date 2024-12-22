@@ -6,6 +6,8 @@ import com.example.expenseapi.utils.CurrencyRatesFetcher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -18,8 +20,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final MembershipRepository membershipRepository;
     private final ArchivedGroupRepository archivedGroupRepository;
     private final CurrencyRepository currencyRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -27,6 +30,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         this.membershipRepository = membershipRepository;
         this.archivedGroupRepository = archivedGroupRepository;
         this.currencyRepository = currencyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static void main(String[] args) {
@@ -47,9 +51,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
         };
         archivedGroupRepository.saveAll(Arrays.asList(archivedGroups));
         User[] users = new User[]{
-            new User("Herkules1", "Herkules1", "herkules1@gmail.com"),
-            new User("Herkules2", "Herkules2", "herkules2@gmail.com"),
-            new User("Herkules3", "Herkules3", "herkules3@gmail.com" ),
+            new User("Herkules1", "Herkules1", "herkules1@gmail.com", passwordEncoder.encode("123")),
+            new User("Herkules2", "Herkules2", "herkules2@gmail.com", passwordEncoder.encode("234")),
+            new User("Herkules3", "Herkules3", "herkules3@gmail.com", passwordEncoder.encode("345") ),
         };
         userRepository.saveAll(Arrays.asList(users));
         Membership[] memberships = new Membership[]{

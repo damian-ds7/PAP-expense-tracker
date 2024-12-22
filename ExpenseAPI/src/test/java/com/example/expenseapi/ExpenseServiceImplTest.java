@@ -29,7 +29,7 @@ public class ExpenseServiceImplTest {
 
     @Test
     public void testGetExpensesByEmail() {
-        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com");
+        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com", "123");
         List<Expense> expList = Arrays.asList(new Expense(200, user), new Expense(300, user));
         when(expenseRepository.findAll()).thenReturn(expList);
         List<Expense> result = expenseService.getExpensesByEmail(user.getEmail());
@@ -40,8 +40,8 @@ public class ExpenseServiceImplTest {
 
     @Test
     public void testGEtExpanseByEmailEmpty() {
-        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com");
-        User user1 = new User("Herkules2", "Herkules2", "herkules2@gmail.com");
+        User user = new User("Herkules1", "Herkules1", "herkules1@gmail.com", "123");
+        User user1 = new User("Herkules2", "Herkules2", "herkules2@gmail.com", "234");
         List<Expense> expList = Arrays.asList(new Expense(200, user), new Expense(300, user));
         when(expenseRepository.findAll()).thenReturn(expList);
         assertEquals(0, expenseService.getExpensesByEmail(user1.getEmail()).size());
