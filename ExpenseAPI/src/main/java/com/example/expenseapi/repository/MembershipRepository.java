@@ -12,4 +12,5 @@ import java.util.List;
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
     @Query("SELECT m.group FROM Membership m WHERE m.user.id = :userId")
     List<BaseGroup> findBaseGroupsByUser_Id(@Param("userId") Long userId);
+    List<Membership> findByUserId(Long userId);
 }

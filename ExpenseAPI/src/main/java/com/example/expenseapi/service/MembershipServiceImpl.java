@@ -18,4 +18,9 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     public List<BaseGroup> getBaseGroupsByUserId(Long userId) {
         return membershipRepository.findBaseGroupsByUser_Id(userId);
     }
+
+    @Override
+    public List<Membership> getMembershipsByUserId(Long userId) {
+        return membershipRepository.findByUserId(userId);
+    }
 }

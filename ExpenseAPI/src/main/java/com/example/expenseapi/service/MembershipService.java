@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MembershipService extends GenericService<Membership, Long> {
     List<BaseGroup> getBaseGroupsByUserId(Long userId);
+    List<Membership> getMembershipsByUserId(Long userId);
 }
