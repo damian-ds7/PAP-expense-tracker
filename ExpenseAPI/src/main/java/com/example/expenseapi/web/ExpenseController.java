@@ -1,5 +1,4 @@
 package com.example.expenseapi.web;
-import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
