@@ -149,4 +149,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return expenses.stream()
                 .collect(Collectors.groupingBy(Expense::getDate));
     }
+
+    @Override
+    public Map<Category, List<Expense>> getGroupExpenseAsCategoryMap(String name) {
+        List<Expense> expenses = getExpensesForGroup(name);
+        return expenses.stream()
+                .collect(Collectors.groupingBy(Expense::getCategory));
+    }
 }
