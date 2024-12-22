@@ -23,7 +23,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             "(SELECT m.user FROM Membership m WHERE m.group.name = :groupName)" +
             "AND e.date = :date")
     List<Expense> findByDate(LocalDate date, String groupName);
-//    List<Expense> findByDateBetween(LocalDate begin, LocalDate end, String groupName);
+
+    @Query("SELECT e FROM Expense e " +
+            "where e.user IN " +
+            "(SELECT m.user FROM Membership m WHERE m.group.name = :groupName)" +
+            "AND e.date between :begin and :end")
+    List<Expense> findByDateBetween(LocalDate begin, LocalDate end, String groupName);
 //    List<Expense> findByPriceBetween(double leftEnd, double rightEnd, String groupName);
 //    List<Expense> findByPriceLessThan(double price, String groupName);
 //    List<Expense> findByPriceGreaterThan(double price, String groupName);

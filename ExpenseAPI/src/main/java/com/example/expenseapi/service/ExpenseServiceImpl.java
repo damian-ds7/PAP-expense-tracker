@@ -66,10 +66,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public List<Expense> getExpensesByPeriod(String begin, String end) {
         LocalDate beginDate = LocalDate.parse(begin);
         LocalDate endDate = LocalDate.parse(end);
-        return getExpensesForGroup()
-                .stream()
-                .filter(expense -> (!expense.getDate().isAfter(endDate) && !expense.getDate().isBefore(beginDate)))
-                .collect(Collectors.toList());
+        return expenseRepository.findByDateBetween(beginDate, endDate, getGroupName());
     }
 
     @Override
