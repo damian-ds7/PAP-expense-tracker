@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.*
 
@@ -97,7 +98,7 @@ class HomeScreenComponent(
 
     private fun fetchAllExpenses() {
         println("FETCH EXPENSES")
-        coroutineScope.launch {
+        runBlocking {
             try {
                 val getExpenseMap = currentExpenseMethod()
                 getExpenseMap().collect { expenses ->
@@ -114,7 +115,7 @@ class HomeScreenComponent(
 
     private fun getRecentExpense() {
 //        println("RECENT EXPENSE")
-        coroutineScope.launch {
+        runBlocking {
             try {
                 apiService.expenseApiClient.getRecentExpense().collect { expense: Expense ->
                     _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
@@ -128,7 +129,7 @@ class HomeScreenComponent(
 
     private fun updateExpense(expense: Expense) {
 //        println("UPDATE EXPENSE")
-        coroutineScope.launch {
+        runBlocking {
             try {
                 apiService.expenseApiClient.getExpense(expense.id).collect { updatedExpense ->
                     _groupedExpenses.value.updateExpense(getCurrentKey(updatedExpense), updatedExpense)

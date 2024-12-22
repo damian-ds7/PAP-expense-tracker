@@ -22,12 +22,28 @@ fun GroupPopup(
     val currentOrder by component.currentGroupingOrder.collectAsState()
     val selectedOption by component.currentGroupingKey.collectAsState()
     var isLoading by remember {mutableStateOf(false)}
+    var pendingAction: (() -> Unit)? by remember { mutableStateOf(null) }
     println("$selectedOption - $currentOrder")
 
 //    println("$selectedOption - $currentOrder")
     LoadingPopup(
         isLoading = isLoading
     )
+
+
+    LaunchedEffect(pendingAction) {
+        pendingAction?.let { action ->
+            isLoading = true
+            kotlinx.coroutines.delay(50)
+
+            try {
+                action()
+            } finally {
+                isLoading = false
+                pendingAction = null
+            }
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -44,16 +60,18 @@ fun GroupPopup(
 
                 val onGroupClick: () -> Unit = if (!isSelected) {
                     {
-                        clickAction(groupKey, component)
+                        pendingAction = {
+                            clickAction(groupKey, component)
+                        }
                     }
                 } else {
                     onDismiss
                 }
 
                 val onOrderClick = {
-                    isLoading = true // Show loading popup
-                    component.sortGroups() // Perform the sorting operation
-                    isLoading = false
+                    pendingAction = {
+                        component.sortGroups()
+                    }
                 }
 
                 GroupAndSortButton(groupKey, isSelected, currentOrder, onGroupClick, onOrderClick)
