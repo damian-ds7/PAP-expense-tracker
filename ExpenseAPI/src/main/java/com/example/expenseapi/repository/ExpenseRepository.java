@@ -41,7 +41,12 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             "(SELECT m.user FROM Membership m WHERE m.group.name = :groupName)" +
             "AND e.price <= :price")
     List<Expense> findByPriceLessThan(double price, String groupName);
-//    List<Expense> findByPriceGreaterThan(double price, String groupName);
+
+    @Query("SELECT e FROM Expense e " +
+            "where e.user IN " +
+            "(SELECT m.user FROM Membership m WHERE m.group.name = :groupName)" +
+            "AND e.price >= :price")
+    List<Expense> findByPriceGreaterThan(double price, String groupName);
 //    List<Expense> findAllByOrderByDateDesc(String groupName);
 
     @Query("SELECT e FROM Expense e WHERE e.user IN (SELECT m.user FROM Membership m WHERE m.name = :name)")
