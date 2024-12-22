@@ -21,8 +21,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final ArchivedGroupRepository archivedGroupRepository;
     private final CurrencyRepository currencyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -31,6 +32,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         this.archivedGroupRepository = archivedGroupRepository;
         this.currencyRepository = currencyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public static void main(String[] args) {
@@ -45,6 +47,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         Membership[] memberships = null;
         ArchivedGroup[] archivedGroups = null;
         Currency[] currencies = null;
+        Role[] roles = null;
         if (groupRepository.count() == 0) {
             groups = new Group[]{
                     new Group("family"),
@@ -67,13 +70,20 @@ public class ExpenseApiApplication implements CommandLineRunner {
             };
             userRepository.saveAll(Arrays.asList(users));
         }
+        if (roleRepository.count() == 0) {
+            roles = new Role[]{
+                    new Role("admin"),
+                    new Role("member"),
+            };
+            roleRepository.saveAll(Arrays.asList(roles));
+        }
         if (membershipRepository.count() == 0) {
             memberships = new Membership[]{
-                    new Membership(users[0], groups[0], "family"),
-                    new Membership(users[1], groups[0], "family"),
-                    new Membership(users[2], groups[1], "workers"),
-                    new Membership(users[0], archivedGroups[0], "family2"),
-                    new Membership(users[1], archivedGroups[1], "workers2"),
+                    new Membership(users[0], groups[0], "family", roles[0]),
+                    new Membership(users[1], groups[0], "family", roles[1]),
+                    new Membership(users[2], groups[1], "workers", roles[0]),
+                    new Membership(users[0], archivedGroups[0], "family2", roles[0]),
+                    new Membership(users[1], archivedGroups[1], "workers2", roles[1]),
             };
             membershipRepository.saveAll(Arrays.asList(memberships));
         }
