@@ -21,6 +21,8 @@ import pw.edu.pl.pap.data.Expense
 import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SelectionLoginSignupScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SignupScreenComponent
+import pw.edu.pl.pap.navigation.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.navigation.singleExpense.NewExpenseScreenComponent
 
 class RootComponent(
     componentContext: ComponentContext,

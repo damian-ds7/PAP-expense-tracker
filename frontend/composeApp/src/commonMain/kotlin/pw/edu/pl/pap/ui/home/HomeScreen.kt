@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
+import pw.edu.pl.pap.ui.home.groupingSystem.ButtonRow
+import pw.edu.pl.pap.ui.home.groupingSystem.GroupPopup
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {

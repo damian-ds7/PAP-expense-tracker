@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.home
+package pw.edu.pl.pap.ui.home.groupingSystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
