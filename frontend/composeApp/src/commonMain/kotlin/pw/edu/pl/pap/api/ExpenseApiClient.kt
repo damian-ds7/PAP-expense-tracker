@@ -4,7 +4,12 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.flow.flow
-import pw.edu.pl.pap.data.*
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
+import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
+import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
+import pw.edu.pl.pap.util.sortingSystem.GroupMapKey
+import pw.edu.pl.pap.util.sortingSystem.Order
 
 class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: String) :
     BaseApiClient(baseUrl, httpClient, userToken) {

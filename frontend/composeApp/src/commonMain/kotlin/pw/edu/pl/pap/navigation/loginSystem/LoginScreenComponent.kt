@@ -6,7 +6,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.api.authApi.UserAuthApi
-import pw.edu.pl.pap.data.UserLoginData
+import pw.edu.pl.pap.data.databaseAssociatedData.UserLoginData
 
 class LoginScreenComponent(
     componentContext: ComponentContext,

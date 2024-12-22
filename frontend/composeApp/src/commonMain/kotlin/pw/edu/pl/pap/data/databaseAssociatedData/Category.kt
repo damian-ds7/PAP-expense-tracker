@@ -1,11 +1,9 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.data.databaseAssociatedData
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Currency(
+data class Category(
     val id: Long,
     val name: String,
-    val symbol: String,
-    val exchangeRate: Float
 )

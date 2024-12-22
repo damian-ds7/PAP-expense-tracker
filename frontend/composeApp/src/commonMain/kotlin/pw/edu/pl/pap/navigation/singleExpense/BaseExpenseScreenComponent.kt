@@ -11,10 +11,10 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.inputFields.DatePickerData
-import pw.edu.pl.pap.data.inputFields.DropdownListData
-import pw.edu.pl.pap.data.inputFields.InputFieldData
-import pw.edu.pl.pap.data.inputFields.TextFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.DatePickerData
+import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 

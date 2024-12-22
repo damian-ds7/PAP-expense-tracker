@@ -1,7 +1,8 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.util.sortingSystem
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import java.util.*
 
 class ExpenseMap(

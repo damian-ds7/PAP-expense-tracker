@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.util.formatForTextField
 
 class ExpenseDetailsScreenComponent(

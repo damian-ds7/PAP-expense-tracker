@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.home.groupingSystem
+package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,8 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.data.GroupKey
-import pw.edu.pl.pap.data.Order
+import pw.edu.pl.pap.util.sortingSystem.GroupKey
+import pw.edu.pl.pap.util.sortingSystem.Order
 import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingPopup
 

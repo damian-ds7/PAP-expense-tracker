@@ -17,7 +17,7 @@ import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.api.authApi.SignUpApi
-import pw.edu.pl.pap.data.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SelectionLoginSignupScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SignupScreenComponent

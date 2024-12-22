@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.UserAuthApi
-import pw.edu.pl.pap.data.inputFields.*
+import pw.edu.pl.pap.data.uiSetup.inputFields.*
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 

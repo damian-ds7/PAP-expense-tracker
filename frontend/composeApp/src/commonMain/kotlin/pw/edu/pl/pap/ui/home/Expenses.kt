@@ -19,8 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pw.edu.pl.pap.data.Expense
-import pw.edu.pl.pap.data.forEachList
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.util.sortingSystem.forEachList
 import pw.edu.pl.pap.navigation.HomeScreenComponent
 import pw.edu.pl.pap.util.formatForDisplay
 

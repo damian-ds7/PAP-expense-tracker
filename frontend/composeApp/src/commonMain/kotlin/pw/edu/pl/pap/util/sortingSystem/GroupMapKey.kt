@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.util.sortingSystem
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.KSerializer

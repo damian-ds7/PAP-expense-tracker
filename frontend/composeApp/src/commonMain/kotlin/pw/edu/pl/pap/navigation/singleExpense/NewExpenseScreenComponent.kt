@@ -8,8 +8,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.NewExpense
-import pw.edu.pl.pap.data.User
+import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
+import pw.edu.pl.pap.data.databaseAssociatedData.User
 
 class NewExpenseScreenComponent(
     componentContext: ComponentContext,

@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.data.uiSetup
 
 data class ConfirmationDialogConfig(
     val mainText: String,

@@ -1,10 +1,10 @@
-package pw.edu.pl.pap.ui.home.groupingSystem
+package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import pw.edu.pl.pap.data.GroupKey
+import pw.edu.pl.pap.util.sortingSystem.GroupKey
 
 @Composable
 fun GroupButton(currentGrouping: GroupKey, onClick: () -> Unit) {
