@@ -14,8 +14,9 @@ class LoginScreenComponent(
     coroutineScope: CoroutineScope,
     apiClient: UserAuthApi,
     onConfirm: () -> Unit,
+    onBack: () -> Unit,
     setToken: (String) -> Unit
-) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, setToken) {
+) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, onBack, setToken) {
 
     override fun confirm() {
 //        if (!validateEmail(email.value)) {
@@ -23,6 +24,8 @@ class LoginScreenComponent(
 //            return
 //        }
 //        val userLoginData = UserLoginData(email.value, password.value)
+
+        //temp
         val userLoginData = UserLoginData("herkules1@gmail.com", "123")
 
         coroutineScope.launch {
@@ -34,6 +37,7 @@ class LoginScreenComponent(
             } else {
                 showFailedLoginWarning.value = true
                 //TODO set failedLoginMessage
+                //temp
                 failedLoginMessage.value = "Something went wrong"
             }
         }

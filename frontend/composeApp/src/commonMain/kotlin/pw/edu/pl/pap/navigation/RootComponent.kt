@@ -102,6 +102,9 @@ class RootComponent(
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
+                        onBack = {
+                            navigation.pop()
+                        },
                         setToken = { newToken ->
                             apiService = ApiService(newToken, httpClient, baseUrl)
                         }
@@ -117,6 +120,9 @@ class RootComponent(
                         apiClient = SignUpApi(baseUrl, httpClient),
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
+                        },
+                        onBack = {
+                            navigation.pop()
                         },
                         setToken = { newToken ->
                             apiService = ApiService(newToken, httpClient, baseUrl)

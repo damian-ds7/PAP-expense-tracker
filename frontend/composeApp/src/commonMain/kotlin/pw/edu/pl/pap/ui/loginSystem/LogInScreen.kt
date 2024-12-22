@@ -42,16 +42,9 @@ fun LogInScreen (
         }
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.BottomCenter
-    ){
-        TextButton(
-            text = "LOG IN",
-        //        modifier = Modifier.align(Alignment.BottomCenter),
-            onUpdate = { scope.launch { component.confirm() } }
-        )
-    }
+    LogInSignUpButtonRow(
+        component = component,
+        text = "LOG IN",
+        scope = scope
+    )
 }

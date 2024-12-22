@@ -21,6 +21,7 @@ open class BaseLoginScreenComponent(
     protected val coroutineScope: CoroutineScope,
     protected val apiClient: UserAuthApi,
     val onConfirm: () -> Unit,
+    val onBack: () -> Unit,
     val setToken: (String) -> Unit
 ) : ComponentContext by componentContext {
 
