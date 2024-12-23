@@ -86,5 +86,4 @@ public class ExpenseController extends GenericController<Expense, Long> {
     public ResponseEntity<Optional<Expense>> getRecent() {
         return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(), HttpStatus.OK);
     }
-
 }
