@@ -19,14 +19,20 @@ public class ChartController {
 
     @GetMapping("/my/group/{year}")
     @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year (group-scoped)")
-    public ResponseEntity<Map<String, Double>> getUserMap(@PathVariable String year) {
+    public ResponseEntity<Map<String, Double>> getUserMonthlyExpensesMap(@PathVariable String year) {
         return new ResponseEntity<>(service.getMonthlyExpensesForGroup(year), HttpStatus.OK);
     }
 
     @GetMapping("/my/expenses/{year}")
     @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year (user-scoped)")
-    public ResponseEntity<Map<String, Double>> getGroupMap(@PathVariable String year) {
+    public ResponseEntity<Map<String, Double>> getGroupMonthlyExpensesMap(@PathVariable String year) {
         return new ResponseEntity<>(service.getMonthlyExpensesForUser(year), HttpStatus.OK);
+    }
+
+    @GetMapping("/my/group/categories/{begin}/{end}")
+    @Operation(summary = "Retrieves map <CategoryName, ExpensesSum> for given time period")
+    public ResponseEntity<Map<String, Double>> getGroupCategoryExpensesMap(@PathVariable String begin, @PathVariable String end) {
+        return new ResponseEntity<>(service.getSumOfCategoryExpansesForGroup(begin, end), HttpStatus.OK);
     }
 
 }

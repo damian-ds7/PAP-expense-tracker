@@ -23,5 +23,7 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Map<Category, List<Expense>> getCategoryExpenseAsMap();
     Map<String, Double> getMonthlyExpensesForUser(String year);
     Map<String, Double> getMonthlyExpensesForGroup(String year);
+    Map<String, Double> getSumOfCategoryExpansesForGroup(String begin, String end);
+    Map<String, Double> getSumOfCategoryExpansesForUser(String begin, String end);
     Optional<Expense> getRecentExpense();
 }

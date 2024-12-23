@@ -3,6 +3,9 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import io.swagger.v3.oas.models.links.Link;
+import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,13 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MembershipRepository membershipRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
 
+    private Map<String, Double> mapResult(List<Object[]> queryResult) {
+        Map<String, Double> map = new LinkedHashMap<>();
+        for (Object[] result : queryResult) {
+            map.put((String) result[0], (double) result[1]);
+        }
+        return map;
+    }
     public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository) {
         super(repository);
         this.expenseRepository = repository;
@@ -128,25 +138,34 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public Map<String, Double> getMonthlyExpensesForUser(String year) {
-        List<Object[]> results = expenseRepository.findTotalExpensesForMonthsUser(year, SecurityContextHolder
+        return mapResult(expenseRepository.findTotalExpensesForMonthsUser(year, SecurityContextHolder
                 .getContext()
                 .getAuthentication()
-                .getName());
-        Map<String, Double> monthlyExpenses = new LinkedHashMap<>();
-        for (Object[] result : results) {
-            monthlyExpenses.put((String) result[0], (Double) result[1]);
-        }
-        return monthlyExpenses;
+                .getName()));
+
     }
 
     @Override
     public Map<String, Double> getMonthlyExpensesForGroup(String year) {
-        List<Object[]> results = expenseRepository.findTotalExpensesForMonthsGroup(year, getGroupName());
-        Map<String, Double> monthlyExpenses = new LinkedHashMap<>();
-        for (Object[] result : results) {
-            monthlyExpenses.put((String) result[0], (Double) result[1]);
+        return mapResult(expenseRepository.findTotalExpensesForMonthsGroup(year, getGroupName()));
+    }
+
+    @Override
+    public Map<String, Double> getSumOfCategoryExpansesForGroup(String begin, String end) {
+        LocalDate beginDate = LocalDate.parse(begin);
+        LocalDate endDate = LocalDate.parse(end);
+        List<Expense> result = expenseRepository.findByDateBetween(beginDate, endDate, getGroupName());
+        Map<String, Double> categoryExpenses = new LinkedHashMap<>();
+        for (Expense expense : result) {
+            String catName = expense.getCategory().getName();
+            categoryExpenses.put(catName, categoryExpenses.getOrDefault(catName, 0.0) + expense.getPrice());
         }
-        return monthlyExpenses;
+        return categoryExpenses;
+    }
+
+    @Override
+    public Map<String, Double> getSumOfCategoryExpansesForUser(String begin, String end) {
+        return null;
     }
 
     @Override
