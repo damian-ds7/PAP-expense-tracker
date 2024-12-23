@@ -1,48 +1,87 @@
 package pw.edu.pl.pap
 
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.animation.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
-import pw.edu.pl.pap.ui.home.HomeScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
-import pw.edu.pl.pap.ui.loginSystem.*
+import pw.edu.pl.pap.ui.home.HomeScreen
+import pw.edu.pl.pap.ui.loginSystem.LogInScreen
+import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
+import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
+import pw.edu.pl.pap.ui.navBar.BottomNavBar
+import pw.edu.pl.pap.ui.navBar.NavBarItem
 
+// Todo refactor function, tweak animations
 @Composable
 fun App(rootComponent: RootComponent) {
-
+    val childStack = rootComponent.childStack.subscribeAsState()
 
     MaterialTheme(colorScheme = darkColorScheme()) {
-        Scaffold {
-            val childStack = rootComponent.childStack.subscribeAsState()
-            Children(
-                stack = childStack.value,
-                animation = stackAnimation(slide()),
-            ) { child ->
-                when (val instance = child.instance) {
-                    is RootComponent.Child.HomeScreen ->
-                        HomeScreen(instance.component)
+        Scaffold(
+            bottomBar = {
+                AnimatedVisibility(
+                    visible = showBottomBar(childStack.value.active.instance), enter = fadeIn(), exit = fadeOut()
+                ) {
+                    BottomNavBar(
+                        items = listOf(
+                            NavBarItem.Home, NavBarItem.Data, NavBarItem.Groups, NavBarItem.Settings
+                        )
+                    ) { }
+                }
+            },
+        ) { innerPadding ->
+            AnimatedContent(
+                targetState = childStack.value.active.instance
+            ) { targetInstance ->
 
-                    is RootComponent.Child.NewExpenseScreen ->
-                        NewExpenseScreen(instance.component)
+                val padding = if (showBottomBar(targetInstance)) innerPadding else PaddingValues(0.dp)
 
-                    is RootComponent.Child.ExpenseDetailsScreen ->
-                        ExpenseDetailsScreen(instance.component)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                ) {
+                    Children(
+                        stack = childStack.value,
+                        animation = stackAnimation(slide()),
+                    ) { child ->
+                        when (val instance = child.instance) {
+                            is RootComponent.Child.HomeScreen -> HomeScreen(instance.component)
 
-                    is RootComponent.Child.LogInSignUpSelectionScreen ->
-                        LogInSignUpSelectionScreen(instance.component)
+                            is RootComponent.Child.NewExpenseScreen -> NewExpenseScreen(instance.component)
 
-                    is RootComponent.Child.LogInScreen ->
-                        LogInScreen(instance.component)
+                            is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
-                    is RootComponent.Child.SignUpScreen ->
-                        SignUpScreen(instance.component)
+                            is RootComponent.Child.LogInSignUpSelectionScreen -> LogInSignUpSelectionScreen(instance.component)
+
+                            is RootComponent.Child.LogInScreen -> LogInScreen(instance.component)
+
+                            is RootComponent.Child.SignUpScreen -> SignUpScreen(instance.component)
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+fun showBottomBar(instance: RootComponent.Child): Boolean {
+    return when (instance) {
+        is RootComponent.Child.HomeScreen -> true
+        else -> false
     }
 }
