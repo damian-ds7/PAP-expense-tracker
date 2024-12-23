@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.LoginScreenComponent
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 import pw.edu.pl.pap.ui.common.TextButton

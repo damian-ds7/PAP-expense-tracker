@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation.singleExpense
+package pw.edu.pl.pap.screenComponents.singleExpense
 
 import androidx.compose.runtime.*
 import com.arkivanov.decompose.ComponentContext

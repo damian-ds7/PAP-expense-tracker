@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.util.sortingSystem.forEachList
-import pw.edu.pl.pap.navigation.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.HomeScreenComponent
 import pw.edu.pl.pap.util.formatForDisplay
 
 

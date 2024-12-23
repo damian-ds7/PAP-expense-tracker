@@ -10,7 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.navigation.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
 import pw.edu.pl.pap.ui.home.sortingSystem.ButtonRow
 import pw.edu.pl.pap.ui.home.sortingSystem.GroupPopup

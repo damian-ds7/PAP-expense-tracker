@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation
+package pw.edu.pl.pap.screenComponents
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
@@ -18,11 +18,11 @@ import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.api.authApi.SignUpApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
-import pw.edu.pl.pap.navigation.loginSystem.SelectionLoginSignupScreenComponent
-import pw.edu.pl.pap.navigation.loginSystem.SignupScreenComponent
-import pw.edu.pl.pap.navigation.singleExpense.ExpenseDetailsScreenComponent
-import pw.edu.pl.pap.navigation.singleExpense.NewExpenseScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.LoginScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.SelectionLoginSignupScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.SignupScreenComponent
+import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
 
 class RootComponent(
     componentContext: ComponentContext,

@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation.singleExpense
+package pw.edu.pl.pap.screenComponents.singleExpense
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope

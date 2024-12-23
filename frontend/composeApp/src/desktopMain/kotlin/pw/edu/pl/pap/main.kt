@@ -7,7 +7,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import pw.edu.pl.pap.navigation.RootComponent
+import pw.edu.pl.pap.screenComponents.RootComponent
 import java.awt.Dimension
 
 fun main() = application {

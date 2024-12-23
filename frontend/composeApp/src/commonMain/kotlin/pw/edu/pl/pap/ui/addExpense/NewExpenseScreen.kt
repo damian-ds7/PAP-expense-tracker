@@ -2,7 +2,7 @@ package pw.edu.pl.pap.ui.addExpense
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.navigation.singleExpense.NewExpenseScreenComponent
+import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 

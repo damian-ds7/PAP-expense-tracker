@@ -2,7 +2,7 @@ package pw.edu.pl.pap.ui.expenseDetails
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.navigation.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
 import pw.edu.pl.pap.ui.common.ConfirmationPopup
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields

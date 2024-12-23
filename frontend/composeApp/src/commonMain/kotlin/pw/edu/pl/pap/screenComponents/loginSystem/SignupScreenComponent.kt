@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation.loginSystem
+package pw.edu.pl.pap.screenComponents.loginSystem
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

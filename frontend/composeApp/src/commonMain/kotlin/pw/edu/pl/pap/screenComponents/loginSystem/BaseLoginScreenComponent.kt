@@ -1,20 +1,13 @@
-package pw.edu.pl.pap.navigation.loginSystem
+package pw.edu.pl.pap.screenComponents.loginSystem
 
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.text.input.KeyboardType
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
-import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.UserAuthApi
 import pw.edu.pl.pap.data.uiSetup.inputFields.*
-import pw.edu.pl.pap.util.sanitizePriceInput
-import pw.edu.pl.pap.util.updatePrice
 
 open class BaseLoginScreenComponent(
     componentContext: ComponentContext,
