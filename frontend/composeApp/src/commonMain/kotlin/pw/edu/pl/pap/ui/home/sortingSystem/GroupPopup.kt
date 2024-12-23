@@ -2,8 +2,8 @@ package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -119,12 +119,12 @@ private fun GroupButton(
 
 @Composable
 private fun SortButton(currentOrder: Order, onClick: () -> Unit) {
-    val icon = if (currentOrder == Order.ASCENDING) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+    val icon = if (currentOrder == Order.ASCENDING) Icons.Rounded.ArrowUpward else Icons.Rounded.ArrowDownward
 
     IconButton(onClick) {
         Icon(
             imageVector = icon,
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier.size(25.dp),
             contentDescription = "Sort order"
         )
     }
