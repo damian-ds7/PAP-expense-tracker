@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.Order
 import pw.edu.pl.pap.screenComponents.HomeScreenComponent
@@ -20,6 +21,7 @@ fun UserGroupPopup(
     onDismiss: () -> Unit,
 ) {
     val selectedOption by component.currentUserGroup.collectAsState()
+    val userGroupsInfo by component.userGroupInfo.collectAsState()
     var isLoading by remember {mutableStateOf(false)}
     var pendingAction: (() -> Unit)? by remember { mutableStateOf(null) }
 //    println("$selectedOption - $currentOrder")
@@ -52,28 +54,40 @@ fun UserGroupPopup(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-//            for (groupKey in GroupKey.entries) {
-//                val isSelected = selectedOption == groupKey
-//
-//                val onGroupClick: () -> Unit = if (!isSelected) {
-//                    {
-//                        pendingAction = {
-////                            clickAction(groupKey, component)
-//                        }
-//                    }
-//                } else {
-//                    onDismiss
-//                }
-//
-//                val onOrderClick = {
-//                    pendingAction = {
-//                        component.sortGroups()
-//                    }
-//                }
+            userGroupsInfo?.forEach { userGroup ->
+                val isSelected = selectedOption?.name == userGroup.name
 
-//                GroupAndSortButton(groupKey, isSelected, currentOrder, onGroupClick, onOrderClick)
-//                Spacer(modifier = Modifier.height(8.dp))
-//            }
+                val onGroupClick: () -> Unit = if (!isSelected) {
+                    {
+                        pendingAction = {
+//                            clickAction(userGroup, component)
+                        }
+                    }
+                } else {
+                    onDismiss
+                }
+
+                GroupButton(userGroup, isSelected, onGroupClick)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
+
+@Composable
+private fun GroupButton(
+    userGroup: UserGroup,
+    isSelected: Boolean,
+    onGroupChange: () -> Unit,
+){
+    val color = if (isSelected) MaterialTheme.colorScheme.primary else LocalContentColor.current
+
+    Button(
+        onClick = onGroupChange,
+        contentPadding = ButtonDefaults.TextButtonContentPadding,
+        colors = ButtonDefaults.textButtonColors(contentColor = color)
+    ) {
+        userGroup.name?.let { Text(text = it, style = MaterialTheme.typography.bodyLarge) }
+    }
+}
+
