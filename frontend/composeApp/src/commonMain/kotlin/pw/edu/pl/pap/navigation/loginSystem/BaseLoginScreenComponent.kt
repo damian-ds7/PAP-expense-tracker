@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.UserAuthApi
-import pw.edu.pl.pap.data.inputFields.*
+import pw.edu.pl.pap.data.uiSetup.inputFields.*
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 
@@ -21,6 +21,7 @@ open class BaseLoginScreenComponent(
     protected val coroutineScope: CoroutineScope,
     protected val apiClient: UserAuthApi,
     val onConfirm: () -> Unit,
+    val onBack: () -> Unit,
     val setToken: (String) -> Unit
 ) : ComponentContext by componentContext {
 
@@ -30,6 +31,11 @@ open class BaseLoginScreenComponent(
     protected var email: MutableState<String> = mutableStateOf("")
 
     protected var password: MutableState<String> = mutableStateOf("")
+
+    var showEmailWarning: MutableState<Boolean> = mutableStateOf(false)
+
+    var showFailedLoginWarning: MutableState<Boolean> = mutableStateOf(false)
+    var failedLoginMessage: MutableState<String> = mutableStateOf("")
 
     open fun setupInputFields() {
         _inputFieldsData.clear()

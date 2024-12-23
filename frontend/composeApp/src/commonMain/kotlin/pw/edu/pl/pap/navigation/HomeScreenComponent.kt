@@ -6,8 +6,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.*
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
+import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
+import pw.edu.pl.pap.util.sortingSystem.GroupKey
+import pw.edu.pl.pap.util.sortingSystem.GroupMapKey
+import pw.edu.pl.pap.util.sortingSystem.Order
 
 class HomeScreenComponent(
     componentContext: ComponentContext,
@@ -67,7 +73,7 @@ class HomeScreenComponent(
     private fun fetchHomeInfo() {
         coroutineScope.launch {
             try {
-                val homeData = apiService.expenseApiClient.getTotalExpenses("family", "herkules1@gmail.com")
+                val homeData = apiService.expenseApiClient.getTotalExpenses()
                 _homeInfo.value = homeData
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -78,30 +84,33 @@ class HomeScreenComponent(
     private val _groupedExpenses = MutableStateFlow(ExpenseMap())
     val groupedExpenses: StateFlow<ExpenseMap> get() = _groupedExpenses
 
-    private val _currentGroupKey = MutableStateFlow(GroupKey.DATE)
-    val currentGroupKey: StateFlow<GroupKey> get() = _currentGroupKey
+    private val _currentGroupingKey = MutableStateFlow(GroupKey.DATE)
+    val currentGroupingKey: StateFlow<GroupKey> get() = _currentGroupingKey
 
     val currentGroupingOrder: StateFlow<Order>
         get() = _groupedExpenses.value.groupingOrder
 
     fun updateGroupingKey(key: GroupKey) {
-        _currentGroupKey.value = key
+        _currentGroupingKey.value = key
     }
 
     private fun currentExpenseMethod(): () -> Flow<ExpenseMap> {
-        return when (_currentGroupKey.value) {
+        return when (_currentGroupingKey.value) {
             GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMap
             GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMap
         }
     }
 
     private fun fetchAllExpenses() {
-//        println("FETCH EXPENSES")
-        coroutineScope.launch {
+        println("FETCH EXPENSES")
+        runBlocking {
             try {
                 val getExpenseMap = currentExpenseMethod()
                 getExpenseMap().collect { expenses ->
                     _groupedExpenses.value = expenses
+                    println(expenses.groupingOrder.value)
+                    println(_groupedExpenses.value.groupingOrder.value)
+                    println(currentGroupingOrder.value)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -111,10 +120,11 @@ class HomeScreenComponent(
 
     private fun getRecentExpense() {
 //        println("RECENT EXPENSE")
-        coroutineScope.launch {
+        runBlocking {
             try {
                 apiService.expenseApiClient.getRecentExpense().collect { expense: Expense ->
                     _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
+                    _groupedExpenses.value = _groupedExpenses.value
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -124,10 +134,11 @@ class HomeScreenComponent(
 
     private fun updateExpense(expense: Expense) {
 //        println("UPDATE EXPENSE")
-        coroutineScope.launch {
+        runBlocking {
             try {
                 apiService.expenseApiClient.getExpense(expense.id).collect { updatedExpense ->
                     _groupedExpenses.value.updateExpense(getCurrentKey(updatedExpense), updatedExpense)
+                    _groupedExpenses.value = _groupedExpenses.value
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -137,16 +148,19 @@ class HomeScreenComponent(
 
     private fun deleteExpense(expense: Expense) {
         _groupedExpenses.value.deleteExpense(getCurrentKey(expense), expense.id)
+        _groupedExpenses.value = _groupedExpenses.value
     }
 
     private fun getCurrentKey(expense: Expense): GroupMapKey {
-        return when (_currentGroupKey.value) {
+        return when (_currentGroupingKey.value) {
             GroupKey.DATE -> GroupMapKey.DateKey(expense.date)
             GroupKey.CATEGORY -> GroupMapKey.StringKey(expense.category.name)
         }
     }
 
     fun sortGroups() {
-        _groupedExpenses.value.switchGroupingOrder()
+        coroutineScope.launch {
+            _groupedExpenses.value.switchGroupingOrder()
+        }
     }
 }

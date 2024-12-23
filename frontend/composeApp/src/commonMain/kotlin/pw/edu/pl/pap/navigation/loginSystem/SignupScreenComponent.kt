@@ -6,22 +6,26 @@ import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.api.authApi.UserAuthApi
-import pw.edu.pl.pap.data.inputFields.InputFieldData
-import pw.edu.pl.pap.data.inputFields.TextFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
+import pw.edu.pl.pap.util.validateEmail
 
 class SignupScreenComponent(
     componentContext: ComponentContext,
     coroutineScope: CoroutineScope,
     apiClient: UserAuthApi,
     onConfirm: () -> Unit,
+    onBack: () -> Unit,
     setToken: (String) -> Unit
-) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, setToken){
+) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, onBack, setToken){
 
     private var confirmedPassword: MutableState<String> = mutableStateOf("")
 
     private var name: MutableState<String> = mutableStateOf("")
 
     private var surname: MutableState<String> = mutableStateOf("")
+
+    var showPasswordsWarning: MutableState<Boolean> = mutableStateOf(false)
 
     override fun setupInputFields() {
         super.setupInputFields()
@@ -60,12 +64,20 @@ class SignupScreenComponent(
     }
 
     override fun confirm() {
-        //TODO verify email
-        //TODO verify passwords
-        //TODO show warning screen if incorrect data
+        if (!validateEmail(email.value)) {
+            showEmailWarning.value = true
+            return
+        }
+        if (password.value != confirmedPassword.value || password.value == "") {
+            showPasswordsWarning.value = true
+            return
+        }
         //TODO push new user
         //TODO wait for response
         //TODO set token
+            showFailedLoginWarning.value = true
+            //TODO set failedLoginMessage
+            failedLoginMessage.value = "Something went wrong"
         onConfirm()
     }
 

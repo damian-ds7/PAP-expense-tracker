@@ -1,12 +1,9 @@
-package pw.edu.pl.pap.data
+package pw.edu.pl.pap.data.databaseAssociatedData
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserSignUpData(
-    val name: String,
-    val surname: String,
+data class UserLoginData(
     val email: String,
     val password: String
 )
-

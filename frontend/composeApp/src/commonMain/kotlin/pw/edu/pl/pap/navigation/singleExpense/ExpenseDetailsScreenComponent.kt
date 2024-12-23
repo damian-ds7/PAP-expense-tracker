@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.navigation
+package pw.edu.pl.pap.navigation.singleExpense
 
 import androidx.compose.runtime.*
 import com.arkivanov.decompose.ComponentContext
@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.api.ApiService
-import pw.edu.pl.pap.data.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.util.formatForTextField
 
 class ExpenseDetailsScreenComponent(
@@ -27,7 +27,7 @@ class ExpenseDetailsScreenComponent(
     override var date: MutableState<LocalDate> = mutableStateOf(expense.date)
 
     override var newPrice: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
-    override var currencyIndex: MutableState<Int> = mutableStateOf(0)
+    override var currencyIndex: MutableState<Int> = mutableStateOf(expense.currency.id.toInt() - 1)
     //TODO fetch currency
     override var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
     //TODO fetch method of payment

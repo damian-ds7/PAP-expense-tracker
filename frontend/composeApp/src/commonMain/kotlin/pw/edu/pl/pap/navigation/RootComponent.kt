@@ -17,10 +17,12 @@ import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.api.authApi.SignUpApi
-import pw.edu.pl.pap.data.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SelectionLoginSignupScreenComponent
 import pw.edu.pl.pap.navigation.loginSystem.SignupScreenComponent
+import pw.edu.pl.pap.navigation.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.navigation.singleExpense.NewExpenseScreenComponent
 
 class RootComponent(
     componentContext: ComponentContext,
@@ -79,7 +81,7 @@ class RootComponent(
         when (configuration) {
             is Configuration.LogInSignUpSelectionScreen -> {
                 Child.LogInSignUpSelectionScreen(
-                    component= SelectionLoginSignupScreenComponent(
+                    component = SelectionLoginSignupScreenComponent(
                         componentContext = componentContext,
                         onLogInButtonClicked = {
                             navigation.pushNew(Configuration.LogInScreen)
@@ -100,8 +102,11 @@ class RootComponent(
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
-                        setToken = {
-                            newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
+                        onBack = {
+                            navigation.pop()
+                        },
+                        setToken = { newToken ->
+                            apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )
@@ -116,8 +121,11 @@ class RootComponent(
                         onConfirm = {
                             navigation.replaceAll(Configuration.HomeScreen)
                         },
-                        setToken = {
-                                newToken -> apiService = ApiService(newToken, httpClient, baseUrl)
+                        onBack = {
+                            navigation.pop()
+                        },
+                        setToken = { newToken ->
+                            apiService = ApiService(newToken, httpClient, baseUrl)
                         }
                     )
                 )

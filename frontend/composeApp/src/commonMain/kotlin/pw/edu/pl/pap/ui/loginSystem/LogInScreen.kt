@@ -13,6 +13,7 @@ import pw.edu.pl.pap.navigation.loginSystem.LoginScreenComponent
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 import pw.edu.pl.pap.ui.common.TextButton
+import pw.edu.pl.pap.ui.common.WarningPopup
 
 @Composable
 fun LogInScreen (
@@ -24,16 +25,26 @@ fun LogInScreen (
     component.setupInputFields()
     InputFields(component.inputFieldsData)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.BottomCenter
-    ){
-        TextButton(
-            text = "LOG IN",
-        //        modifier = Modifier.align(Alignment.BottomCenter),
-            onUpdate = { scope.launch { component.confirm() } }
-        )
-    }
+    WarningPopup(
+        subText = "Incorrect email.",
+        showWarning = component.showEmailWarning.value,
+        onDismiss = {
+            component.showEmailWarning.value = (!component.showEmailWarning.value)
+        }
+    )
+
+    WarningPopup(
+        mainText = "Log in failed",
+        subText = component.failedLoginMessage.value,
+        showWarning = component.showFailedLoginWarning.value,
+        onDismiss = {
+            component.showFailedLoginWarning.value = (!component.showFailedLoginWarning.value)
+        }
+    )
+
+    LogInSignUpButtonRow(
+        component = component,
+        text = "LOG IN",
+        scope = scope
+    )
 }
