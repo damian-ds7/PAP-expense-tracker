@@ -67,6 +67,12 @@ class HomeScreenComponent(
         updateNavigationState(NavigationState.Empty)
     }
 
+    private val _userGroupInfo = MutableStateFlow<List<String>?>(emptyList())
+    val userGroupInfo: StateFlow<List<String>?> get() = _userGroupInfo
+
+    private val _currentUserGroup = MutableStateFlow<String?>(null)
+    val currentUserGroup: StateFlow<String?> get() = _currentUserGroup
+
     private val _homeInfo = MutableStateFlow<TotalExpenses?>(null)
     val homeInfo: StateFlow<TotalExpenses?> get() = _homeInfo
 
@@ -75,9 +81,12 @@ class HomeScreenComponent(
             try {
                 val homeData = apiService.expenseApiClient.getTotalExpenses()
                 _homeInfo.value = homeData
+                val userGroupInfo = apiService.expenseApiClient.getUserGroups()
+                _userGroupInfo.value = userGroupInfo
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            _currentUserGroup.value = _userGroupInfo.value?.first()
         }
     }
 
@@ -163,8 +172,4 @@ class HomeScreenComponent(
             _groupedExpenses.value.switchGroupingOrder()
         }
     }
-
-    private val _currentUserGroup = MutableStateFlow(GroupKey.DATE)
-    // change here
-    val currentUserGroup: StateFlow<GroupKey> get() = _currentGroupingKey
 }

@@ -18,6 +18,10 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
         return get("state").body()
     }
 
+    suspend fun getUserGroups(): List<String> { //set type
+        return get("group/all").body()
+    }
+
     private suspend fun getExpenseDateMapApi(): ExpenseMap {
         val originalMap: Map<GroupMapKey.DateKey, List<Expense>> = get("all/dateMap").body()
         return originalMap.toMap(ExpenseMap(initialGroupingOrder = Order.DESCENDING))

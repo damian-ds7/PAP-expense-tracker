@@ -14,6 +14,7 @@ import pw.edu.pl.pap.screenComponents.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
 import pw.edu.pl.pap.ui.home.sortingSystem.ButtonRow
 import pw.edu.pl.pap.ui.home.sortingSystem.GroupKeyPopup
+import pw.edu.pl.pap.ui.home.sortingSystem.UserGroupPopup
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
@@ -78,12 +79,22 @@ fun HomeScreen(component: HomeScreenComponent) {
                 component = component,
                 onDismiss = { showGroupingKeyMenu = false },
             )
-
-//            UserGroupPopup(
-//                component = component,
-//                onDismiss = { showUserGroupMenu = false }
-//            )
         }
 
+
+        AnimatedVisibility(
+            visible = showUserGroupMenu,
+            enter = slideInVertically(
+                initialOffsetY = { fullHeight -> fullHeight }
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { fullHeight -> fullHeight }
+            )
+        ) {
+            UserGroupPopup(
+                component = component,
+                onDismiss = { showUserGroupMenu = false }
+            )
+        }
     }
 }
