@@ -3,6 +3,7 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import com.example.expenseapi.utils.CurrencyRatesFetcher;
 import io.swagger.v3.oas.models.links.Link;
 import org.hibernate.validator.internal.util.privilegedactions.LoadClass;
 import org.springframework.cglib.core.Local;
@@ -10,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 import java.util.stream.*;
 
@@ -22,10 +24,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MembershipRepository membershipRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
 
-    private Map<String, Double> mapResult(List<Object[]> queryResult) {
+    private Map<String, Double> monthTotalExpensesMap(List<Expense> queryResult, String destCurr) {
         Map<String, Double> map = new LinkedHashMap<>();
-        for (Object[] result : queryResult) {
-            map.put((String) result[0], (double) result[1]);
+        for (Expense expense : queryResult) {
+            String month = expense.getDate().getMonth().name();
+            double price = CurrencyRatesFetcher.convertFromCurrencyToAnother(expense.getPrice(), expense.getCurrency().getSymbol(), destCurr);
+            map.put(month, map.getOrDefault(month, 0.0) + price);
         }
         return map;
     }
@@ -137,11 +141,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<String, Double> getMonthlyExpensesForUser(String year) {
-        return mapResult(expenseRepository.findTotalExpensesForMonthsUser(year, SecurityContextHolder
+    public Map<String, Double> getMonthlyExpensesForUser(String year, String currCode) {
+        List<Expense> userExpenses = expenseRepository.findByUserEmailAndYear(year, SecurityContextHolder
                 .getContext()
                 .getAuthentication()
-                .getName()));
+                .getName());
+        return monthTotalExpensesMap(userExpenses, currCode);
 
     }
 
