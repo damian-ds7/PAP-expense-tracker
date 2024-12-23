@@ -127,6 +127,29 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    public Map<String, Double> getMonthlyExpensesForUser(String year) {
+        List<Object[]> results = expenseRepository.findTotalExpensesForMonthsUser(year, SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName());
+        Map<String, Double> monthlyExpenses = new LinkedHashMap<>();
+        for (Object[] result : results) {
+            monthlyExpenses.put((String) result[0], (Double) result[1]);
+        }
+        return monthlyExpenses;
+    }
+
+    @Override
+    public Map<String, Double> getMonthlyExpensesForGroup(String year) {
+        List<Object[]> results = expenseRepository.findTotalExpensesForMonthsGroup(year, getGroupName());
+        Map<String, Double> monthlyExpenses = new LinkedHashMap<>();
+        for (Object[] result : results) {
+            monthlyExpenses.put((String) result[0], (Double) result[1]);
+        }
+        return monthlyExpenses;
+    }
+
+    @Override
     public Optional<Expense> getRecentExpense() {
         return expenseRepository.findTopByOrderByIdDesc();
     }
