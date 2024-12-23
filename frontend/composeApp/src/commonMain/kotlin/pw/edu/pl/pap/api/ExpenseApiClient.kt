@@ -15,11 +15,9 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
     BaseApiClient(baseUrl, httpClient, userToken) {
 
     suspend fun getTotalExpenses(): TotalExpenses {
+//        val result:String = get("state").body()
+//        println(result)
         return get("state").body()
-    }
-
-    suspend fun getUserGroups(): List<String> { //set type
-        return get("group/all").body()
     }
 
     private suspend fun getExpenseDateMapApi(): ExpenseMap {

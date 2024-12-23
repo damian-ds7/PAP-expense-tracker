@@ -9,4 +9,5 @@ class ApiService(
 ) {
 
     val expenseApiClient = ExpenseApiClient("$baseUrl/expense/", httpClient, userToken)
+    val groupApiClient = GroupApiClient("$baseUrl/group/", httpClient, userToken)
 }

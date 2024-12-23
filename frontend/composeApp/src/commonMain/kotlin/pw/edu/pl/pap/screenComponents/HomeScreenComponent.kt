@@ -10,6 +10,7 @@ import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
+import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.GroupMapKey
@@ -67,11 +68,11 @@ class HomeScreenComponent(
         updateNavigationState(NavigationState.Empty)
     }
 
-    private val _userGroupInfo = MutableStateFlow<List<String>?>(emptyList())
-    val userGroupInfo: StateFlow<List<String>?> get() = _userGroupInfo
+    private val _userGroupInfo = MutableStateFlow<List<UserGroup>?>(emptyList())
+    val userGroupInfo: StateFlow<List<UserGroup>?> get() = _userGroupInfo
 
-    private val _currentUserGroup = MutableStateFlow<String?>(null)
-    val currentUserGroup: StateFlow<String?> get() = _currentUserGroup
+    private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
+    val currentUserGroup: StateFlow<UserGroup?> get() = _currentUserGroup
 
     private val _homeInfo = MutableStateFlow<TotalExpenses?>(null)
     val homeInfo: StateFlow<TotalExpenses?> get() = _homeInfo
@@ -81,7 +82,8 @@ class HomeScreenComponent(
             try {
                 val homeData = apiService.expenseApiClient.getTotalExpenses()
                 _homeInfo.value = homeData
-                val userGroupInfo = apiService.expenseApiClient.getUserGroups()
+                val userGroupInfo = apiService.groupApiClient.getUserGroups()
+//                println(userGroupInfo)
                 _userGroupInfo.value = userGroupInfo
             } catch (e: Exception) {
                 e.printStackTrace()

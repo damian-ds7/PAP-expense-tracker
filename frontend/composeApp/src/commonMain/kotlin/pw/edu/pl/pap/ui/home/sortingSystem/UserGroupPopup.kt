@@ -52,28 +52,28 @@ fun UserGroupPopup(
 
             Spacer(modifier = Modifier.padding(16.dp))
 
-            for (groupKey in GroupKey.entries) {
-                val isSelected = selectedOption == groupKey
-
-                val onGroupClick: () -> Unit = if (!isSelected) {
-                    {
-                        pendingAction = {
-//                            clickAction(groupKey, component)
-                        }
-                    }
-                } else {
-                    onDismiss
-                }
-
-                val onOrderClick = {
-                    pendingAction = {
-                        component.sortGroups()
-                    }
-                }
+//            for (groupKey in GroupKey.entries) {
+//                val isSelected = selectedOption == groupKey
+//
+//                val onGroupClick: () -> Unit = if (!isSelected) {
+//                    {
+//                        pendingAction = {
+////                            clickAction(groupKey, component)
+//                        }
+//                    }
+//                } else {
+//                    onDismiss
+//                }
+//
+//                val onOrderClick = {
+//                    pendingAction = {
+//                        component.sortGroups()
+//                    }
+//                }
 
 //                GroupAndSortButton(groupKey, isSelected, currentOrder, onGroupClick, onOrderClick)
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+//                Spacer(modifier = Modifier.height(8.dp))
+//            }
         }
     }
 }

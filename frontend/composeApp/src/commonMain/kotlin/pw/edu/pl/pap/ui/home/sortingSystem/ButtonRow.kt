@@ -24,7 +24,7 @@ fun ButtonRow(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        GroupButton(currentUserGroup, onUserGroupClick)
+        UserGroupButton(currentUserGroup, onUserGroupClick)
 
         GroupButton(currentGroupKey, onGroupKeyClick)
 
