@@ -18,14 +18,14 @@ public class ChartController {
     }
 
     @GetMapping("/my/group/{year}")
-    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year (group-scoped)")
-    public ResponseEntity<Map<String, Double>> getUserMonthlyExpensesMap(@PathVariable String year) {
-        return new ResponseEntity<>(service.getMonthlyExpensesForGroup(year), HttpStatus.OK);
+    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year")
+    public ResponseEntity<Map<String, Double>> getUserMonthlyExpensesMap(@PathVariable String year, @RequestParam(defaultValue = "PLN") String currCode) {
+        return new ResponseEntity<>(service.getMonthlyExpensesForGroup(year, currCode), HttpStatus.OK);
     }
 
-    @GetMapping("/my/expenses/{year}/{currCode}")
-    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year (user-scoped)")
-    public ResponseEntity<Map<String, Double>> getGroupMonthlyExpensesMap(@PathVariable String year, @PathVariable String currCode) {
+    @GetMapping("/my/expenses/{year}")
+    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year")
+    public ResponseEntity<Map<String, Double>> getGroupMonthlyExpensesMap(@PathVariable String year, @RequestParam(defaultValue = "PLN") String currCode) {
         return new ResponseEntity<>(service.getMonthlyExpensesForUser(year, currCode), HttpStatus.OK);
     }
 

@@ -26,13 +26,4 @@ public class CurrencyRatesFetcher {
             return -1;
         }
     }
-
-    public static double convertFromCurrencyToAnother(double value, String srcCurr, String destCurr) {
-        if (!srcCurr.equals("PLN")) {
-            value *= getCurrencyRates(srcCurr);
-        }
-        if (!destCurr.equals("PLN"))
-            value /= getCurrencyRates(destCurr);
-        return value;
-    }
 }
