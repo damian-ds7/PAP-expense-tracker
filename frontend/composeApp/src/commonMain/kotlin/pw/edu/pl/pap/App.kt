@@ -16,6 +16,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
+import pw.edu.pl.pap.ui.dataScreen.DataScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen
@@ -61,17 +62,15 @@ fun App(rootComponent: RootComponent) {
                         animation = stackAnimation(slide()),
                     ) { child ->
                         when (val instance = child.instance) {
+                            is RootComponent.Child.LogInSignUpSelectionScreen -> LogInSignUpSelectionScreen(instance.component)
+                            is RootComponent.Child.LogInScreen -> LogInScreen(instance.component)
+                            is RootComponent.Child.SignUpScreen -> SignUpScreen(instance.component)
+
                             is RootComponent.Child.HomeScreen -> HomeScreen(instance.component)
-
                             is RootComponent.Child.NewExpenseScreen -> NewExpenseScreen(instance.component)
-
                             is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
-                            is RootComponent.Child.LogInSignUpSelectionScreen -> LogInSignUpSelectionScreen(instance.component)
-
-                            is RootComponent.Child.LogInScreen -> LogInScreen(instance.component)
-
-                            is RootComponent.Child.SignUpScreen -> SignUpScreen(instance.component)
+                            is RootComponent.Child.DataScreen -> DataScreen(instance.component)
                         }
                     }
                 }
@@ -82,7 +81,8 @@ fun App(rootComponent: RootComponent) {
 
 fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
-        is RootComponent.Child.HomeScreen -> true
+        is RootComponent.Child.HomeScreen,
+        is RootComponent.Child.DataScreen -> true
         else -> false
     }
 }
