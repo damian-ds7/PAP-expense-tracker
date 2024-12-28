@@ -11,7 +11,6 @@ import java.util.List;
 @Service
 public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> implements MembershipService {
     MembershipRepository membershipRepository;
-    UserService userService;
     public MembershipServiceImpl(MembershipRepository repository) {
         super(repository);
         this.membershipRepository = repository;
