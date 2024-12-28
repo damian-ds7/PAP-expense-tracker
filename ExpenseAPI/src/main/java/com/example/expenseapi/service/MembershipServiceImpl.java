@@ -2,6 +2,7 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.Membership;
+import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,11 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @Override
     public List<Membership> getMembershipsByUserId(Long userId) {
         return membershipRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<User> findAdmins(String group) {
+        List<User> list = membershipRepository.findAdmins(group);
+        return list;
     }
 }
