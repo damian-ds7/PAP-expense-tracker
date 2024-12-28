@@ -18,6 +18,7 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesWherePriceIsLower(double price);
     List<Expense> getExpensesWherePriceIsGreater(double price);
     List<Expense> getExpensesForGroup(String name);
+    ExpInfo getExpInfo(String group);
     ExpInfo getExpInfo();
     Map<LocalDate, List<Expense>> getDateExpenseAsMap();
     Map<Category, List<Expense>> getCategoryExpenseAsMap();

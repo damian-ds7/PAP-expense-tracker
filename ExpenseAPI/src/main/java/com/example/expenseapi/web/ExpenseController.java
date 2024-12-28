@@ -67,6 +67,11 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getExpInfo(), HttpStatus.OK);
     }
 
+    @GetMapping("/state/{group}")
+    public ResponseEntity<ExpInfo> getState(@PathVariable String group) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpInfo(group), HttpStatus.OK);
+    }
+
     @GetMapping("/all/dateMap")
     @Operation(summary = "Returns objects grouped by date for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by date")
