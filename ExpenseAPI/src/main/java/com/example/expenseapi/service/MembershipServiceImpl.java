@@ -27,7 +27,6 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
 
     @Override
     public List<User> findAdmins(String group) {
-        List<User> list = membershipRepository.findAdmins(group);
-        return list;
+        return membershipRepository.findAdmins(group);
     }
 }
