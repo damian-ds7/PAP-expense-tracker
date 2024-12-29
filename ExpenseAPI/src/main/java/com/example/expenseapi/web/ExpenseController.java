@@ -4,8 +4,6 @@ import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
 import com.example.expenseapi.service.ExpenseService;
-import com.example.expenseapi.service.MembershipService;
-import com.example.expenseapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
