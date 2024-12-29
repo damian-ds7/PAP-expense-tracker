@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pw.edu.pl.pap.screenComponents.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.util.formatForDisplay
 
 @Composable

@@ -1,27 +1,23 @@
-package pw.edu.pl.pap.screenComponents
+package pw.edu.pl.pap.screenComponents.mainScreens
 
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
+import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.GroupMapKey
 import pw.edu.pl.pap.util.sortingSystem.Order
 
 class HomeScreenComponent(
-    componentContext: ComponentContext,
-    private val apiService: ApiService,
-    private val coroutineScope: CoroutineScope,
+    baseScreenComponent: BaseScreenComponent,
     val onAddExpenseButtonClicked: () -> Unit,
     val onExpenseClick: (Expense) -> Unit
-) : ComponentContext by componentContext {
+) : BaseScreenComponent by baseScreenComponent {
 
     sealed class NavigationState {
         data object InitialLoad : NavigationState()
@@ -63,21 +59,34 @@ class HomeScreenComponent(
                 // Do nothing
             }
         }
-        fetchHomeInfo()
         updateNavigationState(NavigationState.Empty)
+    }
+
+    private val _userGroupInfo = MutableStateFlow<List<UserGroup>?>(emptyList())
+    val userGroupInfo: StateFlow<List<UserGroup>?> get() = _userGroupInfo
+
+    private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
+    val currentUserGroup: StateFlow<UserGroup?> get() = _currentUserGroup
+
+    fun updateUserGroup(key: UserGroup) {
+        _currentUserGroup.value = key
     }
 
     private val _homeInfo = MutableStateFlow<TotalExpenses?>(null)
     val homeInfo: StateFlow<TotalExpenses?> get() = _homeInfo
 
-    private fun fetchHomeInfo() {
-        coroutineScope.launch {
+    fun fetchHomeInfo() {
+        runBlocking {
             try {
                 val homeData = apiService.expenseApiClient.getTotalExpenses()
                 _homeInfo.value = homeData
+                val userGroupInfo = apiService.groupApiClient.getUserGroups()
+//                println(userGroupInfo)
+                _userGroupInfo.value = userGroupInfo
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            _currentUserGroup.value = _userGroupInfo.value?.first()
         }
     }
 
@@ -96,8 +105,10 @@ class HomeScreenComponent(
 
     private fun currentExpenseMethod(): () -> Flow<ExpenseMap> {
         return when (_currentGroupingKey.value) {
-            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMap
-            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMap
+//            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMap
+//            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMap
+            GroupKey.DATE -> { { apiService.expenseApiClient.getExpenseDateMapForGroup(_currentUserGroup.value?.name) } }
+            GroupKey.CATEGORY -> { { apiService.expenseApiClient.getExpenseCatMapForGroup(_currentUserGroup.value?.name) } }
         }
     }
 

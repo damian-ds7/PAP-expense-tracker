@@ -10,19 +10,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.screenComponents.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
 import pw.edu.pl.pap.ui.home.sortingSystem.ButtonRow
-import pw.edu.pl.pap.ui.home.sortingSystem.GroupPopup
+import pw.edu.pl.pap.ui.home.sortingSystem.GroupKeyPopup
+import pw.edu.pl.pap.ui.home.sortingSystem.UserGroupPopup
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
     var isLoading by remember { mutableStateOf(true) }
-    var showGroupingMenu by remember { mutableStateOf(false) }
+    var showGroupingKeyMenu by remember { mutableStateOf(false) }
+    var showUserGroupMenu by remember { mutableStateOf(false) }
 //    val homeInfo by component.homeInfo.collectAsState()
 //    val groupedExpenses by component.groupedExpenses.collectAsState()
 
     LaunchedEffect(component.navigationState.collectAsState()) {
+        component.fetchHomeInfo()
         component.getDataBasedOnState()
         isLoading = false
     }
@@ -40,7 +43,11 @@ fun HomeScreen(component: HomeScreenComponent) {
                     }
 
                     item {
-                        ButtonRow(component) { showGroupingMenu = true }
+                        ButtonRow(
+                            component = component,
+                            onGroupKeyClick = { showGroupingKeyMenu = true },
+                            onUserGroupClick = { showUserGroupMenu = true }
+                        )
                     }
 
                     item {
@@ -61,7 +68,7 @@ fun HomeScreen(component: HomeScreenComponent) {
 
 
         AnimatedVisibility(
-            visible = showGroupingMenu,
+            visible = showGroupingKeyMenu,
             enter = slideInVertically(
                 initialOffsetY = { fullHeight -> fullHeight }
             ),
@@ -69,11 +76,26 @@ fun HomeScreen(component: HomeScreenComponent) {
                 targetOffsetY = { fullHeight -> fullHeight }
             )
         ) {
-            GroupPopup(
+            GroupKeyPopup(
                 component = component,
-                onDismiss = { showGroupingMenu = false },
+                onDismiss = { showGroupingKeyMenu = false },
             )
         }
 
+
+        AnimatedVisibility(
+            visible = showUserGroupMenu,
+            enter = slideInVertically(
+                initialOffsetY = { fullHeight -> fullHeight }
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { fullHeight -> fullHeight }
+            )
+        ) {
+            UserGroupPopup(
+                component = component,
+                onDismiss = { showUserGroupMenu = false }
+            )
+        }
     }
 }

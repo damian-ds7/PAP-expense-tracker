@@ -9,17 +9,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import pw.edu.pl.pap.screenComponents.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 
 @Composable
-fun ButtonRow(component: HomeScreenComponent, onGroupClick: () -> Unit) {
+fun ButtonRow(
+    component: HomeScreenComponent,
+    onGroupKeyClick: () -> Unit,
+    onUserGroupClick: () -> Unit
+) {
     val currentGroupKey by component.currentGroupingKey.collectAsState()
+    val currentUserGroup by component.currentUserGroup.collectAsState()
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        GroupButton(currentGroupKey, onGroupClick)
+        UserGroupButton(currentUserGroup, onUserGroupClick)
+
+        GroupButton(currentGroupKey, onGroupKeyClick)
 
         RefreshButton {
             component.updateNavigationState(HomeScreenComponent.NavigationState.InitialLoad)

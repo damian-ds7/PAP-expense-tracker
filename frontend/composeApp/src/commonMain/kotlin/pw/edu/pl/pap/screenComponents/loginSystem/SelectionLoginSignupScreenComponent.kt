@@ -7,6 +7,4 @@ class SelectionLoginSignupScreenComponent(
     val onLogInButtonClicked: () -> Unit,
     val onSignupButtonClicked: () -> Unit
 ) : ComponentContext by componentContext {
-    //TODO show log in button
-    //TODO show Sign up button
 }

@@ -3,28 +3,24 @@ package pw.edu.pl.pap.screenComponents.singleExpense
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.input.KeyboardType
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.uiSetup.inputFields.DatePickerData
 import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
+import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 
 open class BaseExpenseScreenComponent(
-    componentContext: ComponentContext,
-    protected val apiService: ApiService,
-    protected val coroutineScope: CoroutineScope,
+    baseComponent: BaseScreenComponent,
     val onDismiss: () -> Unit,
     val onSave: () -> Unit
-) : ComponentContext by componentContext {
+) : BaseScreenComponent by baseComponent {
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData

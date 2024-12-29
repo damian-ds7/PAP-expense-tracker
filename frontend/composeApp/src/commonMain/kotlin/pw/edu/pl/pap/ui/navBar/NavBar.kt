@@ -1,0 +1,69 @@
+package pw.edu.pl.pap.ui.navBar
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun BottomNavBar(
+    modifier: Modifier = Modifier, items: List<NavBarItem>, onSelect: (NavBarItem) -> Unit
+) {
+    var selectedItem: NavBarItem? by remember { mutableStateOf(NavBarItem.Home) }
+
+    NavigationBar(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        items.forEach { item ->
+            Box(
+                modifier = Modifier.weight(1f)
+                    .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
+                        selectedItem = item
+                        onSelect(item)
+                    }, contentAlignment = Alignment.Center
+            ) {
+                NavBarItem(
+                    modifier = Modifier, item = item, isSelected = selectedItem == item
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NavBarItem(
+    modifier: Modifier = Modifier, item: NavBarItem, isSelected: Boolean
+) {
+    Column(
+        modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onBackground,
+            contentDescription = item.title,
+            imageVector = if (isSelected) item.selectedImage else item.unselectedImage,
+            modifier = Modifier
+                .background(
+                    color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
+                    shape = RoundedCornerShape(20.dp) // "Pill" shape
+                )
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            item.title,
+            color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onBackground,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+        )
+    }
+}

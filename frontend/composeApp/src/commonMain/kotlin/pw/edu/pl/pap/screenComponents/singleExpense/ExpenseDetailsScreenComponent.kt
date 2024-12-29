@@ -1,24 +1,20 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
 import androidx.compose.runtime.*
-import com.arkivanov.decompose.ComponentContext
 import io.ktor.http.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 import pw.edu.pl.pap.util.formatForTextField
 
 class ExpenseDetailsScreenComponent(
-    componentContext: ComponentContext,
-    apiService: ApiService,
-    coroutineScope: CoroutineScope,
+    baseComponent: BaseScreenComponent,
     onDismiss: () -> Unit,
     onSave: () -> Unit,
     private val onDelete: () -> Unit,
     private val expense: Expense
-    ) : BaseExpenseScreenComponent(componentContext, apiService, coroutineScope, onDismiss, onSave) {
+    ) : BaseExpenseScreenComponent(baseComponent, onDismiss, onSave) {
 
     override var title: MutableState<String> = mutableStateOf("")
     //TODO fetch title

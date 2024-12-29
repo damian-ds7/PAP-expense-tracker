@@ -7,11 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.screenComponents.loginSystem.BaseLoginScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.BaseLoginScreenComponentImpl
 import pw.edu.pl.pap.ui.common.TextButton
 
 @Composable
-fun LogInSignUpButtonRow(component: BaseLoginScreenComponent, text: String, scope: CoroutineScope) {
+fun LogInSignUpButtonRow(component: BaseLoginScreenComponentImpl, text: String, scope: CoroutineScope) {
 
     Box(
         modifier = Modifier
