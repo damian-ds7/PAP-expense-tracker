@@ -1,23 +1,19 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
 import pw.edu.pl.pap.data.databaseAssociatedData.User
+import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 
 class NewExpenseScreenComponent(
-    componentContext: ComponentContext,
-    apiService: ApiService,
-    coroutineScope: CoroutineScope,
+    baseComponent: BaseScreenComponent,
     onDismiss: () -> Unit,
     onSave: () -> Unit
-) : BaseExpenseScreenComponent(componentContext, apiService, coroutineScope, onDismiss, onSave) {
+) : BaseExpenseScreenComponent(baseComponent, onDismiss, onSave) {
 
     override fun confirm() {
         // find user

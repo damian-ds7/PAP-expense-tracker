@@ -1,22 +1,13 @@
 package pw.edu.pl.pap.screenComponents.loginSystem
 
-import com.arkivanov.decompose.ComponentContext
 import io.ktor.client.call.*
 import io.ktor.http.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.api.authApi.UserAuthApi
 import pw.edu.pl.pap.data.databaseAssociatedData.UserLoginData
-import pw.edu.pl.pap.util.validateEmail
 
 class LoginScreenComponent(
-    componentContext: ComponentContext,
-    coroutineScope: CoroutineScope,
-    apiClient: UserAuthApi,
-    onConfirm: () -> Unit,
-    onBack: () -> Unit,
-    setToken: (String) -> Unit
-) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, onBack, setToken) {
+    baseScreenComponent: BaseLoginScreenComponent,
+) : BaseLoginScreenComponentImpl(baseScreenComponent) {
 
     override fun confirm() {
 //        if (!validateEmail(email.value)) {

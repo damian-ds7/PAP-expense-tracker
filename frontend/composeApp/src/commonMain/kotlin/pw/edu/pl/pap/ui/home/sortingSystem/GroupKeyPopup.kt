@@ -2,15 +2,15 @@ package pw.edu.pl.pap.ui.home.sortingSystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.Order
-import pw.edu.pl.pap.screenComponents.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingPopup
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,12 +119,12 @@ private fun GroupButton(
 
 @Composable
 private fun SortButton(currentOrder: Order, onClick: () -> Unit) {
-    val icon = if (currentOrder == Order.ASCENDING) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+    val icon = if (currentOrder == Order.ASCENDING) Icons.Rounded.ArrowUpward else Icons.Rounded.ArrowDownward
 
     IconButton(onClick) {
         Icon(
             imageVector = icon,
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier.size(25.dp),
             contentDescription = "Sort order"
         )
     }

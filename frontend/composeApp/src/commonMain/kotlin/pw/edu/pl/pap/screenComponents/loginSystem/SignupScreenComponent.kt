@@ -2,22 +2,14 @@ package pw.edu.pl.pap.screenComponents.loginSystem
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.api.authApi.UserAuthApi
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import pw.edu.pl.pap.util.validateEmail
 
 class SignupScreenComponent(
-    componentContext: ComponentContext,
-    coroutineScope: CoroutineScope,
-    apiClient: UserAuthApi,
-    onConfirm: () -> Unit,
-    onBack: () -> Unit,
-    setToken: (String) -> Unit
-) : BaseLoginScreenComponent(componentContext, coroutineScope, apiClient, onConfirm, onBack, setToken){
+    baseScreenComponent: BaseLoginScreenComponent
+) : BaseLoginScreenComponentImpl(baseScreenComponent) {
 
     private var confirmedPassword: MutableState<String> = mutableStateOf("")
 

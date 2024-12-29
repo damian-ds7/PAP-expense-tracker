@@ -16,17 +16,18 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
-import pw.edu.pl.pap.api.authApi.SignUpApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.screenComponents.loginSystem.LoginScreenComponent
-import pw.edu.pl.pap.screenComponents.loginSystem.SelectionLoginSignupScreenComponent
-import pw.edu.pl.pap.screenComponents.loginSystem.SignupScreenComponent
+import pw.edu.pl.pap.screenComponents.loginSystem.*
+import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponentImpl
+import pw.edu.pl.pap.screenComponents.mainScreens.DataScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
 import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
+import pw.edu.pl.pap.ui.navBar.NavBarItem
 
 class RootComponent(
-    componentContext: ComponentContext,
-    private val baseUrl: String
+    componentContext: ComponentContext, private val baseUrl: String
 ) : ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Configuration>()
@@ -49,6 +50,15 @@ class RootComponent(
     @Serializable
     sealed class Configuration {
         @Serializable
+        data object LogInSignUpSelectionScreen : Configuration()
+
+        @Serializable
+        data object LogInScreen : Configuration()
+
+        @Serializable
+        data object SignUpScreen : Configuration()
+
+        @Serializable
         data object HomeScreen : Configuration()
 
         @Serializable
@@ -58,27 +68,53 @@ class RootComponent(
         data class ExpenseDetailsScreen(val expense: Expense) : Configuration()
 
         @Serializable
-        data object LogInSignUpSelectionScreen : Configuration()
-
-        @Serializable
-        data object LogInScreen : Configuration()
-
-        @Serializable
-        data object SignUpScreen : Configuration()
+        data object DataScreen : Configuration()
     }
 
+    private fun createLoginScreenComponent(
+        componentContext: ComponentContext
+    ): BaseLoginScreenComponent = LoginScreenComponentHelper(
+        componentContext = componentContext,
+        coroutineScope = coroutineScope,
+        apiClient = LoginApi(baseUrl, httpClient),
+        onConfirm = { navigation.replaceAll(Configuration.HomeScreen) },
+        onBack = { navigation.pop() },
+        setToken = { newToken -> apiService = ApiService(newToken, httpClient, baseUrl) }
+    )
+
+    private fun createMainScreenComponent(
+        componentContext: ComponentContext
+    ): BaseScreenComponent = BaseScreenComponentImpl(
+        componentContext = componentContext,
+        apiService = apiService,
+        coroutineScope = coroutineScope
+    )
+
     sealed class Child {
-        data class HomeScreen(val component: HomeScreenComponent) : Child()
-        data class NewExpenseScreen(val component: NewExpenseScreenComponent) : Child()
-        data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
         data class LogInSignUpSelectionScreen(val component: SelectionLoginSignupScreenComponent) : Child()
         data class LogInScreen(val component: LoginScreenComponent) : Child()
         data class SignUpScreen(val component: SignupScreenComponent) : Child()
+
+        data class HomeScreen(val component: HomeScreenComponent) : Child()
+        data class NewExpenseScreen(val component: NewExpenseScreenComponent) : Child()
+        data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
+
+        data class DataScreen(val component: DataScreenComponent) : Child()
+    }
+
+    // TODO add new screens when ready
+    fun navBarItemClicked(item: NavBarItem) {
+        when (item) {
+            NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
+            NavBarItem.Data -> navigation.bringToFront(Configuration.DataScreen)
+            NavBarItem.Groups -> navigation.bringToFront(Configuration.HomeScreen)
+            NavBarItem.Settings -> navigation.bringToFront(Configuration.HomeScreen)
+        }
     }
 
     @OptIn(ExperimentalDecomposeApi::class)
-    private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child =
-        when (configuration) {
+    private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child {
+        return when (configuration) {
             is Configuration.LogInSignUpSelectionScreen -> {
                 Child.LogInSignUpSelectionScreen(
                     component = SelectionLoginSignupScreenComponent(
@@ -88,26 +124,14 @@ class RootComponent(
                         },
                         onSignupButtonClicked = {
                             navigation.pushNew(Configuration.SignUpScreen)
-                        }
-                    )
+                        })
                 )
             }
 
             is Configuration.LogInScreen -> {
                 Child.LogInScreen(
                     component = LoginScreenComponent(
-                        componentContext = componentContext,
-                        coroutineScope = coroutineScope,
-                        apiClient = LoginApi(baseUrl, httpClient),
-                        onConfirm = {
-                            navigation.replaceAll(Configuration.HomeScreen)
-                        },
-                        onBack = {
-                            navigation.pop()
-                        },
-                        setToken = { newToken ->
-                            apiService = ApiService(newToken, httpClient, baseUrl)
-                        }
+                        baseScreenComponent = createLoginScreenComponent(componentContext)
                     )
                 )
             }
@@ -115,18 +139,7 @@ class RootComponent(
             is Configuration.SignUpScreen -> {
                 Child.SignUpScreen(
                     component = SignupScreenComponent(
-                        componentContext = componentContext,
-                        coroutineScope = coroutineScope,
-                        apiClient = SignUpApi(baseUrl, httpClient),
-                        onConfirm = {
-                            navigation.replaceAll(Configuration.HomeScreen)
-                        },
-                        onBack = {
-                            navigation.pop()
-                        },
-                        setToken = { newToken ->
-                            apiService = ApiService(newToken, httpClient, baseUrl)
-                        }
+                        baseScreenComponent = createLoginScreenComponent(componentContext)
                     )
                 )
             }
@@ -134,39 +147,31 @@ class RootComponent(
             is Configuration.HomeScreen -> {
                 Child.HomeScreen(
                     component = HomeScreenComponent(
-                        componentContext = componentContext,
-                        apiService = apiService,
-                        coroutineScope = coroutineScope,
+                        baseScreenComponent = createMainScreenComponent(componentContext),
                         onAddExpenseButtonClicked = {
                             navigation.pushNew(Configuration.NewExpenseScreen)
                         },
                         onExpenseClick = { expense ->
                             navigation.pushNew(Configuration.ExpenseDetailsScreen(expense))
-                        }
-                    )
+                        })
                 )
             }
 
             is Configuration.NewExpenseScreen -> Child.NewExpenseScreen(
                 component = NewExpenseScreenComponent(
-                    componentContext = componentContext,
-                    apiService = apiService,
-                    coroutineScope = coroutineScope,
+                    baseComponent = createMainScreenComponent(componentContext),
                     onDismiss = { navigation.pop() },
                     onSave = {
                         navigation.pop()
                         (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
                             HomeScreenComponent.NavigationState.FromNewExpenseScreen
                         )
-                    }
-                )
+                    })
             )
 
             is Configuration.ExpenseDetailsScreen -> Child.ExpenseDetailsScreen(
                 component = ExpenseDetailsScreenComponent(
-                    componentContext = componentContext,
-                    apiService = apiService,
-                    coroutineScope = coroutineScope,
+                    baseComponent = createMainScreenComponent(componentContext),
                     onDismiss = { navigation.pop() },
                     onSave = {
                         navigation.pop()
@@ -183,9 +188,15 @@ class RootComponent(
                     expense = configuration.expense
                 )
             )
-        }
 
-    @OptIn(ExperimentalDecomposeApi::class)
+            is Configuration.DataScreen -> Child.DataScreen(
+                DataScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext)
+                )
+            )
+        }
+    }
+
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),

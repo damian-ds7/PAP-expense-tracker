@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.screenComponents
+package pw.edu.pl.pap.screenComponents.mainScreens
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
