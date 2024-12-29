@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.*;
 
 @Service
@@ -20,14 +21,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final CurrencyRepository currencyRepository;
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
+    private final MethodOfPaymentRepository methodOfPaymentRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
         this.currencyRepository = currencyRepository;
         this.userRepository = userRepository;
         this.membershipRepository = membershipRepository;
+        this.methodOfPaymentRepository = methodOfPaymentRepository;
     }
 
     @Override
@@ -45,6 +48,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             Category defaultCategory = categoryRepository.findById(1L)
                     .orElseGet(() -> categoryRepository.save(new Category()));
             entity.setCategory(defaultCategory);
+        }
+        if (entity.getMethod() == null) {
+            MethodOfPayment defaultMethod = methodOfPaymentRepository.findById(1L)
+                    .orElseGet(() -> methodOfPaymentRepository.save(new MethodOfPayment()));
+            entity.setMethod(defaultMethod);
         }
         if (entity.getCurrency() == null) {
             Currency defaultCurrency = currencyRepository.findById(1L)
@@ -94,6 +102,39 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .collect(Collectors.groupingBy(
                         Expense::getCategory
                 ));
+    }
+
+    @Override
+    public Map<String, Double> getMonthlyExpensesForUser(String year, String currCode) {
+        Currency currency = currencyRepository.findBySymbol(currCode);
+        List<Expense> userExpenses = expenseRepository.findByUserEmailAndDateYear(getUserEmail(), year);
+        return totalExpensesMap(userExpenses, e -> e.getDate().getMonth().name(), currency);
+
+    }
+
+    @Override
+    public Map<String, Double> getMonthlyExpensesForGroup(String year, String currCode) {
+        Currency currency = currencyRepository.findBySymbol(currCode);
+        List<Expense> groupExpenses = expenseRepository.findByUserGroupNameAndYear(getGroupName(), year);
+        return totalExpensesMap(groupExpenses, e-> e.getDate().getMonth().name(), currency);
+    }
+
+    @Override
+    public Map<String, Double> getSumOfCategoryExpansesForGroup(String begin, String end, String currCode) {
+        LocalDate beginDate = LocalDate.parse(begin);
+        LocalDate endDate = LocalDate.parse(end);
+        Currency currency = currencyRepository.findBySymbol(currCode);
+        List<Expense> categoryExpenses = expenseRepository.findByDateBetween(beginDate, endDate, getGroupName());
+        return totalExpensesMap(categoryExpenses, e->e.getCategory().getName(), currency);
+    }
+
+    @Override
+    public Map<String, Double> getSumOfCategoryExpansesForUser(String begin, String end, String currCode) {
+        LocalDate beginDate = LocalDate.parse(begin);
+        LocalDate endDate = LocalDate.parse(end);
+        Currency currency = currencyRepository.findBySymbol(currCode);
+        List<Expense> categoryExpenses = expenseRepository.findByUserEmailAndDateBetween(getUserEmail(), beginDate, endDate);
+        return totalExpensesMap(categoryExpenses, e->e.getCategory().getName(), currency);
     }
 
     @Override
@@ -156,5 +197,29 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private boolean isGroupNameValid(String name){
         return getAllGroups().stream()
                 .anyMatch(group -> group.getName().equals(name));
+    }
+
+    private String getUserEmail() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
+    }
+
+    private double convertFromCurrencyToAnother(double value, Currency srcCurr, Currency dstCurr) {
+        if (!srcCurr.getSymbol().equals("PLN")) {
+            value *= srcCurr.getExchangeRate();
+        }
+        if (!dstCurr.getSymbol().equals("PLN")) {
+            value /= dstCurr.getExchangeRate();
+        }
+        return value;
+    }
+    private Map<String, Double> totalExpensesMap(List<Expense> queryResult, Function<Expense, String> keyExtractor, Currency dstCurr) {
+        Map<String, Double> map = new LinkedHashMap<>();
+        for (Expense expense : queryResult) {
+            String key = keyExtractor.apply(expense);
+            double price = convertFromCurrencyToAnother(expense.getPrice(), expense.getCurrency(), dstCurr);
+            map.put(key, map.getOrDefault(key, 0.0) + price);
+        }
+        return map;
     }
 }

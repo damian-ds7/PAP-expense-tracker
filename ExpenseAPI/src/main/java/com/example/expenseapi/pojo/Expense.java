@@ -19,6 +19,10 @@ public class Expense {
     private Long id;
 
     @NonNull
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @NonNull
     @Column(name = "price", nullable = false)
     private double price;
 
@@ -35,18 +39,24 @@ public class Expense {
     private Category category;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "method_id", referencedColumnName = "id")
+    private MethodOfPayment method;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "currency_id", referencedColumnName = "id")
     private Currency currency;
 
-    public Expense(double price, @NonNull User user, Category category, Currency currency) {
+    public Expense(String title, double price, @NonNull User user, Category category, Currency currency, MethodOfPayment method) {
+        this.title = title;
         this.price = price;
         this.user = user;
         this.category = category;
         this.currency = currency;
+        this.method = method;
     }
 
-    public Expense(double price, @NonNull User user, Category category, LocalDate date, Currency currency) {
-        this(price, user, category, currency);
+    public Expense(String title, double price, @NonNull User user, Category category, LocalDate date, Currency currency, MethodOfPayment method) {
+        this(title, price, user, category, currency, method);
         this.setDate(date);
     }
 }
