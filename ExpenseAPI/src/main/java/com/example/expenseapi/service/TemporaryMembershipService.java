@@ -1,7 +1,6 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.pojo.TemporaryMembership;
-import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 
