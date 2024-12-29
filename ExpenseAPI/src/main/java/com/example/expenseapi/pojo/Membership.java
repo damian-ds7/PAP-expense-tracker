@@ -6,29 +6,14 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "memberships")
-public class Membership {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+public class Membership extends BaseMembership{
+    public Membership(User user, BaseGroup group, String name, Role role){
+        super(user, group, name, role);
+    }
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "group_id", referencedColumnName = "id")
-    private BaseGroup group;
-
-    @Column(name = "name")
-    private String name;
-
-    public Membership(User user, BaseGroup group, String name) {
-        this.user = user;
-        this.group = group;
-        this.name = name;
+    public Membership(TemporaryMembership temporaryMembership) {
+        super(temporaryMembership.getUser(), temporaryMembership.getGroup(), temporaryMembership.getName(), temporaryMembership.getRole());
     }
 }

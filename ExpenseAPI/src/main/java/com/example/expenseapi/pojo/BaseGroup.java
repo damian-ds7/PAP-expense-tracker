@@ -1,10 +1,8 @@
 package com.example.expenseapi.pojo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 
 @Getter
@@ -23,7 +21,9 @@ public class BaseGroup {
     )
     protected Long id;
 
-    @Column(name = "name")
+    @NonNull
+    @NotBlank
+    @Column(name = "name", nullable = false)
     protected String name;
 
     public BaseGroup(String name) {

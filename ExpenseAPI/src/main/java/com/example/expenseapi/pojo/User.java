@@ -30,7 +30,7 @@ public class User {
     @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
     private String email;
 
-    @Column(name = "creationDate", nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate = LocalDate.now();
 
     @NonNull

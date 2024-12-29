@@ -1,7 +1,9 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.pojo.BaseGroup;
+import com.example.expenseapi.pojo.BaseMembership;
 import com.example.expenseapi.pojo.Membership;
+import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,4 +20,26 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     public List<BaseGroup> getBaseGroupsByUserId(Long userId) {
         return membershipRepository.findBaseGroupsByUser_Id(userId);
     }
+
+    @Override
+    public List<Membership> getMembershipsByUserId(Long userId) {
+        return membershipRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<User> findAdmins(String group) {
+        return membershipRepository.findAdmins(group);
+    }
+
+    @Override
+    public String getRole(User user, BaseMembership entity) {
+        return getMembershipsByUserId(user.getId())
+                .stream()
+                .filter(membership -> membership.getGroup().getId().equals(entity.getGroup().getId()))
+                .findFirst()
+                .get()
+                .getRole()
+                .getName();
+    }
+
 }

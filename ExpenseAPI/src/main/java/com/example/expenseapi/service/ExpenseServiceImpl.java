@@ -1,8 +1,11 @@
 package com.example.expenseapi.service;
 
+import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import com.example.expenseapi.utils.ExpenseSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -60,50 +63,24 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public List<Expense> getExpensesByCategory(String category) {
-        return expenseRepository.findByCategoryName(category, getGroupName());
-    }
-
-    @Override
-    public List<Expense> getExpensesByDate(String date) {
-        LocalDate dateObject = LocalDate.parse(date);
-        return expenseRepository.findByDate(dateObject, getGroupName());
-    }
-
-    @Override
-    public List<Expense> getExpensesByPeriod(String begin, String end) {
-        LocalDate beginDate = LocalDate.parse(begin);
-        LocalDate endDate = LocalDate.parse(end);
-        return expenseRepository.findByDateBetween(beginDate, endDate, getGroupName());
-    }
-
-    @Override
-    public List<Expense> getExpensesWherePriceInRange(double left_end, double right_end) {
-        return expenseRepository.findByPriceBetween(left_end, right_end, getGroupName());
-    }
-
-    @Override
-    public List<Expense> getExpensesWherePriceIsLower(double price) {
-        return expenseRepository.findByPriceLessThan(price, getGroupName());
-    }
-
-    @Override
-    public List<Expense> getExpensesWherePriceIsGreater(double price) {
-        return expenseRepository.findByPriceGreaterThan(price, getGroupName());
-    }
-
-    @Override
     public List<Expense> getExpensesForGroup(String name) {
-        return expenseRepository.findByUserGroupName(name);
+        ExpenseFilter filter = new ExpenseFilter();
+        filter.setGroupName(name);
+        return searchExpenses(filter);
     }
 
     @Override
-    public ExpInfo getExpInfo() {
-        List<Expense> groupExpenses = getExpensesForGroup();
+    public ExpInfo getExpInfo(String group) {
+        List<Expense> groupExpenses = getExpensesForGroup(group);
         List<Expense> userExpenses = expenseRepository.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
+    }
+
+    @Override
+    public ExpInfo getExpInfo() {
+        return getExpInfo(getGroupName());
     }
 
     @Override
@@ -165,19 +142,61 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return expenseRepository.findTopByOrderByIdDesc();
     }
 
-    private List<Expense> getExpensesForGroup() {
+    @Override
+    public List<Expense> getExpensesForGroup() {
         return getExpensesForGroup(getGroupName());
     }
 
     private String getGroupName() {
+        return getAllGroups().getFirst().getName();
+    }
+
+    private List<BaseGroup> getAllGroups() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
-        String name = null;
+        List<BaseGroup> groups = null;
         if (user.isPresent()) {
-            name = membershipRepository.findBaseGroupsByUser_Id(user.get().getId()).getFirst().getName();
+            groups = membershipRepository.findBaseGroupsByUser_Id(user.get().getId());
         }
-        return name;
+        return groups;
+    }
+
+    @Override
+    public Map<LocalDate, List<Expense>> getGroupExpenseAsDateMap(String name) {
+        List<Expense> expenses = getExpensesForGroup(name);
+        return expenses.stream()
+                .collect(Collectors.groupingBy(Expense::getDate));
+    }
+
+    @Override
+    public Map<Category, List<Expense>> getGroupExpenseAsCategoryMap(String name) {
+        List<Expense> expenses = getExpensesForGroup(name);
+        return expenses.stream()
+                .collect(Collectors.groupingBy(Expense::getCategory));
+    }
+
+    @Override
+    public List<Expense> searchExpenses(ExpenseFilter filter) {
+        if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
+            filter.setGroupName(getGroupName());
+        }
+        if (!isGroupNameValid(filter.getGroupName())) {
+            return Collections.emptyList();
+        }
+        Specification<Expense> spec = Specification.where(null);
+        spec = spec.and(ExpenseSpecification.hasCategory(filter.getCategoryName()));
+        spec = spec.and(ExpenseSpecification.dateIs(filter.getDate()));
+        spec = spec.and(ExpenseSpecification.dateBetween(filter.getBeginDate(), filter.getEndDate()));
+        spec = spec.and(ExpenseSpecification.priceBetween(filter.getPriceMin(), filter.getPriceMax()));
+        spec = spec.and(ExpenseSpecification.hasGroup(filter.getGroupName()));
+        spec = spec.and(ExpenseSpecification.isUser(filter.getEmail()));
+        return expenseRepository.findAll(spec);
+    }
+
+    private boolean isGroupNameValid(String name){
+        return getAllGroups().stream()
+                .anyMatch(group -> group.getName().equals(name));
     }
 
     private String getUserEmail() {

@@ -5,19 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
 
 public interface ExpenseService extends GenericService<Expense, Long> {
     List<Expense> getExpensesByEmail(String email);
-    List<Expense> getExpensesByCategory(String category);
-    List<Expense> getExpensesByDate(String date);
-    List<Expense> getExpensesByPeriod(String begin, String end);
-    List<Expense> getExpensesWherePriceInRange(double left_end, double right_end);
-    List<Expense> getExpensesWherePriceIsLower(double price);
-    List<Expense> getExpensesWherePriceIsGreater(double price);
     List<Expense> getExpensesForGroup(String name);
+    ExpInfo getExpInfo(String group);
     ExpInfo getExpInfo();
     Map<LocalDate, List<Expense>> getDateExpenseAsMap();
     Map<Category, List<Expense>> getCategoryExpenseAsMap();
@@ -26,4 +22,10 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Map<String, Double> getSumOfCategoryExpansesForGroup(String begin, String end, String currCode);
     Map<String, Double> getSumOfCategoryExpansesForUser(String begin, String end, String currCode);
     Optional<Expense> getRecentExpense();
+
+    Map<LocalDate, List<Expense>> getGroupExpenseAsDateMap(String name);
+
+    Map<Category, List<Expense>> getGroupExpenseAsCategoryMap(String name);
+    List<Expense> searchExpenses(ExpenseFilter filter);
+    List<Expense> getExpensesForGroup();
 }
