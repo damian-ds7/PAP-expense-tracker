@@ -1,5 +1,6 @@
 package pw.edu.pl.pap.screenComponents.mainScreens
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,9 +17,12 @@ class SettingsScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-//    private var serverAddress: MutableState<String> = mutableStateOf(apiService.baseUrl)
-    // TODO
-    private var serverAddress: MutableState<String> = mutableStateOf("")
+    private var serverAddress: MutableState<String> = mutableStateOf(apiService.getCurrentUrl())
+
+//    @Composable
+//    suspend fun updateUrl() {
+//
+//    }
 
 
     fun setupInputFields() {

@@ -10,8 +10,12 @@ open class BaseApiClient(
     private val httpClient: HttpClient,
     private val userToken: String
 ) {
-    fun updateUrl(newUrl: String): Unit{
+    fun setUrl(newUrl: String): Unit{
         baseUrl = newUrl
+    }
+
+    fun getUrl(): String {
+        return baseUrl
     }
 
     protected suspend fun get(endpoint: String): HttpResponse {
