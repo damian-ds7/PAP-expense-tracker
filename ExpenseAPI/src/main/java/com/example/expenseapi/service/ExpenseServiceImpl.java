@@ -117,7 +117,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     private int endOfTheYear (String year) {
-        if (LocalDate.parse(year).isLeapYear()) {
+        if (LocalDate.ofYearDay(Integer.parseInt(year), 1).isLeapYear()) {
             return 366;
         } else {
             return 365;
