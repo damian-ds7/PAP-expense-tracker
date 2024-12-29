@@ -1,10 +1,8 @@
 package com.example.expenseapi.pojo;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 @Getter
 @Setter
@@ -22,17 +20,22 @@ public class BaseMembership {
     )
     protected Long id;
 
+    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     protected User user;
 
+    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     protected BaseGroup group;
 
-    @Column(name = "name")
+    @NonNull
+    @NotBlank
+    @Column(name = "name", nullable = false)
     protected String name;
 
+    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     protected Role role;
