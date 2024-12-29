@@ -17,6 +17,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
 import pw.edu.pl.pap.ui.dataScreen.DataScreen
+import pw.edu.pl.pap.ui.settingsScreen.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen
@@ -71,6 +72,7 @@ fun App(rootComponent: RootComponent) {
                             is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
                             is RootComponent.Child.DataScreen -> DataScreen(instance.component)
+                            is RootComponent.Child.SettingsScreen -> SettingsScreen(instance.component)
                         }
                     }
                 }
@@ -83,6 +85,7 @@ fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
         is RootComponent.Child.HomeScreen,
         is RootComponent.Child.DataScreen -> true
+        is RootComponent.Child.SettingsScreen -> true
         else -> false
     }
 }

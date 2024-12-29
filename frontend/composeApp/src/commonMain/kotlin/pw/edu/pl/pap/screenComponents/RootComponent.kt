@@ -18,10 +18,7 @@ import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.screenComponents.loginSystem.*
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponentImpl
-import pw.edu.pl.pap.screenComponents.mainScreens.DataScreenComponent
-import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.*
 import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
 import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
 import pw.edu.pl.pap.ui.navBar.NavBarItem
@@ -69,6 +66,9 @@ class RootComponent(
 
         @Serializable
         data object DataScreen : Configuration()
+
+        @Serializable
+        data object SettingsScreen : Configuration()
     }
 
     private fun createLoginScreenComponent(
@@ -100,6 +100,7 @@ class RootComponent(
         data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
 
         data class DataScreen(val component: DataScreenComponent) : Child()
+        data class SettingsScreen(val component: SettingsScreenComponent) : Child()
     }
 
     // TODO add new screens when ready
@@ -108,7 +109,7 @@ class RootComponent(
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Data -> navigation.bringToFront(Configuration.DataScreen)
             NavBarItem.Groups -> navigation.bringToFront(Configuration.HomeScreen)
-            NavBarItem.Settings -> navigation.bringToFront(Configuration.HomeScreen)
+            NavBarItem.Settings -> navigation.bringToFront(Configuration.SettingsScreen)
         }
     }
 
@@ -191,6 +192,12 @@ class RootComponent(
 
             is Configuration.DataScreen -> Child.DataScreen(
                 DataScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext)
+                )
+            )
+
+            is Configuration.SettingsScreen -> Child.SettingsScreen(
+                SettingsScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext)
                 )
             )
