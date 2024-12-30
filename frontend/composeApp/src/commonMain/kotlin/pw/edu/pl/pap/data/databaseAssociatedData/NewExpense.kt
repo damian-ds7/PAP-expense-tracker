@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDate
 
 @Serializable
 data class NewExpense(
+    val title: String,
     val price: Float,
     val date: LocalDate,
     val user: User
