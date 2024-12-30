@@ -198,6 +198,7 @@ class RootComponent(
 
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(
+                    onLogOut = {navigation.replaceAll(Configuration.LogInSignUpSelectionScreen)},
                     baseComponent = createMainScreenComponent(componentContext)
                 )
             )

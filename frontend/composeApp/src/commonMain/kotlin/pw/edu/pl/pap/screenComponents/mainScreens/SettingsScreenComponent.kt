@@ -12,6 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
 class SettingsScreenComponent(
+    val onLogOut: () -> Unit,
     baseComponent: BaseScreenComponent
 ) : BaseScreenComponent by baseComponent {
 
@@ -21,7 +22,7 @@ class SettingsScreenComponent(
     private var serverAddress: MutableState<String> = mutableStateOf(apiService.getCurrentUrl())
     private var debounceJob by mutableStateOf<Job?>(null)
 
-    fun onServerAddressChange(newAddress: String) {
+    private fun onServerAddressChange(newAddress: String) {
         serverAddress.value = newAddress
         debounceJob?.cancel()
         debounceJob = coroutineScope.launch {
@@ -29,7 +30,7 @@ class SettingsScreenComponent(
 //            println(apiService.getCurrentUrl())
 //            println(serverAddress.value)
             updateUrl()
-            println("URL CHANGED")
+//            println("URL CHANGED")
         }
     }
 
@@ -80,7 +81,7 @@ class SettingsScreenComponent(
                     isButton = true,
                     buttonData = ButtonData(
                         title = "LOG OUT",
-                        onClick = {},
+                        onClick = onLogOut,
                     )
                 ),
             )
