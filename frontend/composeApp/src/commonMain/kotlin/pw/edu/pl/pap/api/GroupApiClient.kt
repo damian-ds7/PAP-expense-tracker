@@ -16,10 +16,11 @@ import javax.swing.GroupLayout.Group
 class GroupApiClient(baseUrl: String, httpClient: HttpClient, userToken: String) :
     BaseApiClient(baseUrl, httpClient, userToken) {
 
-    suspend fun getUserGroups(): List<UserGroup> { //set type
-//        val result:String = get("all").body()
-//        println(result)
-//        return result
+    override fun setUrl(newUrl: String) {
+        baseUrl = "$newUrl/group/"
+    }
+
+    suspend fun getUserGroups(): List<UserGroup> {
         return get("all").body()
     }
 }

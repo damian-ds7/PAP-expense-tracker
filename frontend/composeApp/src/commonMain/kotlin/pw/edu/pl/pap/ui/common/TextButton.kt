@@ -24,7 +24,7 @@ fun TextButton(
 
     Button(
         shape = RoundedCornerShape(20),
-        modifier = if (!changeSize) modifier.width(100.dp).height(60.dp) else modifier,
+        modifier = if (!changeSize) modifier.width(120.dp).height(60.dp) else modifier,
         colors = colors,
         contentPadding = PaddingValues(0.dp),
         onClick = { onUpdate() },

@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.Order
-import pw.edu.pl.pap.screenComponents.HomeScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingPopup
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -17,6 +18,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
 import pw.edu.pl.pap.ui.dataScreen.DataScreen
+import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen
@@ -25,11 +27,17 @@ import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
 import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
+import pw.edu.pl.pap.ui.settingsScreens.ChangePasswordScreen
+import pw.edu.pl.pap.ui.settingsScreens.PreferencesScreen
+import pw.edu.pl.pap.ui.settingsScreens.UserPersonalDataScreen
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 // Todo refactor function, tweak animations
 @Composable
 fun App(rootComponent: RootComponent) {
     val childStack = rootComponent.childStack.subscribeAsState()
+    val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold(
@@ -41,6 +49,7 @@ fun App(rootComponent: RootComponent) {
                         items = listOf(
                             NavBarItem.Home, NavBarItem.Data, NavBarItem.Groups, NavBarItem.Settings
                         ),
+                        selectedItem = activeNavBarItem,
                         onSelect = { rootComponent.navBarItemClicked(it) }
                     )
                 }
@@ -71,6 +80,11 @@ fun App(rootComponent: RootComponent) {
                             is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
                             is RootComponent.Child.DataScreen -> DataScreen(instance.component)
+                            is RootComponent.Child.SettingsScreen -> SettingsScreen(instance.component)
+
+                            is RootComponent.Child.UserPersonalDataScreen -> UserPersonalDataScreen(instance.component)
+                            is RootComponent.Child.ChangePasswordScreen -> ChangePasswordScreen(instance.component)
+                            is RootComponent.Child.PreferencesScreen -> PreferencesScreen(instance.component)
                         }
                     }
                 }
@@ -83,6 +97,7 @@ fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
         is RootComponent.Child.HomeScreen,
         is RootComponent.Child.DataScreen -> true
+        is RootComponent.Child.SettingsScreen -> true
         else -> false
     }
 }

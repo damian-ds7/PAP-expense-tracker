@@ -13,20 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
-import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.window.Popup
 import kotlinx.datetime.LocalDate
-import androidx.compose.ui.res.painterResource
-import pw.edu.pl.pap.data.uiSetup.inputFields.DatePickerData
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import pw.edu.pl.pap.data.uiSetup.inputFields.*
+import androidx.compose.runtime.*
 
 
 @Composable
@@ -43,38 +41,41 @@ fun InputFields(inputFieldsData: List<InputFieldData>) {
 }
 
 @Composable
-fun createField(data: InputFieldData) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .height(50.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(
+private fun createField(data: InputFieldData) {
+    if (data.isButton) { createClickableCard(data.buttonData!!) }
+    else {
+        Card(
+            shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .height(50.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(text = data.title)
-            if(data.isDropdownList){
-                createDropdownList(data.dropdownListData!!)
-            } else if(data.isDatePicker) {
-                createDatePicker(data.datePickerData!!)
-            } else if(data.isPassword) {
-                createPasswordField(data.textFieldData!!)
-            } else {
-                createTextField(data.textFieldData!!)
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = data.title)
+                if (data.isDropdownList) {
+                    createDropdownList(data.dropdownListData!!)
+                } else if (data.isDatePicker) {
+                    createDatePicker(data.datePickerData!!)
+                } else if (data.isPassword) {
+                    createPasswordField(data.textFieldData!!)
+                } else {
+                    createTextField(data.textFieldData!!)
+                }
             }
         }
     }
 }
 
 @Composable
-fun createTextField(
+private fun createTextField(
     data: TextFieldData
 ){
     TextField(
@@ -85,7 +86,7 @@ fun createTextField(
 }
 
 @Composable
-fun createDropdownList(
+private fun createDropdownList(
     data: DropdownListData
 ){
     var showDropdown by remember { mutableStateOf(false) }
@@ -152,7 +153,7 @@ fun createDropdownList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun createDatePicker(
+private fun createDatePicker(
     data: DatePickerData
 ){
     var showDatePicker by remember { mutableStateOf(false) }
@@ -200,7 +201,7 @@ fun createDatePicker(
 }
 
 @Composable
-fun createPasswordField(
+private fun createPasswordField(
     data: TextFieldData
 ){
     var visibility by rememberSaveable { mutableStateOf(false) }
@@ -217,4 +218,34 @@ fun createPasswordField(
             }
         }
     )
+}
+
+@Composable
+private fun createClickableCard(data: ButtonData) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .height(50.dp)
+            .clickable { data.onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = if (data.isColored) {
+            CardDefaults.cardColors(containerColor = data.customColor)
+        } else {
+            CardDefaults.cardColors()
+        }
+    ){
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = data.title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+    }
 }

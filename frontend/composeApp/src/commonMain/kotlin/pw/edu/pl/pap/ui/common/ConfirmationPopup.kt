@@ -4,6 +4,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 
 @Composable
 fun ConfirmationPopup(
@@ -32,4 +33,18 @@ fun ConfirmationPopup(
                 Text("Yes")
             }
         })
+}
+
+@Composable
+fun showConfirmationPopup(data: ConfirmationDialogConfig) {
+    ConfirmationPopup(
+        mainText = data.mainText,
+        subText = data.subText,
+        onNo = {
+            data.onNo()
+        },
+        onYes = {
+            data.onYes()
+        }
+    )
 }

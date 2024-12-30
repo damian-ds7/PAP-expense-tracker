@@ -6,10 +6,18 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 
 open class BaseApiClient(
-    private val baseUrl: String,
+    protected var baseUrl: String,
     private val httpClient: HttpClient,
     private val userToken: String
 ) {
+    open fun setUrl(newUrl: String): Unit{
+        throw NotImplementedError("Subclasses must override confirm")
+    }
+
+    fun getUrl(): String {
+        return baseUrl
+    }
+
     protected suspend fun get(endpoint: String): HttpResponse {
         return httpClient.get("$baseUrl$endpoint") {
             contentType(ContentType.Application.Json)

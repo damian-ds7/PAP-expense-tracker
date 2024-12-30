@@ -14,6 +14,10 @@ import pw.edu.pl.pap.util.sortingSystem.Order
 class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: String) :
     BaseApiClient(baseUrl, httpClient, userToken) {
 
+    override fun setUrl(newUrl: String) {
+        baseUrl = "$newUrl/expense/"
+    }
+
     suspend fun getTotalExpenses(): TotalExpenses {
 //        val result:String = get("state").body()
 //        println(result)
