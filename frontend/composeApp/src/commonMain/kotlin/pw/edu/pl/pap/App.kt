@@ -17,7 +17,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
 import pw.edu.pl.pap.ui.dataScreen.DataScreen
-import pw.edu.pl.pap.ui.settingsScreen.SettingsScreen
+import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen

@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.settingsScreen
+package pw.edu.pl.pap.ui.settingsScreens
 
 import androidx.compose.runtime.*
 import pw.edu.pl.pap.screenComponents.mainScreens.SettingsScreenComponent
