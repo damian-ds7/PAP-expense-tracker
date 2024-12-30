@@ -121,6 +121,8 @@ class HomeScreenComponent(
                     println(_groupedExpenses.value.groupingOrder.value)
                     println(currentGroupingOrder.value)
                 }
+                val homeData = apiService.expenseApiClient.getTotalExpensesForGroup(currentUserGroup.value?.name)
+                _homeInfo.value = homeData.first()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
