@@ -50,6 +50,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         Currency[] currencies = null;
         Role[] roles = null;
         MethodOfPayment[] methods = null;
+        Membership[] memberships = null;
         if (methodOfPaymentRepository.count() == 0) {
             methods = new MethodOfPayment[]{
                     new MethodOfPayment("cash"),
@@ -88,7 +89,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
             roleRepository.saveAll(Arrays.asList(roles));
         }
         if (membershipRepository.count() == 0) {
-            Membership[] memberships = new Membership[]{
+            memberships = new Membership[]{
                     new Membership(users[0], groups[0], "family", roles[0]),
                     new Membership(users[1], groups[0], "family", roles[0]),
                     new Membership(users[2], groups[1], "workers", roles[0]),
@@ -114,10 +115,10 @@ public class ExpenseApiApplication implements CommandLineRunner {
         }
         if (expenseRepository.count() == 0) {
             Expense[] expenses = new Expense[]{
-                    new Expense("dinner", 100, users[0], categories[0], LocalDate.of(2024, 11, 30), currencies[0], methods[0]),
-                    new Expense("train-ticket", 200, users[1], categories[1], LocalDate.of(2024, 12, 22), currencies[1], methods[1]),
-                    new Expense("groceries", 300, users[2], categories[0], currencies[0], methods[0]),
-                    new Expense("fast-food", 300, users[2], categories[0], currencies[2], methods[1]),
+                    new Expense("dinner", 100, memberships[0], categories[0], LocalDate.of(2024, 11, 30), currencies[0], methods[0]),
+                    new Expense("train-ticket", 200, memberships[0], categories[1], LocalDate.of(2024, 12, 22), currencies[1], methods[1]),
+                    new Expense("groceries", 300, memberships[1], categories[0], currencies[0], methods[0]),
+                    new Expense("fast-food", 300, memberships[2], categories[0], currencies[2], methods[1]),
             };
             expenseRepository.saveAll(Arrays.asList(expenses));
         }
