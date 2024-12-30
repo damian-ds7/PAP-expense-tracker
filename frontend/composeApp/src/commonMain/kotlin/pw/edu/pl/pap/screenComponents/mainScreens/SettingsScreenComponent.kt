@@ -20,8 +20,6 @@ class SettingsScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    lateinit var showLogOutConfirmationDialog: () -> Unit
-
     var showLogOutDialog: MutableState<Boolean> = mutableStateOf(false)
     val logOutConfirmationData = ConfirmationDialogConfig(
         mainText = "Log Out",
@@ -48,7 +46,7 @@ class SettingsScreenComponent(
         }
     }
 
-    private suspend fun updateUrl() {
+    private fun updateUrl() {
         apiService.updateBaseUrl(serverAddress.value)
     }
 
@@ -106,8 +104,6 @@ class SettingsScreenComponent(
 
 
 
-//TODO set server address
-//TODO log out
 //TODO edit personal user data
 //TODO change password
 //TODO edit preferences
