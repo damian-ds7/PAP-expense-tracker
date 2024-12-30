@@ -10,14 +10,28 @@ import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import androidx.compose.runtime.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 
 class SettingsScreenComponent(
-    val onLogOut: () -> Unit,
+    var onLogOut: () -> Unit,
     baseComponent: BaseScreenComponent
 ) : BaseScreenComponent by baseComponent {
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
+
+    lateinit var showLogOutConfirmationDialog: () -> Unit
+
+    var showLogOutDialog: MutableState<Boolean> = mutableStateOf(false)
+    val logOutConfirmationData = ConfirmationDialogConfig(
+        mainText = "Log Out",
+        subText = "Are you sure you want to log out?",
+        onNo = { showLogOutDialog.value = false },
+        onYes = {
+            showLogOutDialog.value = false
+            onLogOut()
+        }
+    )
 
     private var serverAddress: MutableState<String> = mutableStateOf(apiService.getCurrentUrl())
     private var debounceJob by mutableStateOf<Job?>(null)
@@ -82,7 +96,7 @@ class SettingsScreenComponent(
                     buttonData = ButtonData(
                         title = "LOG OUT",
                         isColored = true,
-                        onClick = onLogOut,
+                        onClick = { showLogOutDialog.value = true }
                     )
                 ),
             )
