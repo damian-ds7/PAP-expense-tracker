@@ -242,7 +242,11 @@ class RootComponent(
 
             is Configuration.ChangePasswordScreen -> Child.ChangePasswordScreen(
                 ChangePasswordScreenComponent(
-                    baseComponent = createMainScreenComponent(componentContext)
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onBack = {
+                        navigation.pop()
+                        navBarItemClicked(NavBarItem.Settings)
+                    }
                 )
             )
 

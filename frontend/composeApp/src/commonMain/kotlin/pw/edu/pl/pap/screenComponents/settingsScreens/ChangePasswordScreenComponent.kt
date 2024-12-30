@@ -12,7 +12,7 @@ import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 
 class ChangePasswordScreenComponent (
-    private val onBack: () -> Unit,
+    val onBack: () -> Unit,
     baseComponent: BaseScreenComponent
 ) : BaseScreenComponent by baseComponent {
 
@@ -26,8 +26,8 @@ class ChangePasswordScreenComponent (
 
     var showConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
     val confirmationData = ConfirmationDialogConfig(
-        mainText = "Change Personal Data",
-        subText = "Are you sure you want to change your personals?",
+        mainText = "Change Password",
+        subText = "Are you sure you want to change your password?",
         onNo = { showConfirmationDialog.value = false },
         onYes = {
             showConfirmationDialog.value = false
@@ -35,6 +35,16 @@ class ChangePasswordScreenComponent (
             onBack()
         }
     )
+
+    fun onConfirmClicked() {
+        if (password.value != repeatedPassword.value || password.value == "") {
+            showPasswordsWarning.value = true
+            return
+        } else {
+            showConfirmationDialog.value = true
+        }
+
+    }
 
     private fun saveNewPassword() {
         //TODO
@@ -46,6 +56,7 @@ class ChangePasswordScreenComponent (
             listOf(
                 InputFieldData(
                     title = "New password: ",
+                    isPassword = true,
                     textFieldData = TextFieldData(
                         parameter = password,
                         onChange = {
@@ -55,6 +66,7 @@ class ChangePasswordScreenComponent (
                 ),
                 InputFieldData(
                     title = "Repeat new password: ",
+                    isPassword = true,
                     textFieldData = TextFieldData(
                         parameter = repeatedPassword,
                         onChange = {
