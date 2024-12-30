@@ -13,7 +13,10 @@ import kotlinx.coroutines.delay
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 
 class SettingsScreenComponent(
-    var onLogOut: () -> Unit,
+    private val onLogOut: () -> Unit,
+    private val onUserPersonalsClicked: () -> Unit,
+    private val onChangePasswordClicked: () -> Unit,
+    private val onEditPreferencesClicked: () -> Unit,
     baseComponent: BaseScreenComponent
 ) : BaseScreenComponent by baseComponent {
 
@@ -69,7 +72,9 @@ class SettingsScreenComponent(
                     isButton = true,
                     buttonData = ButtonData(
                         title = "Edit personal user data",
-                        onClick = {},
+                        onClick = {
+                            coroutineScope.launch { onUserPersonalsClicked() }
+                        },
                     )
                 ),
                 InputFieldData(
@@ -77,7 +82,9 @@ class SettingsScreenComponent(
                     isButton = true,
                     buttonData = ButtonData(
                         title = "Change password",
-                        onClick = {},
+                        onClick = {
+                            coroutineScope.launch { onChangePasswordClicked() }
+                        },
                     )
                 ),
                 InputFieldData(
@@ -85,7 +92,9 @@ class SettingsScreenComponent(
                     isButton = true,
                     buttonData = ButtonData(
                         title = "Edit preferences",
-                        onClick = {},
+                        onClick = {
+                            coroutineScope.launch { onEditPreferencesClicked() }
+                        },
                     )
                 ),
                 InputFieldData(

@@ -215,7 +215,10 @@ class RootComponent(
 
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(
-                    onLogOut = {navigation.replaceAll(Configuration.LogInSignUpSelectionScreen)},
+                    onLogOut = { navigation.replaceAll(Configuration.LogInSignUpSelectionScreen) },
+                    onUserPersonalsClicked = { navigation.pushNew(Configuration.UserPersonalDataScreen) },
+                    onChangePasswordClicked = { navigation.pushNew(Configuration.ChangePasswordScreen) },
+                    onEditPreferencesClicked = { navigation.pushNew(Configuration.PreferencesScreen) },
                     baseComponent = createMainScreenComponent(componentContext)
                 )
             )
