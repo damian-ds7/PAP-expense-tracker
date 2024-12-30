@@ -171,7 +171,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     private String getGroupName() {
-        return getAllGroups().get(0).getName();
+        return getAllGroups().getFirst().getName();
     }
 
     private List<BaseGroup> getAllGroups() {
