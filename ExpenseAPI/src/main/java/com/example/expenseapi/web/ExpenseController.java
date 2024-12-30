@@ -41,7 +41,6 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).searchExpenses(filter), HttpStatus.OK);
     }
 
-
     @GetMapping("/my/group")
     @Operation(summary = "Retrieves expenses for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "List of expense object for group of logged-in user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
@@ -61,27 +60,17 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getExpInfo(group), HttpStatus.OK);
     }
 
-    @GetMapping("/all/dateMap")
+    @GetMapping("/dateMap/group/{name}")
     @Operation(summary = "Returns objects grouped by date for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by date")
-    public ResponseEntity<Map<LocalDate, List<Expense>>> getDateExpensesMap() {
-        return new ResponseEntity<>(((ExpenseService) service).getDateExpenseAsMap(), HttpStatus.OK);
-    }
-
-    @GetMapping("/all/categoryMap")
-    @Operation(summary = "Returns objects grouped by category for group of logged-in user")
-    @ApiResponse(responseCode = "200", description = "All expenses grouped by category")
-    public ResponseEntity<Map<Category, List<Expense>>> getCategoryExpenseMap() {
-        return new ResponseEntity<>(((ExpenseService) service).getCategoryExpenseAsMap(), HttpStatus.OK);
-    }
-
-    @GetMapping("/dateMap/group/{name}")
-    public ResponseEntity<Map<LocalDate, List<Expense>>> getGroupExpenseDateMap(@PathVariable String name) {
+    public ResponseEntity<Map<LocalDate, List<Expense>>> getDateExpensesMap(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsDateMap(name), HttpStatus.OK);
     }
 
     @GetMapping("/categoryMap/group/{name}")
-    public ResponseEntity<Map<Category, List<Expense>>> getGroupExpenseMap(@PathVariable String name) {
+    @Operation(summary = "Returns objects grouped by category for group of logged-in user")
+    @ApiResponse(responseCode = "200", description = "All expenses grouped by category")
+    public ResponseEntity<Map<Category, List<Expense>>> getCategoryExpenseMap(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name), HttpStatus.OK);
     }
 

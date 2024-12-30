@@ -84,27 +84,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<LocalDate, List<Expense>> getDateExpenseAsMap() {
-        List<Expense> groupExpenses = getExpensesForGroup();
-        return groupExpenses.stream()
-                .sorted(Comparator.comparing(Expense::getDate).reversed())
-                .collect(Collectors.groupingBy(
-                        Expense::getDate,
-                        LinkedHashMap::new,
-                        Collectors.toList()
-                ));
-    }
-
-    @Override
-    public Map<Category, List<Expense>> getCategoryExpenseAsMap() {
-        List<Expense> groupExpenses = getExpensesForGroup();
-        return groupExpenses.stream()
-                .collect(Collectors.groupingBy(
-                        Expense::getCategory
-                ));
-    }
-
-    @Override
     public Map<String, Double> getMonthlyExpensesForUser(String year, String currCode) {
         Currency currency = currencyRepository.findBySymbol(currCode);
         ExpenseFilter filter = new ExpenseFilter();
