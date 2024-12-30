@@ -19,8 +19,6 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
     }
 
     suspend fun getTotalExpenses(): TotalExpenses {
-//        val result:String = get("state").body()
-//        println(result)
         return get("state").body()
     }
 
@@ -72,6 +70,14 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
 
     suspend fun deleteExpense(id: Long): HttpResponse {
         return delete("delete/$id")
+    }
+
+    private suspend fun getTotalExpensesForGroupApi(group: String): TotalExpenses {
+        return get("state/$group").body()
+    }
+
+    fun getTotalExpensesForGroup(group: String?) = flow {
+        emit(getTotalExpensesForGroupApi(group!!))
     }
 
     private suspend fun getExpenseDateMapForGroupApi(group: String): ExpenseMap {
