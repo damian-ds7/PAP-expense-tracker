@@ -22,9 +22,7 @@ import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.*
-import pw.edu.pl.pap.screenComponents.settingsScreens.ChangePasswordScreenComponent
-import pw.edu.pl.pap.screenComponents.settingsScreens.PreferencesScreenComponent
-import pw.edu.pl.pap.screenComponents.settingsScreens.UserPersonalDataScreenComponent
+import pw.edu.pl.pap.screenComponents.settingsScreens.*
 import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
 import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
 import pw.edu.pl.pap.ui.navBar.NavBarItem
@@ -105,7 +103,17 @@ class RootComponent(
         coroutineScope = coroutineScope
     )
 
-
+    private fun createSettingsScreenComponent(
+        componentContext: ComponentContext
+    ): BaseSettingsScreenComponent = SettingsScreenComponentHelper(
+        componentContext = componentContext,
+        apiService = apiService,
+        coroutineScope = coroutineScope,
+        onBack = {
+            navigation.pop()
+            navBarItemClicked(NavBarItem.Settings)
+        }
+    )
 
     sealed class Child {
         data class LogInSignUpSelectionScreen(val component: SelectionLoginSignupScreenComponent) : Child()
@@ -232,25 +240,21 @@ class RootComponent(
                 )
             )
 
-            is Configuration.UserPersonalDataScreen -> Child.UserPersonalDataScreen(
-                UserPersonalDataScreenComponent(
-                    baseComponent = createMainScreenComponent(componentContext),
-                    onBack = {
-                        navigation.pop()
-                        navBarItemClicked(NavBarItem.Settings)
-                    }
+            is Configuration.UserPersonalDataScreen -> {
+                Child.UserPersonalDataScreen(
+                    component = UserPersonalDataScreenComponent(
+                        baseSettingsScreenComponent = createSettingsScreenComponent(componentContext)
+                    )
                 )
-            )
+            }
 
-            is Configuration.ChangePasswordScreen -> Child.ChangePasswordScreen(
-                ChangePasswordScreenComponent(
-                    baseComponent = createMainScreenComponent(componentContext),
-                    onBack = {
-                        navigation.pop()
-                        navBarItemClicked(NavBarItem.Settings)
-                    }
+            is Configuration.ChangePasswordScreen -> {
+                Child.ChangePasswordScreen(
+                    component = ChangePasswordScreenComponent(
+                        baseSettingsScreenComponent = createSettingsScreenComponent(componentContext)
+                    )
                 )
-            )
+            }
 
             is Configuration.PreferencesScreen -> Child.PreferencesScreen(
                 PreferencesScreenComponent(

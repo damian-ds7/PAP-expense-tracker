@@ -13,7 +13,6 @@ class ChangePasswordScreenComponent (
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
-
     private var password: MutableState<String> = mutableStateOf("")
     private var repeatedPassword: MutableState<String> = mutableStateOf("")
 
@@ -44,7 +43,7 @@ class ChangePasswordScreenComponent (
         //TODO
     }
 
-    fun setupInputFields() {
+    override fun setupInputFields() {
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(

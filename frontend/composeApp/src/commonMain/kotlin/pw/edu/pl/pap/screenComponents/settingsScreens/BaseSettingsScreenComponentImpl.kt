@@ -15,12 +15,22 @@ open class BaseSettingsScreenComponentImpl(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponent by baseSettingsScreenComponent {
 
-    private val _inputFieldsData = mutableStateListOf<InputFieldData>()
+    protected val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
     var showConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
 
     open lateinit var confirmationData: ConfirmationDialogConfig
 
+    open override fun setupInputFields() {
+        throw NotImplementedError("Subclasses must override confirm")
+    }
 
+    open override fun onConfirmClicked() {
+        throw NotImplementedError("Subclasses must override confirm")
+    }
+
+    protected open fun postChanges() {
+        throw NotImplementedError("Subclasses must override confirm")
+    }
 }

@@ -10,5 +10,4 @@ interface BaseSettingsScreenComponent : ComponentContext, BaseComponent {
 
     fun setupInputFields() {}
     fun onConfirmClicked() {}
-    private fun postChanges() {}
 }
