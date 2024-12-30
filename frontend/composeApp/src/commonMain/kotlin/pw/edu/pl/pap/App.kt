@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -29,11 +30,14 @@ import pw.edu.pl.pap.ui.navBar.NavBarItem
 import pw.edu.pl.pap.ui.settingsScreens.ChangePasswordScreen
 import pw.edu.pl.pap.ui.settingsScreens.PreferencesScreen
 import pw.edu.pl.pap.ui.settingsScreens.UserPersonalDataScreen
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 // Todo refactor function, tweak animations
 @Composable
 fun App(rootComponent: RootComponent) {
     val childStack = rootComponent.childStack.subscribeAsState()
+    val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold(
@@ -45,6 +49,7 @@ fun App(rootComponent: RootComponent) {
                         items = listOf(
                             NavBarItem.Home, NavBarItem.Data, NavBarItem.Groups, NavBarItem.Settings
                         ),
+                        selectedItem = activeNavBarItem,
                         onSelect = { rootComponent.navBarItemClicked(it) }
                     )
                 }

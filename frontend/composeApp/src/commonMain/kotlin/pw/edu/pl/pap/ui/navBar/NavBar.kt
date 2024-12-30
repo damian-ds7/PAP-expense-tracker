@@ -18,9 +18,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BottomNavBar(
-    modifier: Modifier = Modifier, items: List<NavBarItem>, onSelect: (NavBarItem) -> Unit
+    modifier: Modifier = Modifier,
+    items: List<NavBarItem>,
+    onSelect: (NavBarItem) -> Unit,
+    selectedItem: NavBarItem
 ) {
-    var selectedItem: NavBarItem? by remember { mutableStateOf(NavBarItem.Home) }
+//    var selectedItem: NavBarItem? by remember { mutableStateOf(NavBarItem.Home) }
 
     NavigationBar(
         modifier = modifier.fillMaxWidth(),
@@ -29,9 +32,9 @@ fun BottomNavBar(
             Box(
                 modifier = Modifier.weight(1f)
                     .clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
-                        selectedItem = item
                         onSelect(item)
-                    }, contentAlignment = Alignment.Center
+                    },
+                contentAlignment = Alignment.Center
             ) {
                 NavBarItem(
                     modifier = Modifier, item = item, isSelected = selectedItem == item

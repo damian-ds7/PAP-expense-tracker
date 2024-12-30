@@ -12,6 +12,8 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
@@ -120,8 +122,13 @@ class RootComponent(
         data class PreferencesScreen(val component: PreferencesScreenComponent) : Child()
     }
 
+
+    private val _activeNavBarItem = MutableStateFlow<NavBarItem>(NavBarItem.Home)
+    val activeNavBarItem: StateFlow<NavBarItem> get() = _activeNavBarItem
+
     // TODO add new screens when ready
     fun navBarItemClicked(item: NavBarItem) {
+        _activeNavBarItem.value = item
         when (item) {
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Data -> navigation.bringToFront(Configuration.DataScreen)
@@ -226,7 +233,10 @@ class RootComponent(
             is Configuration.UserPersonalDataScreen -> Child.UserPersonalDataScreen(
                 UserPersonalDataScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
-                    onBack = { navigation.pop() }
+                    onBack = {
+                        navigation.pop()
+                        navBarItemClicked(NavBarItem.Settings)
+                    }
                 )
             )
 
