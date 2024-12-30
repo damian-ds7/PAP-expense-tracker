@@ -80,13 +80,7 @@ public class ExpenseSpecification {
             if (groupName == null || groupName.isBlank()) {
                 return cb.conjunction();
             }
-            Subquery<Long> subQuery = query.subquery(Long.class);
-            Root<Membership> membershipRoot = subQuery.from(Membership.class);
-            subQuery.select(membershipRoot.get("user").get("id"));
-            subQuery.where(
-                    cb.equal(membershipRoot.join("group").get("name"), groupName)
-            );
-            return cb.in(root.get("user").get("id")).value(subQuery);
+            return cb.equal(root.get("membership").get("group").get("name"), groupName);
         };
     }
 
@@ -95,7 +89,7 @@ public class ExpenseSpecification {
             if (email == null) {
                 return cb.conjunction();
             }
-            return cb.equal(root.get("user").get("email"), email);
+            return cb.equal(root.get("membership").get("user").get("email"), email);
         };
     }
 
