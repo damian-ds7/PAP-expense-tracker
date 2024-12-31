@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.util.sortingSystem.forEachList
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
+import pw.edu.pl.pap.util.constants.horizontalPadding
+import pw.edu.pl.pap.util.constants.verticalPadding
 import pw.edu.pl.pap.util.formatForDisplay
 
 
@@ -30,7 +32,7 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .height(50.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable { onClick(expense) },
@@ -39,7 +41,7 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = horizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -75,7 +77,7 @@ fun Header(key: String) {
         text = key,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(verticalPadding),
         fontSize = 16.sp,
         color = MaterialTheme.colorScheme.onBackground
     )

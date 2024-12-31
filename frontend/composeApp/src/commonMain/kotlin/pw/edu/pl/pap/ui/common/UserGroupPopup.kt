@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
+import pw.edu.pl.pap.util.constants.padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,11 +43,11 @@ fun UserGroupPopup(
         onDismissRequest = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(padding)
         ) {
             Text("User group", style = MaterialTheme.typography.titleLarge)
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(padding))
 
             userGroupsInfo?.forEach { userGroup ->
                 val isSelected = selectedOption?.name == userGroup.name

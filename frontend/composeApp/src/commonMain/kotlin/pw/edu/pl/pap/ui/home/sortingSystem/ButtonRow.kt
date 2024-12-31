@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.UserGroupButton
+import pw.edu.pl.pap.util.constants.horizontalPadding
 
 @Composable
 fun ButtonRow(
@@ -22,16 +22,20 @@ fun ButtonRow(
     val currentUserGroup by component.currentUserGroup.collectAsState()
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.End
+        modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        UserGroupButton(currentUserGroup, onUserGroupClick)
+        Row {
+            UserGroupButton(currentUserGroup, onUserGroupClick)
+        }
 
-        GroupButton(currentGroupKey, onGroupKeyClick)
+        Row {
+            GroupButton(currentGroupKey, onGroupKeyClick)
 
-        RefreshButton {
-            component.updateNavigationState(HomeScreenComponent.NavigationState.InitialLoad)
-            component.getDataBasedOnState()
+            RefreshButton {
+                component.updateNavigationState(HomeScreenComponent.NavigationState.InitialLoad)
+                component.getDataBasedOnState()
+            }
         }
     }
 }
