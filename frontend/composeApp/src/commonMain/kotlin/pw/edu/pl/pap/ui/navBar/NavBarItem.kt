@@ -22,7 +22,7 @@ sealed class NavBarItem(
         title = "Groups"
     )
 
-    data object Data : NavBarItem(
+    data object Charts : NavBarItem(
         unselectedImage = Icons.Outlined.Leaderboard,
         selectedImage = Icons.Filled.Leaderboard,
         title = "Data"
