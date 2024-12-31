@@ -10,6 +10,7 @@ class ApiService(
     private val baseApiClient = BaseApiClient(baseUrl, httpClient, userToken)
     val expenseApiClient = ExpenseApiClient(baseApiClient)
     val groupApiClient = GroupApiClient(baseApiClient)
+    val chartsApiClient = ChartsApiClient(baseApiClient)
 
     fun updateBaseUrl(newUrl: String) {
         baseApiClient.setUrl(newUrl)
