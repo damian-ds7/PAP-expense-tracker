@@ -28,7 +28,8 @@ public class FilterController {
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String beginDate,
             @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String email
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) List<String> emails
     ) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setCategoryName(category);
@@ -36,6 +37,7 @@ public class FilterController {
         filter.setPriceMin(minPrice);
         filter.setPriceMax(maxPrice);
         filter.setEmail(email);
+        if (groupName != null) filter.setEmails(emails);
         if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
         if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
 
