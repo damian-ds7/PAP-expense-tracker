@@ -1,5 +1,6 @@
 package com.example.expenseapi.web;
 
+import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.Expense;
 import com.example.expenseapi.service.ExpenseService;
@@ -21,7 +22,7 @@ public class FilterController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Expense>> search(
+    public ResponseEntity<List<ExpenseDTO>> search(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String groupName,
             @RequestParam(required = false) Double minPrice,
@@ -39,6 +40,6 @@ public class FilterController {
         if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
         if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
 
-        return new ResponseEntity<>(service.searchExpenses(filter), HttpStatus.OK);
+        return new ResponseEntity<>(service.searchExpensesDTO(filter), HttpStatus.OK);
     }
 }
