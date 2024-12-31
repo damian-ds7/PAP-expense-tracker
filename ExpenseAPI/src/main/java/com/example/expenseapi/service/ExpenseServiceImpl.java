@@ -1,5 +1,6 @@
 package com.example.expenseapi.service;
 
+import com.example.expenseapi.ExpenseApiApplication;
 import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
@@ -67,7 +68,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public ExpInfo getExpInfo(String group) {
         List<Expense> groupExpenses = getExpensesForGroup(group);
-        List<Expense> userExpenses = expenseRepository.findByMembershipUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Expense> userExpenses = groupExpenses.stream()
+                .filter(expense -> expense.getMembership().getUser().getEmail().equals(getUserEmail()))
+                .toList(); // Returns only user's expenses in provided group, not in all groups
         double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
@@ -141,7 +144,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public Optional<Expense> getRecentExpense() {
-        return expenseRepository.findTopByOrderByIdDesc();
+        ExpenseFilter filter = new ExpenseFilter();
+        filter.setEmail(getUserEmail());
+        List<Expense> expenses = searchExpenses(filter);
+        return expenses.stream().max(Comparator.comparing(Expense::getDate));
     }
 
 
