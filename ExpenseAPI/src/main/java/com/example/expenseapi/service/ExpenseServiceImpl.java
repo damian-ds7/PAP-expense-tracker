@@ -1,6 +1,5 @@
 package com.example.expenseapi.service;
 
-import com.example.expenseapi.ExpenseApiApplication;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.dto.ExpenseFilter;
