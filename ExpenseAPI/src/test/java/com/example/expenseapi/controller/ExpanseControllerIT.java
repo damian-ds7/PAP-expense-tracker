@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
+/* Tests use database which schema is defined in ExpenseApiApplication (only with this schema they make sense) */
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
