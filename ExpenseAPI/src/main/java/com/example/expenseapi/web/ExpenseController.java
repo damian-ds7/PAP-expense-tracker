@@ -41,11 +41,11 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).searchExpenses(filter), HttpStatus.OK);
     }
 
-    @GetMapping("/my/group")
+    @GetMapping("/my/group/{name}")
     @Operation(summary = "Retrieves expenses for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "List of expense object for group of logged-in user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
-    public ResponseEntity<List<Expense>> getByGroup() {
-        return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(), HttpStatus.OK);
+    public ResponseEntity<List<Expense>> getByGroup(@PathVariable String name) {
+        return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(name), HttpStatus.OK);
     }
 
     @GetMapping("/state/allGroups")
