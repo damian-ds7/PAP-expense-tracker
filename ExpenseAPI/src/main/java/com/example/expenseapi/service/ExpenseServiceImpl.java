@@ -35,7 +35,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public List<Expense> getExpensesByEmail(String mail) {
-        return expenseRepository.findByUserEmail(mail);
+        return expenseRepository.findByMembership_User_Email(mail);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
-        user.ifPresent(entity::setUser);
+
         if (entity.getCategory() == null) {
             Category defaultCategory = categoryRepository.findById(1L)
                     .orElseGet(() -> categoryRepository.save(new Category()));
@@ -72,7 +72,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public ExpInfo getExpInfo(String group) {
         List<Expense> groupExpenses = getExpensesForGroup(group);
-        List<Expense> userExpenses = expenseRepository.findByUserEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Expense> userExpenses = expenseRepository.findByMembership_User_Email(getUserEmail());
         double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
@@ -80,7 +80,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public ExpInfo getExpInfo() {
-        return getExpInfo(getGroupName());
+        List<BaseGroup> groups = getAllGroups();
+        Set<Expense> groupExpenses = groups.stream().flatMap(group -> getExpensesForGroup(group.getName()).stream()).collect(Collectors.toSet());
+        List<Expense> userExpenses = expenseRepository.findByMembership_User_Email(getUserEmail());
+        double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        return new ExpInfo(userSum, groupSum);
     }
 
     @Override

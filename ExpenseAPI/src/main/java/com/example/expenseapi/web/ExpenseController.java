@@ -48,7 +48,7 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(), HttpStatus.OK);
     }
 
-    @GetMapping("/state")
+    @GetMapping("/state/allGroups")
     @Operation(summary = "Returns sum of expenses for logged-in user and his group")
     @ApiResponse(responseCode = "200", description = "Sum of expenses for logged-in user and his group", content = @Content(schema = @Schema(implementation = ExpInfo.class)))
     public ResponseEntity<ExpInfo> getState() {
