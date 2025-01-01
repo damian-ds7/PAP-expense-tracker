@@ -10,10 +10,12 @@ import org.mapstruct.Mapping;
 public interface ExpenseMapper {
     @Mapping(source = "membership.group.name", target = "groupName")
     @Mapping(source = "membership.user.email", target = "userEmail")
-    @Mapping(source = "category.name", target = "categoryName")
+    @Mapping(source = "category", target = "category")
     @Mapping(source = "method.name", target = "methodOfPayment")
-    @Mapping(source = "currency.symbol", target = "currencyCode")
+    @Mapping(source = "currency", target = "currency")
     @Mapping(source = "date", target = "expenseDate")
+    @Mapping(source = "membership.user.name", target = "name")
+    @Mapping(source = "membership.user.surname", target = "surname")
     ExpenseDTO expenseToExpenseDTO(Expense expense);
 
     @Mapping(source = "categoryName", target = "category.name")
