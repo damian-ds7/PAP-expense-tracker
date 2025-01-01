@@ -102,7 +102,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public ExpInfo getExpInfo(String group) {
         List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
         List<ExpenseDTO> userExpenses = groupExpenses.stream()
-                .filter(expense -> expense.getUserEmail().equals(getUserEmail()))
+                .filter(expense -> expense.getUser().getEmail().equals(getUserEmail()))
                 .toList(); // Returns only user's expenses in provided group, not in all groups
         double groupSum = groupExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
