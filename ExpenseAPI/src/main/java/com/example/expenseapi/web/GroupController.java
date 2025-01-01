@@ -1,6 +1,7 @@
 package com.example.expenseapi.web;
 
 import com.example.expenseapi.pojo.BaseGroup;
+import com.example.expenseapi.pojo.Group;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class GroupController  {
     public ResponseEntity<List<BaseGroup>> getAllGroups(@AuthenticationPrincipal User user) {
         Optional<com.example.expenseapi.pojo.User> mUser = userService.findByEmail(user.getUsername());
         return new ResponseEntity<>(mUser.map(value -> membershipService.getBaseGroupsByUserId(value.getId())).orElse(null), HttpStatus.OK);
+    }
+
+    @GetMapping("all/active")
+    public ResponseEntity<List<Group>> getActiveGroups(@AuthenticationPrincipal User user) {
+        Optional<com.example.expenseapi.pojo.User> mUser = userService.findByEmail(user.getUsername());
+        return new ResponseEntity<>(mUser.map(value -> membershipService.getGroupsByUserId(value.getId())).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping("/members/{group}")
