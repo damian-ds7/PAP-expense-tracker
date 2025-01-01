@@ -140,6 +140,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
 
     private String getGroupName() {
+        if (getAllGroups().isEmpty()) return "";
         return getAllGroups().getFirst().getName();
     }
 
