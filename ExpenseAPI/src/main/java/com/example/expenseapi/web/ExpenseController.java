@@ -1,4 +1,5 @@
 package com.example.expenseapi.web;
+import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
@@ -12,10 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +26,11 @@ import java.util.Optional;
 public class ExpenseController extends GenericController<Expense, Long> {
     public ExpenseController(ExpenseService service) {
         super(service);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseCreateDTO expenseCreateDTO) {
+        return new ResponseEntity<>(((ExpenseService) service).createExpense(expenseCreateDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/my/expenses")
