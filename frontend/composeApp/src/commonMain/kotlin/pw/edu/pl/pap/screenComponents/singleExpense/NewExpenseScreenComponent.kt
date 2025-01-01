@@ -23,7 +23,7 @@ class NewExpenseScreenComponent(
         val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
 //        val category: Category = Category(5, "Test")
 //        val expense: Expense = Expense(id, price.value.toFloat(), user, date, category )
-        val newExpense = NewExpense(title.value, newPrice.value.toFloat(), user, "family2", "test", date, "W Naturze", "PLN" )
+        val newExpense = NewExpense(title.value, newPrice.value.toFloat(), date, user)
 
         coroutineScope.launch{
             apiService.expenseApiClient.postNewExpense(newExpense)
