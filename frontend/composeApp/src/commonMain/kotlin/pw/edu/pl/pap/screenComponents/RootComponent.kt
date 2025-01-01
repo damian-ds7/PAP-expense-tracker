@@ -75,6 +75,9 @@ class RootComponent(
         data object SettingsScreen : Configuration()
 
         @Serializable
+        data object ServerAddressScreen : Configuration()
+
+        @Serializable
         data object UserPersonalDataScreen : Configuration()
 
         @Serializable
@@ -127,6 +130,7 @@ class RootComponent(
         data class DataScreen(val component: DataScreenComponent) : Child()
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
 
+        data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()
         data class UserPersonalDataScreen(val component: UserPersonalDataScreenComponent) : Child()
         data class ChangePasswordScreen(val component: ChangePasswordScreenComponent) : Child()
         data class PreferencesScreen(val component: PreferencesScreenComponent) : Child()
@@ -233,12 +237,21 @@ class RootComponent(
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(
                     onLogOut = { navigation.replaceAll(Configuration.LogInSignUpSelectionScreen) },
+                    onChangeServerAddressClicked = { navigation.pushNew(Configuration.ChangePasswordScreen) },
                     onUserPersonalsClicked = { navigation.pushNew(Configuration.UserPersonalDataScreen) },
                     onChangePasswordClicked = { navigation.pushNew(Configuration.ChangePasswordScreen) },
                     onEditPreferencesClicked = { navigation.pushNew(Configuration.PreferencesScreen) },
                     baseComponent = createMainScreenComponent(componentContext)
                 )
             )
+
+            is Configuration.ServerAddressScreen -> {
+                Child.ServerAddressScreen(
+                    component = ServerAdressScreenComponent(
+                        baseSettingsScreenComponent = createSettingsScreenComponent(componentContext)
+                    )
+                )
+            }
 
             is Configuration.UserPersonalDataScreen -> {
                 Child.UserPersonalDataScreen(

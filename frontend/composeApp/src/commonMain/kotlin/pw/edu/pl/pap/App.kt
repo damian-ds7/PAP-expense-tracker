@@ -18,7 +18,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
 import pw.edu.pl.pap.ui.dataScreen.DataScreen
-import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen
@@ -27,11 +26,9 @@ import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
 import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
-import pw.edu.pl.pap.ui.settingsScreens.ChangePasswordScreen
-import pw.edu.pl.pap.ui.settingsScreens.PreferencesScreen
-import pw.edu.pl.pap.ui.settingsScreens.UserPersonalDataScreen
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import pw.edu.pl.pap.ui.settingsScreens.*
 
 // Todo refactor function, tweak animations
 @Composable
@@ -82,6 +79,7 @@ fun App(rootComponent: RootComponent) {
                             is RootComponent.Child.DataScreen -> DataScreen(instance.component)
                             is RootComponent.Child.SettingsScreen -> SettingsScreen(instance.component)
 
+                            is RootComponent.Child.ServerAddressScreen -> ServerAddressScreen(instance.component)
                             is RootComponent.Child.UserPersonalDataScreen -> UserPersonalDataScreen(instance.component)
                             is RootComponent.Child.ChangePasswordScreen -> ChangePasswordScreen(instance.component)
                             is RootComponent.Child.PreferencesScreen -> PreferencesScreen(instance.component)
