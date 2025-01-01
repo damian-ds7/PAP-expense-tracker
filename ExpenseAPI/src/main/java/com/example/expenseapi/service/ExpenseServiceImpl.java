@@ -121,14 +121,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return new ExpInfo(userSum, groupSum);
     }
 
-    private int endOfTheYear (String year) {
-        if (LocalDate.ofYearDay(Integer.parseInt(year), 1).isLeapYear()) {
-            return 366;
-        } else {
-            return 365;
-        }
-    }
-
     @Override
     public Map<String, Double> getMapResult(ExpenseFilter filter, String currCode, String keyType) {
         List<ExpenseDTO> result = searchExpensesDTO(filter);
