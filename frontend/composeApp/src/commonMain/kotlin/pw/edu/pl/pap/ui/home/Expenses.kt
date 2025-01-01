@@ -47,13 +47,13 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
         ) {
             Column {
                 Text(
-                    text = expense.category.name,
+                    text = expense.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = expense.user.name,
+                    text = "${expense.user.name} ${expense.user.surname}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Light,
                     color = Color.Gray
