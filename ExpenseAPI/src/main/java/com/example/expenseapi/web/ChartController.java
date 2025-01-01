@@ -3,6 +3,7 @@ package com.example.expenseapi.web;
 import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ChartController {
         this.service = service;
     }
 
-    @GetMapping("/map-result/{group}/{keyType}")
+    @GetMapping("/map-result/{group}/{keyPattern}")
     @Operation(summary = "Retrieves a map based on the given filter")
     public ResponseEntity<Map<String, Double>> getMapResult(
             @RequestParam(required = false) String beginDate,
@@ -30,7 +31,7 @@ public class ChartController {
             @RequestParam(required = false) List<String> emails,
             @RequestParam(required = false) List<String> methods,
             @PathVariable String group,
-            @PathVariable String keyType
+            @Parameter(description = "Accepted values: [category, method, user, month, year]") @PathVariable String keyPattern
             ) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setGroupName(group);
@@ -39,6 +40,6 @@ public class ChartController {
         filter.setMethodsOfPayment(methods);
         if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
         if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
-        return new ResponseEntity<>(service.getMapResult(filter, currCode, keyType), HttpStatus.OK);
+        return new ResponseEntity<>(service.getMapResult(filter, currCode, keyPattern), HttpStatus.OK);
     }
 }
