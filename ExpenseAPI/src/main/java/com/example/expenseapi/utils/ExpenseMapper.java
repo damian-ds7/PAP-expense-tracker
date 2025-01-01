@@ -22,6 +22,7 @@ public interface ExpenseMapper {
     @Mapping(source = "categoryName", target = "category.name")
     @Mapping(source = "methodOfPayment", target = "method.name")
     @Mapping(source = "currencyCode", target = "currency.symbol")
-    @Mapping(source = "membershipId", target = "membership.id")
+    @Mapping(source = "groupName", target = "membership.group.name")
+    @Mapping(source = "user.id", target = "membership.user.id")
     Expense expenseCreateDTOToExpense(ExpenseCreateDTO dto);
 }
