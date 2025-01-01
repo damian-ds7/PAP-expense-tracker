@@ -8,16 +8,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
+import pw.edu.pl.pap.util.constants.verticalPadding
 import pw.edu.pl.pap.util.formatForDisplay
 
 @Composable
 fun TopSection(component: HomeScreenComponent) {
     val homeInfo by component.homeInfo.collectAsState()
 
-    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(Modifier.fillMaxWidth().padding(vertical = verticalPadding), horizontalArrangement = Arrangement.SpaceBetween) {
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "My Expenses",

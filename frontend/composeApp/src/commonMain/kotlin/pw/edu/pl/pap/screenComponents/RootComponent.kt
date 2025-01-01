@@ -19,7 +19,6 @@ import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.*
 import pw.edu.pl.pap.screenComponents.settingsScreens.*
@@ -69,7 +68,7 @@ class RootComponent(
         data class ExpenseDetailsScreen(val expense: Expense) : Configuration()
 
         @Serializable
-        data object DataScreen : Configuration()
+        data object ChartsScreen : Configuration()
 
         @Serializable
         data object SettingsScreen : Configuration()
@@ -127,7 +126,7 @@ class RootComponent(
         data class NewExpenseScreen(val component: NewExpenseScreenComponent) : Child()
         data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
 
-        data class DataScreen(val component: DataScreenComponent) : Child()
+        data class ChartsScreen(val component: ChartsScreenComponent) : Child()
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
 
         data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()
@@ -145,7 +144,7 @@ class RootComponent(
         _activeNavBarItem.value = item
         when (item) {
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
-            NavBarItem.Data -> navigation.bringToFront(Configuration.DataScreen)
+            NavBarItem.Charts -> navigation.bringToFront(Configuration.ChartsScreen)
             NavBarItem.Groups -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Settings -> navigation.bringToFront(Configuration.SettingsScreen)
         }
@@ -228,9 +227,9 @@ class RootComponent(
                 )
             )
 
-            is Configuration.DataScreen -> Child.DataScreen(
-                DataScreenComponent(
-                    baseComponent = createMainScreenComponent(componentContext)
+            is Configuration.ChartsScreen -> Child.ChartsScreen(
+                ChartsScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
                 )
             )
 

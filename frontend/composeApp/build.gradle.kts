@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.decompose)
             implementation(libs.decompose.compose)
             implementation(libs.serialization.json)
+            implementation(libs.koalaplot.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

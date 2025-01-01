@@ -12,6 +12,7 @@ import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.Order
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingPopup
+import pw.edu.pl.pap.util.constants.padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,11 +50,11 @@ fun GroupKeyPopup(
         onDismissRequest = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(padding)
         ) {
             Text("Group by", style = MaterialTheme.typography.titleLarge)
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(padding))
 
             for (groupKey in GroupKey.entries) {
                 val isSelected = selectedOption == groupKey
@@ -90,7 +91,7 @@ private fun GroupAndSortButton(
     onOrderChange: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(padding),
     ) {
         GroupButton(groupKey, isSelected, onGroupKeyChange)
         Spacer(modifier = Modifier.weight(1f))

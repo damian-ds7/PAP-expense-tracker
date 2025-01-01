@@ -17,7 +17,8 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
-import pw.edu.pl.pap.ui.dataScreen.DataScreen
+import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
+import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
 import pw.edu.pl.pap.ui.home.HomeScreen
@@ -27,8 +28,6 @@ import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import pw.edu.pl.pap.ui.settingsScreens.*
 
 // Todo refactor function, tweak animations
 @Composable
@@ -44,7 +43,7 @@ fun App(rootComponent: RootComponent) {
                 ) {
                     BottomNavBar(
                         items = listOf(
-                            NavBarItem.Home, NavBarItem.Data, NavBarItem.Groups, NavBarItem.Settings
+                            NavBarItem.Home, NavBarItem.Charts, NavBarItem.Groups, NavBarItem.Settings
                         ),
                         selectedItem = activeNavBarItem,
                         onSelect = { rootComponent.navBarItemClicked(it) }
@@ -76,7 +75,7 @@ fun App(rootComponent: RootComponent) {
                             is RootComponent.Child.NewExpenseScreen -> NewExpenseScreen(instance.component)
                             is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
-                            is RootComponent.Child.DataScreen -> DataScreen(instance.component)
+                            is RootComponent.Child.ChartsScreen -> ChartsScreen(instance.component)
                             is RootComponent.Child.SettingsScreen -> SettingsScreen(instance.component)
 
                             is RootComponent.Child.ServerAddressScreen -> ServerAddressScreen(instance.component)
@@ -94,7 +93,7 @@ fun App(rootComponent: RootComponent) {
 fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
         is RootComponent.Child.HomeScreen,
-        is RootComponent.Child.DataScreen -> true
+        is RootComponent.Child.ChartsScreen,
         is RootComponent.Child.SettingsScreen -> true
         else -> false
     }

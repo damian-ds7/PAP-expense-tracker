@@ -3,20 +3,20 @@ package pw.edu.pl.pap.api
 import io.ktor.client.*
 
 class ApiService(
-    private val userToken: String,
-    private val httpClient: HttpClient,
+    userToken: String,
+    httpClient: HttpClient,
     baseUrl: String = "http://localhost:8080"
 ) {
+    private val baseApiClient = BaseApiClient(baseUrl, httpClient, userToken)
+    val expenseApiClient = ExpenseApiClient(baseApiClient)
+    val groupApiClient = GroupApiClient(baseApiClient)
+    val chartsApiClient = ChartsApiClient(baseApiClient)
 
-    val expenseApiClient = ExpenseApiClient("$baseUrl/expense/", httpClient, userToken)
-    val groupApiClient = GroupApiClient("$baseUrl/group/", httpClient, userToken)
-
-    fun updateBaseUrl(newUrl: String): Unit {
-        expenseApiClient.setUrl(newUrl)
-        groupApiClient.setUrl(newUrl)
+    fun updateBaseUrl(newUrl: String) {
+        baseApiClient.setUrl(newUrl)
     }
 
     fun getCurrentUrl(): String {
-        return expenseApiClient.getUrl().removeSuffix("/expense/")
+        return baseApiClient.getUrl()
     }
 }

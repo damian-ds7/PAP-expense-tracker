@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import pw.edu.pl.pap.util.constants.horizontalPadding
+import pw.edu.pl.pap.util.constants.verticalPadding
 
 @Composable
 fun BottomNavBar(
@@ -60,7 +62,7 @@ private fun NavBarItem(
                     color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
                     shape = RoundedCornerShape(20.dp) // "Pill" shape
                 )
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
         )
         Spacer(Modifier.height(4.dp))
         Text(

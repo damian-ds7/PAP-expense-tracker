@@ -24,7 +24,7 @@ import kotlinx.datetime.LocalDate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.uiSetup.inputFields.*
-import androidx.compose.runtime.*
+import pw.edu.pl.pap.util.constants.*
 
 
 @Composable
@@ -48,7 +48,7 @@ private fun createField(data: InputFieldData) {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
                 .height(50.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -226,7 +226,7 @@ private fun createClickableCard(data: ButtonData) {
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .height(50.dp)
             .clickable { data.onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

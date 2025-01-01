@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.ui.common.LoadingScreen
 import pw.edu.pl.pap.ui.home.sortingSystem.ButtonRow
 import pw.edu.pl.pap.ui.home.sortingSystem.GroupKeyPopup
-import pw.edu.pl.pap.ui.home.sortingSystem.UserGroupPopup
+import pw.edu.pl.pap.ui.common.UserGroupPopup
+import pw.edu.pl.pap.util.constants.padding
 
 @Composable
 fun HomeScreen(component: HomeScreenComponent) {
@@ -36,7 +36,7 @@ fun HomeScreen(component: HomeScreenComponent) {
 
             else -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(16.dp)
+                    modifier = Modifier.fillMaxSize().padding(padding)
                 ) {
                     item {
                         TopSection(component)

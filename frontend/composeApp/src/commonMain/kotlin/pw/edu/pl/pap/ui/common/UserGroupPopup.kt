@@ -1,18 +1,13 @@
-package pw.edu.pl.pap.ui.home.sortingSystem
+package pw.edu.pl.pap.ui.common
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.util.sortingSystem.GroupKey
-import pw.edu.pl.pap.util.sortingSystem.Order
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
-import pw.edu.pl.pap.ui.common.LoadingPopup
+import pw.edu.pl.pap.util.constants.padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,11 +43,11 @@ fun UserGroupPopup(
         onDismissRequest = onDismiss,
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp)
+            modifier = Modifier.fillMaxWidth().padding(padding)
         ) {
             Text("User group", style = MaterialTheme.typography.titleLarge)
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(padding))
 
             userGroupsInfo?.forEach { userGroup ->
                 val isSelected = selectedOption?.name == userGroup.name

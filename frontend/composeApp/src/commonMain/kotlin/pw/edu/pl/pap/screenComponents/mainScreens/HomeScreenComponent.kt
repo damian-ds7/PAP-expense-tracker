@@ -3,6 +3,7 @@ package pw.edu.pl.pap.screenComponents.mainScreens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
@@ -59,10 +60,11 @@ class HomeScreenComponent(
                 // Do nothing
             }
         }
+        fetchHomeInfo()
         updateNavigationState(NavigationState.Empty)
     }
 
-    private val _userGroupInfo = MutableStateFlow<List<UserGroup>?>(emptyList())
+    private val _userGroupInfo = MutableStateFlow<List<UserGroup>?>(null)
     val userGroupInfo: StateFlow<List<UserGroup>?> get() = _userGroupInfo
 
     private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
@@ -75,18 +77,26 @@ class HomeScreenComponent(
     private val _homeInfo = MutableStateFlow<TotalExpenses?>(null)
     val homeInfo: StateFlow<TotalExpenses?> get() = _homeInfo
 
+    private suspend fun populateGroupList() {
+        when (_userGroupInfo.value) {
+            null -> {
+                val userGroupInfo = apiService.groupApiClient.getUserGroups()
+                _userGroupInfo.value = userGroupInfo
+                _currentUserGroup.value = _userGroupInfo.value?.first()
+            }
+            else -> return
+        }
+    }
+
     fun fetchHomeInfo() {
         runBlocking {
             try {
-                val homeData = apiService.expenseApiClient.getTotalExpenses()
-                _homeInfo.value = homeData
-                val userGroupInfo = apiService.groupApiClient.getUserGroups()
-//                println(userGroupInfo)
-                _userGroupInfo.value = userGroupInfo
+                populateGroupList()
+                val homeData = apiService.expenseApiClient.getTotalExpensesForGroup(currentUserGroup.value?.name)
+                _homeInfo.value = homeData.first()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            _currentUserGroup.value = _userGroupInfo.value?.first()
         }
     }
 
@@ -103,12 +113,10 @@ class HomeScreenComponent(
         _currentGroupingKey.value = key
     }
 
-    private fun currentExpenseMethod(): () -> Flow<ExpenseMap> {
+    private fun currentExpenseMethod(): (String?) -> Flow<ExpenseMap> {
         return when (_currentGroupingKey.value) {
-//            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMap
-//            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMap
-            GroupKey.DATE -> { { apiService.expenseApiClient.getExpenseDateMapForGroup(_currentUserGroup.value?.name) } }
-            GroupKey.CATEGORY -> { { apiService.expenseApiClient.getExpenseCatMapForGroup(_currentUserGroup.value?.name) } }
+            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMapForGroup
+            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMapForGroup
         }
     }
 
@@ -117,7 +125,7 @@ class HomeScreenComponent(
         runBlocking {
             try {
                 val getExpenseMap = currentExpenseMethod()
-                getExpenseMap().collect { expenses ->
+                getExpenseMap(_currentUserGroup.value?.name).collect { expenses ->
                     _groupedExpenses.value = expenses
                     println(expenses.groupingOrder.value)
                     println(_groupedExpenses.value.groupingOrder.value)
@@ -135,7 +143,7 @@ class HomeScreenComponent(
             try {
                 apiService.expenseApiClient.getRecentExpense().collect { expense: Expense ->
                     _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
-                    _groupedExpenses.value = _groupedExpenses.value
+//                    _groupedExpenses.value = _groupedExpenses.value
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
