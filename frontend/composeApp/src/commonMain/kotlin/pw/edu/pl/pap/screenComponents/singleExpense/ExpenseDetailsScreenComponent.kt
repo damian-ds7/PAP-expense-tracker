@@ -16,8 +16,8 @@ class ExpenseDetailsScreenComponent(
     private val expense: Expense
     ) : BaseExpenseScreenComponent(baseComponent, onDismiss, onSave) {
 
-    override var title: MutableState<String> = mutableStateOf("")
-    //TODO fetch title
+    override var title: MutableState<String> = mutableStateOf(expense.title)
+
     override var categoryIndex: MutableState<Int> = mutableStateOf(expense.category.id.toInt() - 1)
 
     override var date: MutableState<LocalDate> = mutableStateOf(expense.date)

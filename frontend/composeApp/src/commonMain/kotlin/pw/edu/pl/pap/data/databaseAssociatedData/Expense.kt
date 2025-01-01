@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDate
 @Serializable
 data class Expense(
     val id: Long,
+    val title: String,
     val price: Float,
     val user: User,
     val date: LocalDate,

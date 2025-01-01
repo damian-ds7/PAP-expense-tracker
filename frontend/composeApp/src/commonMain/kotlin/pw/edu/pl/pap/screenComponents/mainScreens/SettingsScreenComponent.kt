@@ -14,6 +14,7 @@ import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 
 class SettingsScreenComponent(
     private val onLogOut: () -> Unit,
+    private val onChangeServerAddressClicked: () -> Unit,
     private val onUserPersonalsClicked: () -> Unit,
     private val onChangePasswordClicked: () -> Unit,
     private val onEditPreferencesClicked: () -> Unit,
@@ -33,36 +34,31 @@ class SettingsScreenComponent(
             onLogOut()
         }
     )
-
-    private var serverAddress: MutableState<String> = mutableStateOf(apiService.getCurrentUrl())
-    private var debounceJob by mutableStateOf<Job?>(null)
-
-    private fun onServerAddressChange(newAddress: String) {
-        serverAddress.value = newAddress
-        debounceJob?.cancel()
-        debounceJob = coroutineScope.launch {
-            delay(500)
-//            println(apiService.getCurrentUrl())
-//            println(serverAddress.value)
-            updateUrl()
-//            println("URL CHANGED")
-        }
-    }
-
-    private fun updateUrl() {
-        apiService.updateBaseUrl(serverAddress.value)
-    }
+//    private var debounceJob by mutableStateOf<Job?>(null)
+//
+//    private fun onServerAddressChange(newAddress: String) {
+//        serverAddress.value = newAddress
+//        debounceJob?.cancel()
+//        debounceJob = coroutineScope.launch {
+//            delay(500)
+////            println(apiService.getCurrentUrl())
+////            println(serverAddress.value)
+//            updateUrl()
+////            println("URL CHANGED")
+//        }
+//    }
 
     fun setupInputFields() {
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
                 InputFieldData(
-                    title = "Server address: ",
-                    textFieldData = TextFieldData(
-                        parameter = serverAddress,
-                        onChange = {
-                            onServerAddressChange(it)
+                    title = "",
+                    isButton = true,
+                    buttonData = ButtonData(
+                        title = "Change server address",
+                        onClick = {
+                            coroutineScope.launch { onChangeServerAddressClicked() }
                         }
                     )
                 ),
