@@ -27,9 +27,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final ExpenseMapper expenseMapper;
 
+    @Override
     public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
-        Optional<Membership> membershipOpt = membershipRepository.findById(createDTO.getMembershipId());
+        Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
         if (membershipOpt.isEmpty()) {
             throw new IllegalArgumentException("Invalid membership ID");
         }
