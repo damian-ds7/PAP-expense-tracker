@@ -73,6 +73,15 @@ public class ExpenseSpecification {
         };
     }
 
+    public static Specification<Expense> hasMethod(List<String> methods) {
+        return (root, query, cb) -> {
+            if (methods == null || methods.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("method").get("name").in(methods);
+        };
+    }
+
     public static Specification<Expense> hasGroup(String groupName) {
         return (root, query, cb) -> {
             if (groupName == null || groupName.isBlank()) {
