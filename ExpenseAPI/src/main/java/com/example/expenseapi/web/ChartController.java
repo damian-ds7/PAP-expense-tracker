@@ -22,7 +22,7 @@ public class ChartController {
     }
 
     @GetMapping("/map-result/{group}/{keyPattern}")
-    @Operation(summary = "Retrieves a map based on the given filter")
+    @Operation(summary = "Retrieves a map<String, TotalExpanses> based on the given filter")
     public ResponseEntity<Map<String, Double>> getMapResult(
             @RequestParam(required = false) String beginDate,
             @RequestParam(required = false) String endDate,
