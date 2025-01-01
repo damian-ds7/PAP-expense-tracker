@@ -177,9 +177,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Optional<ExpenseDTO> getRecentExpense() {
+    public Optional<ExpenseDTO> getRecentExpense(String groupName) {
         ExpenseFilter filter = new ExpenseFilter();
-        filter.setEmail(getUserEmail());
+        filter.setGroupName(groupName);
         List<ExpenseDTO> expenses = searchExpensesDTO(filter);
         return expenses.stream().max(Comparator.comparing(ExpenseDTO::getId));
     }

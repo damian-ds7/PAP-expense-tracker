@@ -73,10 +73,10 @@ public class ExpenseController extends GenericController<Expense, Long> {
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name), HttpStatus.OK);
     }
 
-    @GetMapping("/recent")
+    @GetMapping("/recent/{groupName}")
     @Operation(summary = "Returns recent Expense object")
     @ApiResponse(responseCode = "200", description = "The most recent Expense object", content = @Content(schema = @Schema(implementation = Expense.class)))
-    public ResponseEntity<Optional<ExpenseDTO>> getRecent() {
-        return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(), HttpStatus.OK);
+    public ResponseEntity<Optional<ExpenseDTO>> getRecent(@PathVariable String groupName) {
+        return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(groupName), HttpStatus.OK);
     }
 }
