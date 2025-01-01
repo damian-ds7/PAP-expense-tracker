@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
@@ -21,4 +22,6 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     List<User> findAdmins(String group);
 
     List<Membership> findByUserId(Long userId);
+
+    Optional<Membership> findByUserIdAndGroupName(Long id, String groupName);
 }

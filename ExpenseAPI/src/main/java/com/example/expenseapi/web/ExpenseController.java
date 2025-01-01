@@ -1,4 +1,6 @@
 package com.example.expenseapi.web;
+import com.example.expenseapi.dto.ExpenseCreateDTO;
+import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
@@ -11,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,17 +32,22 @@ public class ExpenseController extends GenericController<Expense, Long> {
         super(service);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseCreateDTO expenseCreateDTO) {
+        return new ResponseEntity<>(((ExpenseService) service).createExpense(expenseCreateDTO), HttpStatus.CREATED);
+    }
+
     @GetMapping("/my/expenses")
     @Operation(summary = "Retrieves expenses from logged-in user")
     @ApiResponse(responseCode = "200", description = "List of expense objects from logged user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
-    public ResponseEntity<List<Expense>> getMyExpenses() {
+    public ResponseEntity<List<ExpenseDTO>> getMyExpenses() {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForUser(), HttpStatus.OK);
     }
 
     @GetMapping("/my/group/{name}")
     @Operation(summary = "Retrieves expenses for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "List of expense object for group of logged-in user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
-    public ResponseEntity<List<Expense>> getByGroup(@PathVariable String name) {
+    public ResponseEntity<List<ExpenseDTO>> getByGroup(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(name), HttpStatus.OK);
     }
 
@@ -58,21 +66,21 @@ public class ExpenseController extends GenericController<Expense, Long> {
     @GetMapping("/dateMap/group/{name}")
     @Operation(summary = "Returns objects grouped by date for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by date")
-    public ResponseEntity<Map<LocalDate, List<Expense>>> getDateExpensesMap(@PathVariable String name) {
+    public ResponseEntity<Map<LocalDate, List<ExpenseDTO>>> getDateExpensesMap(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsDateMap(name), HttpStatus.OK);
     }
 
     @GetMapping("/categoryMap/group/{name}")
     @Operation(summary = "Returns objects grouped by category for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by category")
-    public ResponseEntity<Map<Category, List<Expense>>> getCategoryExpenseMap(@PathVariable String name) {
+    public ResponseEntity<Map<Category, List<ExpenseDTO>>> getCategoryExpenseMap(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name), HttpStatus.OK);
     }
 
-    @GetMapping("/recent")
+    @GetMapping("/recent/{groupName}")
     @Operation(summary = "Returns recent Expense object")
     @ApiResponse(responseCode = "200", description = "The most recent Expense object", content = @Content(schema = @Schema(implementation = Expense.class)))
-    public ResponseEntity<Optional<Expense>> getRecent() {
-        return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(), HttpStatus.OK);
+    public ResponseEntity<Optional<ExpenseDTO>> getRecent(@PathVariable String groupName) {
+        return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(groupName), HttpStatus.OK);
     }
 }

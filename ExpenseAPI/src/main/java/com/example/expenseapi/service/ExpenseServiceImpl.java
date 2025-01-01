@@ -1,9 +1,12 @@
 package com.example.expenseapi.service;
 
+import com.example.expenseapi.dto.ExpenseCreateDTO;
+import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
+import com.example.expenseapi.utils.ExpenseMapper;
 import com.example.expenseapi.utils.ExpenseSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
@@ -22,8 +25,35 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
+    private final ExpenseMapper expenseMapper;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository) {
+    @Override
+    public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
+        Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
+        Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
+        if (membershipOpt.isEmpty()) {
+            throw new IllegalArgumentException("Invalid membership ID");
+        }
+        expense.setMembership(membershipOpt.get());
+        if (createDTO.getCategoryName() != null) {
+            Category category = categoryRepository.findByName(createDTO.getCategoryName());
+            expense.setCategory(category);
+        }
+        if (createDTO.getMethodOfPayment() != null) {
+            MethodOfPayment method = methodOfPaymentRepository.findByName(createDTO.getMethodOfPayment());
+            expense.setMethod(method);
+        }
+        if (createDTO.getCurrencyCode() != null) {
+            Currency currency = currencyRepository.findBySymbol(createDTO.getCurrencyCode());
+            expense.setCurrency(currency);
+        }
+        if (createDTO.getExpenseDate() != null) {
+            expense.setDate(createDTO.getExpenseDate());
+        }
+        Expense savedExpense = expenseRepository.save(expense);
+        return expenseMapper.expenseToExpenseDTO(savedExpense);
+    }
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
@@ -31,14 +61,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         this.userRepository = userRepository;
         this.membershipRepository = membershipRepository;
         this.methodOfPaymentRepository = methodOfPaymentRepository;
+        this.expenseMapper = expenseMapper;
     }
 
-    @Override
-    public Expense save(Expense entity) {
-        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // String email = auth.getName();
-        // Optional<User> user = userRepository.findByEmail(email);
-        // user.ifPresent(entity::setUser);
+    public ExpenseDTO save(ExpenseCreateDTO expenseDTO) {
+        Expense entity = expenseMapper.expenseCreateDTOToExpense(expenseDTO);
         if (entity.getCategory() == null) {
             Category defaultCategory = categoryRepository.findById(1L)
                     .orElseGet(() -> categoryRepository.save(new Category()));
@@ -54,40 +81,41 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                     .orElseGet(() -> currencyRepository.save(new Currency()));
             entity.setCurrency(defaultCurrency);
         }
-        return super.save(entity);
+        Expense savedExpense = expenseRepository.save(entity);
+        return expenseMapper.expenseToExpenseDTO(savedExpense);
     }
 
     @Override
-    public List<Expense> getExpensesForGroup(String name) {
+    public List<ExpenseDTO> getExpensesForGroup(String name) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setGroupName(name);
-        return searchExpenses(filter);
+        return searchExpensesDTO(filter);
     }
 
     @Override
-    public List<Expense> getExpensesForUser() {
+    public List<ExpenseDTO> getExpensesForUser() {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setEmail(getUserEmail());
-        return searchExpenses(filter);
+        return searchExpensesDTO(filter);
     }
 
     @Override
     public ExpInfo getExpInfo(String group) {
-        List<Expense> groupExpenses = getExpensesForGroup(group);
-        List<Expense> userExpenses = groupExpenses.stream()
-                .filter(expense -> expense.getMembership().getUser().getEmail().equals(getUserEmail()))
+        List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
+        List<ExpenseDTO> userExpenses = groupExpenses.stream()
+                .filter(expense -> expense.getUser().getEmail().equals(getUserEmail()))
                 .toList(); // Returns only user's expenses in provided group, not in all groups
-        double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
-        double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        double groupSum = groupExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
+        double userSum = userExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
     }
 
     @Override
     public ExpInfo getExpInfo() {
         List<BaseGroup> groups = getAllGroups();
-        Set<Expense> groupExpenses = groups.stream().flatMap(group -> getExpensesForGroup(group.getName()).stream()).collect(Collectors.toSet());
+        Set<ExpenseDTO> groupExpenses = groups.stream().flatMap(group -> getExpensesForGroup(group.getName()).stream()).collect(Collectors.toSet());
         List<Expense> userExpenses = expenseRepository.findByMembershipUserEmail(getUserEmail());
-        double groupSum = groupExpenses.stream().mapToDouble(Expense::getPrice).sum();
+        double groupSum = groupExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
     }
@@ -99,8 +127,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         filter.setBeginDate(LocalDate.ofYearDay(Integer.parseInt(year), 1));
         filter.setEndDate(LocalDate.ofYearDay(Integer.parseInt(year), endOfTheYear(year)));
         filter.setEmail(getUserEmail());
-        List<Expense> userExpenses = searchExpenses(filter);
-        return totalExpensesMap(userExpenses, e -> e.getDate().getMonth().name(), currency);
+        List<ExpenseDTO> userExpenses = searchExpensesDTO(filter);
+        return totalExpensesMap(userExpenses, e -> e.getExpenseDate().getMonth().name(), currency);
 
     }
 
@@ -128,8 +156,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         filter.setBeginDate(LocalDate.ofYearDay(Integer.parseInt(year), 1));
         filter.setEndDate(LocalDate.ofYearDay(Integer.parseInt(year), endOfTheYear(year)));
         filter.setGroupName(getGroupName());
-        List<Expense> groupExpenses = searchExpenses(filter);
-        return totalExpensesMap(groupExpenses, e-> e.getDate().getMonth().name(), currency);
+        List<ExpenseDTO> groupExpenses = searchExpensesDTO(filter);
+        return totalExpensesMap(groupExpenses, e-> e.getExpenseDate().getMonth().name(), currency);
     }
 
     @Override
@@ -140,8 +168,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         ExpenseFilter filter = new ExpenseFilter();
         filter.setBeginDate(beginDate);
         filter.setEndDate(endDate);
-        List<Expense> categoryExpenses = searchExpenses(filter);
-        return totalExpensesMap(categoryExpenses, e->e.getCategory().getName(), currency);
+        List<ExpenseDTO> categoryExpenses = searchExpensesDTO(filter);
+        return totalExpensesMap(categoryExpenses, expenseDTO -> expenseDTO.getCategory().getName(), currency);
     }
 
     @Override
@@ -153,16 +181,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         filter.setBeginDate(beginDate);
         filter.setEndDate(endDate);
         filter.setEmail(getUserEmail());
-        List<Expense> categoryExpenses = searchExpenses(filter);
-        return totalExpensesMap(categoryExpenses, e->e.getCategory().getName(), currency);
+        List<ExpenseDTO> categoryExpenses = searchExpensesDTO(filter);
+        return totalExpensesMap(categoryExpenses, expenseDTO -> expenseDTO.getCategory().getName(), currency);
     }
 
     @Override
-    public Optional<Expense> getRecentExpense() {
+    public Optional<ExpenseDTO> getRecentExpense(String groupName) {
         ExpenseFilter filter = new ExpenseFilter();
-        filter.setEmail(getUserEmail());
-        List<Expense> expenses = searchExpenses(filter);
-        return expenses.stream().max(Comparator.comparing(Expense::getDate));
+        filter.setGroupName(groupName);
+        List<ExpenseDTO> expenses = searchExpensesDTO(filter);
+        return expenses.stream().max(Comparator.comparing(ExpenseDTO::getId));
     }
 
 
@@ -182,21 +210,21 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<LocalDate, List<Expense>> getGroupExpenseAsDateMap(String name) {
-        List<Expense> expenses = getExpensesForGroup(name);
+    public Map<LocalDate, List<ExpenseDTO>> getGroupExpenseAsDateMap(String name) {
+        List<ExpenseDTO> expenses = getExpensesForGroup(name);
         return expenses.stream()
-                .collect(Collectors.groupingBy(Expense::getDate));
+                .collect(Collectors.groupingBy(ExpenseDTO::getExpenseDate));
     }
 
     @Override
-    public Map<Category, List<Expense>> getGroupExpenseAsCategoryMap(String name) {
-        List<Expense> expenses = getExpensesForGroup(name);
+    public Map<Category, List<ExpenseDTO>> getGroupExpenseAsCategoryMap(String name) {
+        List<ExpenseDTO> expenses = getExpensesForGroup(name);
         return expenses.stream()
-                .collect(Collectors.groupingBy(Expense::getCategory));
+                .collect(Collectors.groupingBy(ExpenseDTO::getCategory));
     }
 
     @Override
-    public List<Expense> searchExpenses(ExpenseFilter filter) {
+    public List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
         if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
             filter.setGroupName(getGroupName());
         }
@@ -212,7 +240,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         spec = spec.and(ExpenseSpecification.isUser(filter.getEmail()));
         spec = spec.and(ExpenseSpecification.isUserInList(filter.getEmails()));
         spec = spec.and(ExpenseSpecification.hasMethod(filter.getMethodsOfPayment()));
-        return expenseRepository.findAll(spec);
+        return expenseRepository.findAll(spec).stream()
+                .map(expenseMapper::expenseToExpenseDTO)
+                .collect(Collectors.toList());
     }
 
     private boolean isGroupNameValid(String name){
@@ -246,9 +276,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         };
     }
 
-    private Map<String, Double> totalExpensesMap(List<Expense> queryResult, Function<Expense, String> keyExtractor, Currency dstCurr) {
+    private Map<String, Double> totalExpensesMap(List<ExpenseDTO> queryResult, Function<ExpenseDTO, String> keyExtractor, Currency dstCurr) {
         Map<String, Double> map = new LinkedHashMap<>();
-        for (Expense expense : queryResult) {
+        for (ExpenseDTO expense : queryResult) {
             String key = keyExtractor.apply(expense);
             double price = convertFromCurrencyToAnother(expense.getPrice(), expense.getCurrency(), dstCurr);
             map.put(key, map.getOrDefault(key, 0.0) + price);
