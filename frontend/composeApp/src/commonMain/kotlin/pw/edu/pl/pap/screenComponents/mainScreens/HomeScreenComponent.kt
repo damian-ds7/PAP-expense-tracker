@@ -3,6 +3,7 @@ package pw.edu.pl.pap.screenComponents.mainScreens
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
@@ -78,15 +79,14 @@ class HomeScreenComponent(
     fun fetchHomeInfo() {
         runBlocking {
             try {
-                val homeData = apiService.expenseApiClient.getTotalExpenses()
-                _homeInfo.value = homeData
                 val userGroupInfo = apiService.groupApiClient.getUserGroups()
-//                println(userGroupInfo)
                 _userGroupInfo.value = userGroupInfo
+                _currentUserGroup.value = _userGroupInfo.value?.first()
+                val homeData = apiService.expenseApiClient.getTotalExpensesForGroup(currentUserGroup.value?.name)
+                _homeInfo.value = homeData.first()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            _currentUserGroup.value = _userGroupInfo.value?.first()
         }
     }
 
@@ -105,8 +105,6 @@ class HomeScreenComponent(
 
     private fun currentExpenseMethod(): () -> Flow<ExpenseMap> {
         return when (_currentGroupingKey.value) {
-//            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMap
-//            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMap
             GroupKey.DATE -> { { apiService.expenseApiClient.getExpenseDateMapForGroup(_currentUserGroup.value?.name) } }
             GroupKey.CATEGORY -> { { apiService.expenseApiClient.getExpenseCatMapForGroup(_currentUserGroup.value?.name) } }
         }
@@ -123,6 +121,8 @@ class HomeScreenComponent(
                     println(_groupedExpenses.value.groupingOrder.value)
                     println(currentGroupingOrder.value)
                 }
+                val homeData = apiService.expenseApiClient.getTotalExpensesForGroup(currentUserGroup.value?.name)
+                _homeInfo.value = homeData.first()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -135,7 +135,7 @@ class HomeScreenComponent(
             try {
                 apiService.expenseApiClient.getRecentExpense().collect { expense: Expense ->
                     _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
-                    _groupedExpenses.value = _groupedExpenses.value
+//                    _groupedExpenses.value = _groupedExpenses.value
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

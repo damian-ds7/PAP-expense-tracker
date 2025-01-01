@@ -19,8 +19,6 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
     }
 
     suspend fun getTotalExpenses(): TotalExpenses {
-//        val result:String = get("state").body()
-//        println(result)
         return get("state").body()
     }
 
@@ -74,6 +72,14 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
         return delete("delete/$id")
     }
 
+    private suspend fun getTotalExpensesForGroupApi(group: String): TotalExpenses {
+        return get("state/$group").body()
+    }
+
+    fun getTotalExpensesForGroup(group: String?) = flow {
+        emit(getTotalExpensesForGroupApi(group!!))
+    }
+
     private suspend fun getExpenseDateMapForGroupApi(group: String): ExpenseMap {
         val originalMap: Map<GroupMapKey.DateKey, List<Expense>> = get("dateMap/group/$group").body()
         return originalMap.toMap(ExpenseMap(initialGroupingOrder = Order.DESCENDING))
@@ -84,7 +90,7 @@ class ExpenseApiClient(baseUrl: String, httpClient: HttpClient, userToken: Strin
     }
 
     private suspend fun getExpenseCatMapForGroupApi(group: String): ExpenseMap {
-        val originalMap: Map<GroupMapKey.DateKey, List<Expense>> = get("categoryMap/group/$group").body()
+        val originalMap: Map<GroupMapKey.StringKey, List<Expense>> = get("categoryMap/group/$group").body()
         return originalMap.toMap(ExpenseMap(initialGroupingOrder = Order.ASCENDING))
     }
 
