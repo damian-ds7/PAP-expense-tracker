@@ -1,6 +1,7 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -23,9 +24,9 @@ class NewExpenseScreenComponent(
         val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
 //        val category: Category = Category(5, "Test")
 //        val expense: Expense = Expense(id, price.value.toFloat(), user, date, category )
-        val newExpense = NewExpense(title.value, newPrice.value.toFloat(), user, "family", "food", date, "cash", "PLN")
+        val newExpense = NewExpense(title.value, newPrice.value.toFloat(), user, "family2", "food", date, "cash", "PLN")
 
-        coroutineScope.launch{
+        runBlocking{
             apiService.expenseApiClient.postNewExpense(newExpense)
             onSave()
         }
