@@ -172,7 +172,7 @@ class HomeScreenComponent(
 
     private fun getCurrentKey(expense: Expense): GroupMapKey {
         return when (_currentGroupingKey.value) {
-            GroupKey.DATE -> GroupMapKey.DateKey(expense.date)
+            GroupKey.DATE -> GroupMapKey.DateKey(expense.expenseDate)
             GroupKey.CATEGORY -> GroupMapKey.StringKey(expense.category.name)
         }
     }
