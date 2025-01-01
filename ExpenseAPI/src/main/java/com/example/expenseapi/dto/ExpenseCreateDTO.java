@@ -14,7 +14,8 @@ import java.time.LocalDate;
 public class ExpenseCreateDTO {
     private String title;
     private Double price;
-    private Long membershipId;
+    private UserDTO user;
+    private String groupName;
     private String categoryName;
     private LocalDate expenseDate = LocalDate.now();
     private String methodOfPayment;
