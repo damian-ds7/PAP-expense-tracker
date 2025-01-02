@@ -82,7 +82,8 @@ class MemberScreenComponent (
                             title = "KICK",
                             onClick = {
                                 coroutineScope.launch { showKickConfirmationDialog.value = true }
-                            }
+                            },
+                            isColored = true,
                         )
                     )
                 )
