@@ -9,7 +9,7 @@ import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.inputFields.UserBalanceButtonData
 
 class GroupScreenComponent(
-    private val onUserClicked: (User) -> Unit,
+    private val onUserClicked: (UserGroup, User) -> Unit,
     val currentUserGroup: UserGroup,
     baseComponent: BaseScreenComponent,
 ) : BaseScreenComponent by baseComponent {
@@ -42,7 +42,7 @@ class GroupScreenComponent(
                     userBalanceButtonData = UserBalanceButtonData(
                         title = username,
                         balance = balance.toFloat(),
-                        onClick = { onUserClicked(user) }
+                        onClick = { onUserClicked(currentUserGroup, user) }
                     )
                 )
             }

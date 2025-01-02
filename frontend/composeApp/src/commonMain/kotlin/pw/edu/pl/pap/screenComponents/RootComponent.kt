@@ -22,6 +22,7 @@ import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
+import pw.edu.pl.pap.screenComponents.groupScreens.MemberScreenComponent
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.*
 import pw.edu.pl.pap.screenComponents.settingsScreens.*
@@ -75,6 +76,9 @@ class RootComponent(
 
         @Serializable
         data class GroupScreen(val userGroup: UserGroup) : Configuration()
+
+        @Serializable
+        data class MemberScreen(val userGroup: UserGroup, val user: User) : Configuration()
 
         @Serializable
         data object SettingsScreen : Configuration()
@@ -135,6 +139,8 @@ class RootComponent(
         data class ChartsScreen(val component: ChartsScreenComponent) : Child()
         data class GroupScreen(val component: GroupScreenComponent) : Child()
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
+
+        data class MemberScreen(val component: MemberScreenComponent) : Child()
 
         data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()
         data class UserPersonalDataScreen(val component: UserPersonalDataScreenComponent) : Child()
@@ -254,8 +260,19 @@ class RootComponent(
             is Configuration.GroupScreen -> Child.GroupScreen(
                 component = GroupScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
-                    onUserClicked = {},
+                    onUserClicked = { userGroup, user ->
+                        navigation.pushNew(Configuration.MemberScreen(userGroup, user))
+                    },
                     currentUserGroup = configuration.userGroup,
+                )
+            )
+
+            is Configuration.MemberScreen -> Child.MemberScreen(
+                component = MemberScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onBack = { navigation.pop() },
+                    user = configuration.user,
+                    currentUserGroup = configuration.userGroup
                 )
             )
 

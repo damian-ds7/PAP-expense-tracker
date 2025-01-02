@@ -29,7 +29,7 @@ fun ConfirmOrBackButtonRow(
             text = text,
             modifier = Modifier.align(Alignment.BottomEnd),
             onUpdate = onConfirm,
-            isEnabled = if (isConfirmEnabled!!) {
+            isEnabled = if (isConfirmEnabled != null) {
                 isConfirmEnabled
             } else {
                 true
