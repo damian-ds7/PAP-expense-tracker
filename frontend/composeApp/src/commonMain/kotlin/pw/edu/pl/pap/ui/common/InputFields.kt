@@ -263,11 +263,14 @@ private fun createClickableUserCard(data: UserBalanceButtonData) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ){
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 6.dp),
+            contentAlignment = Alignment.Center,
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ){
                 Text(
                     text = data.title,

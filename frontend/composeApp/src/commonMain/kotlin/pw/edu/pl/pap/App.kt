@@ -97,6 +97,7 @@ fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
         is RootComponent.Child.HomeScreen,
         is RootComponent.Child.ChartsScreen,
+        is RootComponent.Child.GroupScreen,
         is RootComponent.Child.SettingsScreen -> true
         else -> false
     }
