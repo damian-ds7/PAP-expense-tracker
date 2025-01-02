@@ -1,7 +1,6 @@
 package com.example.expenseapi.pojo;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
