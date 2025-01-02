@@ -31,19 +31,13 @@ public class BaseMembership {
     protected BaseGroup group;
 
     @NonNull
-    @NotBlank
-    @Column(name = "name", nullable = false)
-    protected String name;
-
-    @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     protected Role role;
 
-    public BaseMembership(User user, BaseGroup group, String name, Role role) {
+    public BaseMembership(User user, BaseGroup group, Role role) {
         this.user = user;
         this.group = group;
-        this.name = name;
         this.role = role;
     }
 

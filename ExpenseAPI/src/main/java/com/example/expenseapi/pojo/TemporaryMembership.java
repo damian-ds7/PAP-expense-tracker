@@ -12,11 +12,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "temporary_memberships")
 public class TemporaryMembership extends BaseMembership {
-    public TemporaryMembership(User user, BaseGroup group, String name, Role role) {
-        super(user, group, name, role);
+    public TemporaryMembership(User user, BaseGroup group, Role role) {
+        super(user, group, role);
     }
 
     public TemporaryMembership(BaseMembership entity) {
-        super(entity.user, entity.group, entity.name, entity.role);
+        super(entity.user, entity.group, entity.role);
     }
 }
