@@ -1,11 +1,15 @@
 package com.example.expenseapi.web;
 
+import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,27 +21,25 @@ public class ChartController {
         this.service = service;
     }
 
-    @GetMapping("/my/group/{year}")
-    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year")
-    public ResponseEntity<Map<String, Double>> getUserMonthlyExpensesMap(@PathVariable String year, @RequestParam(defaultValue = "PLN") String currCode) {
-        return new ResponseEntity<>(service.getMonthlyExpensesForGroup(year, currCode), HttpStatus.OK);
-    }
-
-    @GetMapping("/my/expenses/{year}")
-    @Operation(summary = "Retrieves map <Month, ExpensesSum> for given year")
-    public ResponseEntity<Map<String, Double>> getGroupMonthlyExpensesMap(@PathVariable String year, @RequestParam(defaultValue = "PLN") String currCode) {
-        return new ResponseEntity<>(service.getMonthlyExpensesForUser(year, currCode), HttpStatus.OK);
-    }
-
-    @GetMapping("/my/group/categories/{begin}/{end}")
-    @Operation(summary = "Retrieves map <CategoryName, ExpensesSum> for given time period, currCode (currency code ISO4217) - param")
-    public ResponseEntity<Map<String, Double>> getGroupCategoryExpensesMap(@PathVariable String begin, @PathVariable String end, @RequestParam(defaultValue = "PLN") String currCode) {
-        return new ResponseEntity<>(service.getSumOfCategoryExpansesForGroup(begin, end, currCode), HttpStatus.OK);
-    }
-
-    @GetMapping("/my/expenses/categories/{begin}/{end}")
-    @Operation(summary = "Retrieves map <CategoryName, ExpensesSum> for given time period, currCode (currency code ISO4217) - param")
-    public ResponseEntity<Map<String, Double>> getUserCategoryExpensesMap(@PathVariable String begin, @PathVariable String end, @RequestParam(defaultValue = "PLN") String currCode) {
-        return new ResponseEntity<>(service.getSumOfCategoryExpansesForUser(begin, end, currCode), HttpStatus.OK);
+    @GetMapping("/map-result/{group}/{keyPattern}")
+    @Operation(summary = "Retrieves a map<String, TotalExpanses> based on the given filter")
+    public ResponseEntity<Map<String, Double>> getMapResult(
+            @RequestParam(required = false) String beginDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false, defaultValue = "PLN") String currCode,
+            @RequestParam(required = false) List<String> categoryNames,
+            @RequestParam(required = false) List<String> emails,
+            @RequestParam(required = false) List<String> methods,
+            @PathVariable String group,
+            @Parameter(description = "Accepted values: [category, method, user, month, year]") @PathVariable String keyPattern
+            ) {
+        ExpenseFilter filter = new ExpenseFilter();
+        filter.setGroupName(group);
+        filter.setEmails(emails);
+        filter.setCategoryNames(categoryNames);
+        filter.setMethodsOfPayment(methods);
+        if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
+        if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
+        return new ResponseEntity<>(service.getMapResult(filter, currCode, keyPattern), HttpStatus.OK);
     }
 }

@@ -11,5 +11,6 @@ public interface MembershipService extends GenericService<Membership, Long> {
     List<BaseGroup> getBaseGroupsByUserId(Long userId);
     List<Membership> getMembershipsByUserId(Long userId);
     List<User> findAdmins(String group);
+    List<User> findUsers(String group);
     String getRole(User user, BaseMembership entity);
 }

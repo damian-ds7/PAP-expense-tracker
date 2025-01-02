@@ -32,6 +32,11 @@ public class GroupController  {
         return new ResponseEntity<>(mUser.map(value -> membershipService.getBaseGroupsByUserId(value.getId())).orElse(null), HttpStatus.OK);
     }
 
+    @GetMapping("/members/{group}")
+    public ResponseEntity<List<com.example.expenseapi.pojo.User>> getMembers(@PathVariable String group){
+        return new ResponseEntity<>(membershipService.findUsers(group), HttpStatus.OK);
+    }
+
     @GetMapping("/admins/{group}")
     public ResponseEntity<List<com.example.expenseapi.pojo.User>> getAdmins(@PathVariable String group){
         return new ResponseEntity<>(membershipService.findAdmins(group), HttpStatus.OK);

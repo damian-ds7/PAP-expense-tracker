@@ -233,22 +233,22 @@ public class ExpanseControllerIT {
 
     @Test
     void testRecent_NotLoggedIn() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent/any"))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
     void testRecent_ExpensesPresent() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent")
+        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent/family")
                         .header("Authorization", "Bearer " + getToken(activeUser)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isMap())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date").value("2025-11-30"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.expenseDate").value("2025-11-30"));
     }
 
     @Test
     void testRecent_NoExpensesPresent() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent")
+        mockMvc.perform(MockMvcRequestBuilders.get("/expense/recent/any")
                         .header("Authorization", "Bearer " + getToken(inactiveUser)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());

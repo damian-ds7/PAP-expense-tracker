@@ -22,20 +22,24 @@ public class FilterController {
 
     @GetMapping("/search")
     public ResponseEntity<List<ExpenseDTO>> search(
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false) List<String> categories,
             @RequestParam(required = false) String groupName,
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String beginDate,
             @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String email
+            @RequestParam(required = false) List<String> methods,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) List<String> emails
     ) {
         ExpenseFilter filter = new ExpenseFilter();
-        filter.setCategoryName(category);
+        filter.setCategoryNames(categories);
         filter.setGroupName(groupName);
         filter.setPriceMin(minPrice);
         filter.setPriceMax(maxPrice);
         filter.setEmail(email);
+        filter.setMethodsOfPayment(methods);
+        if (groupName != null) filter.setEmails(emails);
         if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
         if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
 

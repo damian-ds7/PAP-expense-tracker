@@ -27,7 +27,7 @@ public class User {
     private String surname;
 
     @NonNull
-    @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)")
+    @Column(name = "email", nullable = false, columnDefinition = "VARCHAR2(255)", unique = true)
     private String email;
 
     @Column(name = "creation_date", nullable = false)
