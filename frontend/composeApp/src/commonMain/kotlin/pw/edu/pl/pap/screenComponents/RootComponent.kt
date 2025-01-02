@@ -1,5 +1,6 @@
 package pw.edu.pl.pap.screenComponents
 
+import androidx.compose.runtime.collectAsState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.*
@@ -19,6 +20,7 @@ import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.*
@@ -70,6 +72,9 @@ class RootComponent(
 
         @Serializable
         data object ChartsScreen : Configuration()
+
+        @Serializable
+        data class GroupScreen(val userGroup: UserGroup) : Configuration()
 
         @Serializable
         data object SettingsScreen : Configuration()
@@ -128,6 +133,7 @@ class RootComponent(
         data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
 
         data class ChartsScreen(val component: ChartsScreenComponent) : Child()
+        data class GroupScreen(val component: GroupScreenComponent) : Child()
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
 
         data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()
@@ -146,7 +152,16 @@ class RootComponent(
         when (item) {
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Charts -> navigation.bringToFront(Configuration.ChartsScreen)
-            NavBarItem.Groups -> navigation.bringToFront(Configuration.HomeScreen)
+            NavBarItem.Groups -> {
+                val activeInstance = childStack.value.active.instance
+                if (activeInstance is Child.HomeScreen) {
+                    val homeComponent = activeInstance.component
+                    val userGroup = homeComponent.currentUserGroup.value!!
+                    navigation.bringToFront(Configuration.GroupScreen(userGroup))
+                } else {
+                    // never happens
+                }
+            }
             NavBarItem.Settings -> navigation.bringToFront(Configuration.SettingsScreen)
         }
     }
@@ -233,6 +248,14 @@ class RootComponent(
             is Configuration.ChartsScreen -> Child.ChartsScreen(
                 ChartsScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
+                )
+            )
+
+            is Configuration.GroupScreen -> Child.GroupScreen(
+                component = GroupScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onUserClicked = {},
+                    currentUserGroup = configuration.userGroup,
                 )
             )
 
