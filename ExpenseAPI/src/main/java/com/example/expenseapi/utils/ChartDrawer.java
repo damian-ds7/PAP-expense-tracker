@@ -1,6 +1,6 @@
 package com.example.expenseapi.utils;
 
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;

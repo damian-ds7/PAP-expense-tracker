@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;

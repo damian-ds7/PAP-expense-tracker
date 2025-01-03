@@ -1,7 +1,7 @@
 package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.UserDTO;
-import com.example.expenseapi.dto.UserFilter;
+import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,13 +24,13 @@ public class UserController extends GenericController<User, Long>{
         super(service);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/{groupName}")
     @Operation(summary = "Retrieves users which satisfies conditions")
     @ApiResponse(responseCode = "200", description = "List of user objects satisfying conditions", content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))))
     public ResponseEntity<List<UserDTO>> search(
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "surname", required = false) String surname
-    ) {
+            @RequestParam(value = "surname", required = false) String surname,
+            @PathVariable String groupName) {
         UserFilter filter = new UserFilter();
         filter.setName(name);
         filter.setSurname(surname);

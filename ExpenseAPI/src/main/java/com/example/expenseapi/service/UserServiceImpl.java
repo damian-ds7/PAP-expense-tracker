@@ -1,7 +1,7 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.UserDTO;
-import com.example.expenseapi.dto.UserFilter;
+import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.UserRepository;

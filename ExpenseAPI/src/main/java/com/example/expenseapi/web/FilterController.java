@@ -1,7 +1,7 @@
 package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.ExpenseDTO;
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

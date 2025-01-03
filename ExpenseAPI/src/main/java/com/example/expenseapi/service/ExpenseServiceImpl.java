@@ -2,7 +2,7 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
