@@ -4,6 +4,7 @@ import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/chart")
+@Tag(name="Chart Controller", description = "Controller to handle chart generation")
 public class ChartController {
     private final ExpenseService service;
 
