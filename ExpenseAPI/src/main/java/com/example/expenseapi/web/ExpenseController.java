@@ -33,20 +33,24 @@ public class ExpenseController extends GenericController<Expense, Long> {
     }
 
     @PostMapping("/create")
+    @Operation(summary = "Create a new expense using DTO")
+    @ApiResponse(responseCode = "201", description = "Expense successfully created.",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExpenseDTO.class)))
     public ResponseEntity<ExpenseDTO> createExpense(@RequestBody ExpenseCreateDTO expenseCreateDTO) {
         return new ResponseEntity<>(((ExpenseService) service).createExpense(expenseCreateDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/my/expenses")
     @Operation(summary = "Retrieves expenses from logged-in user")
-    @ApiResponse(responseCode = "200", description = "List of expense objects from logged user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    @ApiResponse(responseCode = "200", description = "List of expense objects from logged user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ExpenseDTO.class))))
     public ResponseEntity<List<ExpenseDTO>> getMyExpenses() {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForUser(), HttpStatus.OK);
     }
 
     @GetMapping("/my/group/{name}")
     @Operation(summary = "Retrieves expenses for group of logged-in user")
-    @ApiResponse(responseCode = "200", description = "List of expense object for group of logged-in user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Expense.class))))
+    @ApiResponse(responseCode = "200", description = "List of expense object for group of logged-in user", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ExpenseDTO.class))))
     public ResponseEntity<List<ExpenseDTO>> getByGroup(@PathVariable String name) {
         return new ResponseEntity<>(((ExpenseService) service).getExpensesForGroup(name), HttpStatus.OK);
     }
@@ -59,6 +63,8 @@ public class ExpenseController extends GenericController<Expense, Long> {
     }
 
     @GetMapping("/state/{group}")
+    @Operation(summary = "Get expense summary for a specific group")
+    @ApiResponse(responseCode = "200", description = "Sum of expenses for logged-in user and specific group", content = @Content(schema = @Schema(implementation = ExpInfo.class)))
     public ResponseEntity<ExpInfo> getState(@PathVariable String group) {
         return new ResponseEntity<>(((ExpenseService) service).getExpInfo(group), HttpStatus.OK);
     }
@@ -79,7 +85,7 @@ public class ExpenseController extends GenericController<Expense, Long> {
 
     @GetMapping("/recent/{groupName}")
     @Operation(summary = "Returns recent Expense object")
-    @ApiResponse(responseCode = "200", description = "The most recent Expense object", content = @Content(schema = @Schema(implementation = Expense.class)))
+    @ApiResponse(responseCode = "200", description = "The most recent Expense object", content = @Content(schema = @Schema(implementation = ExpenseDTO.class)))
     public ResponseEntity<Optional<ExpenseDTO>> getRecent(@PathVariable String groupName) {
         return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(groupName), HttpStatus.OK);
     }

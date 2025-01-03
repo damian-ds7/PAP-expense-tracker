@@ -7,6 +7,11 @@ import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.TemporaryMembershipService;
 import com.example.expenseapi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/membership")
+@Tag(name = "Membership Controller", description = "Controller to manage memberships")
 public class MembershipController extends GenericController<Membership, Long> {
     private final MembershipService membershipService ;
     private final TemporaryMembershipService temporaryMembershipService;
@@ -27,6 +33,13 @@ public class MembershipController extends GenericController<Membership, Long> {
     }
 
     @PostMapping("/invite")
+    @Operation(summary = "Invite a new member to a group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Invitation successfully created.",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
+                    content = @Content)
+    })
     public ResponseEntity<HttpStatus> save(@RequestBody BaseMembership entity, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String email = user.getUsername();
         User mUser = userService.findByEmail(email).get();
@@ -38,6 +51,13 @@ public class MembershipController extends GenericController<Membership, Long> {
     }
 
     @DeleteMapping("/delete")
+    @Operation(summary = "Delete user from a group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Membership successfully deleted.",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
+                    content = @Content)
+    })
     public ResponseEntity<HttpStatus> delete(@RequestBody Membership entity, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String email = user.getUsername();
         User mUser = userService.findByEmail(email).get();
@@ -49,6 +69,13 @@ public class MembershipController extends GenericController<Membership, Long> {
     }
 
     @PutMapping("/update")
+    @Operation(summary = "Update a membership in a group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Membership successfully updated.",
+                    content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
+                    content = @Content)
+    })
     public ResponseEntity<HttpStatus> update(@RequestBody Membership entity, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String email = user.getUsername();
         User mUser = userService.findByEmail(email).get();

@@ -6,7 +6,7 @@ import com.example.expenseapi.dto.ExpenseFilter;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
-import com.example.expenseapi.utils.ExpenseMapper;
+import com.example.expenseapi.mapper.ExpenseMapper;
 import com.example.expenseapi.utils.ExpenseSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
