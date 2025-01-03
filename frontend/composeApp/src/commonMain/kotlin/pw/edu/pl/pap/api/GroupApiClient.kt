@@ -2,9 +2,7 @@ package pw.edu.pl.pap.api
 
 import io.ktor.client.call.*
 import io.ktor.client.statement.*
-import pw.edu.pl.pap.api.endpoints.ExpenseEndpoint
 import pw.edu.pl.pap.api.endpoints.GroupEndpoint
-import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 
@@ -23,7 +21,7 @@ class GroupApiClient(baseApiClient: BaseApiClient) :
         return put(GroupEndpoint.UpdateGroup(group.id), group)
     }
 
-    suspend fun postNewExpense(newGroup: NewGroup) {
+    suspend fun postNewGroup(newGroup: NewGroup) {
         println("expense to be uploaded  $newGroup")
 
         val response: HttpResponse = post(GroupEndpoint.postNewGroup, newGroup)

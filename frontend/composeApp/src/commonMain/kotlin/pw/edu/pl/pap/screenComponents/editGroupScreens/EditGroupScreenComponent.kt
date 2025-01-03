@@ -4,10 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import io.ktor.http.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
-import pw.edu.pl.pap.screenComponents.singleExpense.BaseExpenseScreenComponent
 
 class EditGroupScreenComponent(
     baseComponent: BaseScreenComponent,
@@ -28,22 +26,20 @@ class EditGroupScreenComponent(
         }
 
         coroutineScope.launch {
-//            if (apiService.expenseApiClient.updateGroup(newGroup).status.isSuccess()) {
-//                onSave()
-//            }
-            //TODO
+            if (apiService.groupApiClient.updateGroup(newGroup).status.isSuccess()) {
+                onSave()
+            }
         }
 
-        println("Updated Expense ${newGroup.id} from ${group.name} to ${newGroup.name}")
+        println("Updated Group ${newGroup.id} from ${group.name} to ${newGroup.name}")
     }
 
     fun deleteExpense() {
-        println("Deleting expense $group")
+        println("Deleting group $group")
         coroutineScope.launch {
-//            if (apiService.expenseApiClient.deleteGroup(group.id).status.isSuccess()) {
-//                onDelete()
-//            }
-            //TODO
+            if (apiService.groupApiClient.deleteGroup(group.id).status.isSuccess()) {
+                onDelete()
+            }
         }
     }
 }
