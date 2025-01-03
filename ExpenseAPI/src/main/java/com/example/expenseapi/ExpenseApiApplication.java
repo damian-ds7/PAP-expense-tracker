@@ -93,8 +93,8 @@ public class ExpenseApiApplication implements CommandLineRunner {
             memberships = new Membership[] {
                     new Membership(users[0], groups[0], roles[0]),
                     new Membership(users[1], groups[0], roles[0]),
-                    new Membership(users[2], groups[1], roles[0]),
-                    new Membership(users[0], groups[1], roles[0]),
+                    new Membership(users[2], groups[1], roles[1]),
+                    new Membership(users[0], groups[1], roles[1]),
                     new Membership(users[0], archivedGroups[0], roles[0]),
                     new Membership(users[1], archivedGroups[1], roles[1]),
             };
