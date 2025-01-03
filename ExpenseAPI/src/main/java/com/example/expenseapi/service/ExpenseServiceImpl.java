@@ -7,10 +7,9 @@ import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
 import com.example.expenseapi.mapper.ExpenseMapper;
+import com.example.expenseapi.utils.AuthHelper;
 import com.example.expenseapi.utils.ExpenseSpecification;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
@@ -22,17 +21,15 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
     private final CurrencyRepository currencyRepository;
-    private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final ExpenseMapper expenseMapper;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, UserRepository userRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
         this.currencyRepository = currencyRepository;
-        this.userRepository = userRepository;
         this.membershipRepository = membershipRepository;
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.expenseMapper = expenseMapper;
@@ -96,7 +93,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public List<ExpenseDTO> getExpensesForUser() {
         ExpenseFilter filter = new ExpenseFilter();
-        filter.setEmail(getUserEmail());
+        filter.setEmail(AuthHelper.getUserEmail());
         return searchExpensesDTO(filter);
     }
 
@@ -104,7 +101,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public ExpInfo getExpInfo(String group) {
         List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
         List<ExpenseDTO> userExpenses = groupExpenses.stream()
-                .filter(expense -> expense.getUser().getEmail().equals(getUserEmail()))
+                .filter(expense -> expense.getUser().getEmail().equals(AuthHelper.getUserEmail()))
                 .toList(); // Returns only user's expenses in provided group, not in all groups
         double groupSum = groupExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
@@ -113,9 +110,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public ExpInfo getExpInfo() {
-        List<BaseGroup> groups = getAllGroups();
+        List<BaseGroup> groups = AuthHelper.getAllGroups();
         Set<ExpenseDTO> groupExpenses = groups.stream().flatMap(group -> getExpensesForGroup(group.getName()).stream()).collect(Collectors.toSet());
-        List<Expense> userExpenses = expenseRepository.findByMembershipUserEmail(getUserEmail());
+        List<Expense> userExpenses = expenseRepository.findByMembershipUserEmail(AuthHelper.getUserEmail());
         double groupSum = groupExpenses.stream().mapToDouble(ExpenseDTO::getPrice).sum();
         double userSum = userExpenses.stream().mapToDouble(Expense::getPrice).sum();
         return new ExpInfo(userSum, groupSum);
@@ -138,23 +135,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return expenses.stream().max(Comparator.comparing(ExpenseDTO::getId));
     }
 
-
-    private String getGroupName() {
-        if (getAllGroups().isEmpty()) return "";
-        return getAllGroups().getFirst().getName();
-    }
-
-    private List<BaseGroup> getAllGroups() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        List<BaseGroup> groups = null;
-        if (user.isPresent()) {
-            groups = membershipRepository.findBaseGroupsByUser_Id(user.get().getId());
-        }
-        return groups;
-    }
-
     @Override
     public Map<LocalDate, List<ExpenseDTO>> getGroupExpenseAsDateMap(String name) {
         List<ExpenseDTO> expenses = getExpensesForGroup(name);
@@ -172,9 +152,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
         if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
-            filter.setGroupName(getGroupName());
+            filter.setGroupName(AuthHelper.getGroupName());
         }
-        if (!isGroupNameValid(filter.getGroupName())) {
+        if (!AuthHelper.isGroupNameValid(filter.getGroupName())) {
             return Collections.emptyList();
         }
         Specification<Expense> spec = Specification.where(null);
@@ -189,16 +169,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return expenseRepository.findAll(spec).stream()
                 .map(expenseMapper::expenseToExpenseDTO)
                 .collect(Collectors.toList());
-    }
-
-    private boolean isGroupNameValid(String name){
-        return getAllGroups().stream()
-                .anyMatch(group -> group.getName().equals(name));
-    }
-
-    private String getUserEmail() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
     }
 
     private double convertFromCurrencyToAnother(double value, Currency srcCurr, Currency dstCurr) {
