@@ -16,9 +16,6 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     @Query("SELECT m.group FROM Membership m WHERE m.user.id = :userId")
     List<BaseGroup> findBaseGroupsByUser_Id(@Param("userId") Long userId);
 
-    @Query("Select m.group FROM Membership m Where m.user.id = :userId and (TYPE(m.group) != ArchivedGroup)")
-    List<Group> findGroupsByUserId(Long userId);
-
     @Query("select m.user from Membership m where m.group.name = :group")
     List<User> findUsers(String group);
 
