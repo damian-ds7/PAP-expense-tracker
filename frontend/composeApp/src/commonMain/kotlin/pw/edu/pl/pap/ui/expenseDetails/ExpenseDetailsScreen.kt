@@ -3,6 +3,7 @@ package pw.edu.pl.pap.ui.expenseDetails
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.ui.common.BackDeleteAddButtonRow
 import pw.edu.pl.pap.ui.common.ConfirmationPopup
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
@@ -19,7 +20,7 @@ fun ExpenseDetailsScreen(
     component.setupInputFields()
     InputFields(component.inputFieldsData)
 
-    ExpenseDetailsButtonRow(
+    BackDeleteAddButtonRow(
         onBack = {
             scope.launch {
                 handleBack(component) { confirmDialogState = ConfirmationDialogState.GoBack }
