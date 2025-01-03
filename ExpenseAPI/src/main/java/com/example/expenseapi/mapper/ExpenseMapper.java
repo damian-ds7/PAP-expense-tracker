@@ -1,4 +1,4 @@
-package com.example.expenseapi.utils;
+package com.example.expenseapi.mapper;
 
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
