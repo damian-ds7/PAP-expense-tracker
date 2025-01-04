@@ -25,4 +25,15 @@ public interface ExpenseMapper {
     @Mapping(source = "groupName", target = "membership.group.name")
     @Mapping(source = "user.id", target = "membership.user.id")
     Expense expenseCreateDTOToExpense(ExpenseCreateDTO dto);
+
+    @Mapping(target = "membership.group.name", source = "groupName")
+    @Mapping(target = "membership.user.email", source = "user.email")
+    @Mapping(target = "category", source = "category")
+    @Mapping(target = "method.name", source = "methodOfPayment")
+    @Mapping(target = "currency", source = "currency")
+    @Mapping(target = "date", source = "expenseDate")
+    @Mapping(target = "membership.user.name", source = "user.name")
+    @Mapping(target = "membership.user.surname", source = "user.surname")
+    @Mapping(target = "membership.user.id", source = "user.id")
+    Expense expenseDTOToExpense(ExpenseDTO expenseDTO);
 }
