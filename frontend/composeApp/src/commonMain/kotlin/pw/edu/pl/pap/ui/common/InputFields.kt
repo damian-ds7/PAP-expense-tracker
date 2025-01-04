@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.uiSetup.inputFields.*
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
-import pw.edu.pl.pap.util.dateFunctions.dateToMilis
+import pw.edu.pl.pap.util.dateFunctions.dateToMillis
 
 
 @Composable
@@ -129,7 +129,7 @@ private fun createDatePicker(
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     val selectedDate by remember { mutableStateOf(data.date.value) }
-    val datePickerState = rememberDatePickerState(dateToMilis(selectedDate))
+    val datePickerState = rememberDatePickerState(dateToMillis(selectedDate))
 
     Box(
         modifier = Modifier
