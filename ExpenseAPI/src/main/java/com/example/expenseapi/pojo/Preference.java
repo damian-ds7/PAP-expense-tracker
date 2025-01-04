@@ -17,11 +17,6 @@ public class Preference {
     private Long id;
 
     @NonNull
-    @OneToOne(optional = false)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @NonNull
     @JoinColumn(name = "currency_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Currency currency;
@@ -35,14 +30,13 @@ public class Preference {
     @Column(name = "language", nullable = false)
     private String language = "pl";
 
-    public Preference(@NonNull User user, @NonNull Currency currency,@NonNull MethodOfPayment method) {
-        this.user = user;
+    public Preference(@NonNull Currency currency, @NonNull MethodOfPayment method) {
         this.currency = currency;
         this.method = method;
     }
 
     public Preference(@NonNull User user, @NonNull Currency currency,@NonNull MethodOfPayment method, @NonNull String language) {
-        this(user, currency, method);
+        this(currency, method);
         this.language = language;
     }
 }
