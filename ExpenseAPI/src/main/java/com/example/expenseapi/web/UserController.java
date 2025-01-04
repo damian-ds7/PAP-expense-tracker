@@ -40,7 +40,9 @@ public class UserController extends GenericController<User, Long>{
 
     @PutMapping("/changePass")
     public ResponseEntity<UserDTO> changePass(@RequestBody ChangePasswordDTO passwordDTO) {
+        if (passwordDTO.getNewPassword() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(((UserService) service).changePassword(passwordDTO), HttpStatus.OK);
-
     }
 }
