@@ -10,6 +10,9 @@ import com.example.expenseapi.repository.*;
 import com.example.expenseapi.mapper.ExpenseMapper;
 import com.example.expenseapi.utils.AuthHelper;
 import com.example.expenseapi.specification.ExpenseSpecification;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -207,5 +210,22 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             map.put(key, map.getOrDefault(key, 0.0) + price);
         }
         return map;
+    }
+
+    private static String[] getNullPropertyNames(Object source) {
+        BeanWrapper beanWrapper = new BeanWrapperImpl(source);
+        return Arrays.stream(beanWrapper.getPropertyDescriptors())
+                .map(pd -> pd.getName())
+                .filter(propertyName -> beanWrapper.getPropertyValue(propertyName) == null)
+                .toArray(String[]::new);
+    }
+
+    @Override
+    public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
+        Expense expense = expenseRepository.findById(id).orElse(null);
+        Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
+        BeanUtils.copyProperties(updatedExpense, expense, getNullPropertyNames(updatedExpense));
+        expense.setMethod(methodOfPaymentRepository.findByName(updatedExpense.getMethod().getName()));
+        return expenseMapper.expenseToExpenseDTO(expenseRepository.save(expense));
     }
 }
