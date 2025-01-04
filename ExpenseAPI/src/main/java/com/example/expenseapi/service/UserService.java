@@ -2,6 +2,7 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
+import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.pojo.User;
 
@@ -13,4 +14,6 @@ public interface UserService extends GenericService<User, Long> {
     List<UserDTO> searchUsersDTO(UserFilter filter, String groupName);
 
     UserDTO changePassword(ChangePasswordDTO passwordDTO);
+
+    UserDTO update(UserUpdateDTO userUpdateDTO);
 }
