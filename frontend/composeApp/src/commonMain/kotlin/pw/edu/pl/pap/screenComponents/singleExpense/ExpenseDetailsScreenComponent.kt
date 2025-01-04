@@ -26,6 +26,7 @@ class ExpenseDetailsScreenComponent(
 
     override var currencyIndex: MutableState<Int> = mutableStateOf(expense.currency.id.toInt() - 1)
 
+    //TODO when no given currency in list there's an out of bounds error for index -1
     override var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(methodsOfPayment.indexOf(expense.methodOfPayment))
 
     override var userIndex: MutableState<Int> = mutableStateOf(expense.user.id.toInt())
