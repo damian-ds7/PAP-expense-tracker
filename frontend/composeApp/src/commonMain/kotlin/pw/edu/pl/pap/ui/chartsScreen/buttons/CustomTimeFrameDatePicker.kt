@@ -11,7 +11,7 @@ import pw.edu.pl.pap.util.dateFunctions.dateToMillis
 
 @Composable
 fun CustomTimeFrameDatePicker(
-    text: String,
+    text: @Composable () -> Unit,
     timeBounds: Pair<LocalDate?, LocalDate?>,
     modifyBoundsFunction: (LocalDate?, LocalDate?) -> Unit,
 ) {
@@ -24,11 +24,7 @@ fun CustomTimeFrameDatePicker(
         contentAlignment = Alignment.Center
     )
     {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
+        text()
     }
 
     if (showDatePicker) {

@@ -3,6 +3,8 @@ package pw.edu.pl.pap.ui.chartsScreen.buttons
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,11 +22,15 @@ fun ButtonRow(
 ) {
     Row {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Row(
+                modifier = Modifier.align(Alignment.CenterStart),
+            ) {
+                FilterMenuButton { }
+            }
             TimeFramePicker(component)
             Row(
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
-                FilterMenuButton { }
                 RefreshButton {
                     component.updateNavigationState(ChartsScreenComponent.NavigationState.InitialLoad)
                 }
@@ -39,12 +45,17 @@ private fun TimeFramePicker(component: ChartsScreenComponent) {
     val timeFrame by component.currentTimeFrame.collectAsState()
     val timeBounds by component.currentTimeBounds.collectAsState()
 
-    val text = when (timeFrame) {
-        FilterTimeFrames.MONTH -> formatDate(timeBounds.first!!, "MMMM yyyy")
-        FilterTimeFrames.YEAR -> formatDate(timeBounds.first!!, "yyyy")
-        else -> customTimeFrameText(timeBounds)
+    val text: @Composable () -> Unit = {
+        Text(
+            text = when (timeFrame) {
+                FilterTimeFrames.MONTH -> formatDate(timeBounds.first!!, "MMMM yyyy")
+                FilterTimeFrames.YEAR -> formatDate(timeBounds.first!!, "yyyy")
+                else -> customTimeFrameText(timeBounds)
+            },
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
     }
-
     when (timeFrame) {
         FilterTimeFrames.MONTH, FilterTimeFrames.YEAR -> {
             MonthYearSwitcher(
