@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,11 @@ public class UserController extends GenericController<User, Long>{
     }
 
     @PutMapping("/changePass")
+    @Operation(summary = "Changed password of logged-in user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Password successfully changed", content = @Content(schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Password was not changed")
+    })
     public ResponseEntity<UserDTO> changePass(@RequestBody ChangePasswordDTO passwordDTO) {
         if (passwordDTO.getNewPassword() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -48,6 +54,8 @@ public class UserController extends GenericController<User, Long>{
     }
 
     @PutMapping("/update")
+    @Operation(summary = "Updates given user fields")
+    @ApiResponse(responseCode = "200", description = "User changed", content = @Content(schema = @Schema(implementation = UserDTO.class)))
     public ResponseEntity<UserDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
         return new ResponseEntity<>(((UserService) service).update(userUpdateDTO), HttpStatus.OK);
     }
