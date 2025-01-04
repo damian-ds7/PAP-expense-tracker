@@ -38,6 +38,7 @@ public class User {
     @OneToOne(optional = false)
     private Preference preference;
 
+    @NonNull
     @Column(nullable = false)
     private String password;
 }
