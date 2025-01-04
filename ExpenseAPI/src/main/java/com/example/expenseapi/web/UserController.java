@@ -2,6 +2,7 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
+import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.service.UserService;
@@ -44,5 +45,10 @@ public class UserController extends GenericController<User, Long>{
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(((UserService) service).changePassword(passwordDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
+        return new ResponseEntity<>(((UserService) service).update(userUpdateDTO), HttpStatus.OK);
     }
 }
