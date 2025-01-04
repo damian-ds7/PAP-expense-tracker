@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.util
+package pw.edu.pl.pap.util.dateFunctions
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
