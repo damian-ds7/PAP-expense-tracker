@@ -89,4 +89,9 @@ public class ExpenseController extends GenericController<Expense, Long> {
     public ResponseEntity<Optional<ExpenseDTO>> getRecent(@PathVariable String groupName) {
         return new ResponseEntity<>(((ExpenseService) service).getRecentExpense(groupName), HttpStatus.OK);
     }
+
+    @PutMapping("/modify/{id}")
+    public ResponseEntity<ExpenseDTO> updateExpense(@PathVariable Long id, @RequestBody ExpenseDTO expenseDTO) {
+        return new ResponseEntity<>(((ExpenseService) service).updateExpense(id, expenseDTO), HttpStatus.OK);
+    }
 }
