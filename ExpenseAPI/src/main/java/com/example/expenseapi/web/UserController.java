@@ -1,5 +1,6 @@
 package com.example.expenseapi.web;
 
+import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.pojo.User;
@@ -35,5 +36,11 @@ public class UserController extends GenericController<User, Long>{
         filter.setName(name);
         filter.setSurname(surname);
         return new ResponseEntity<>(((UserService)service).searchUsersDTO(filter, groupName), HttpStatus.OK);
+    }
+
+    @PutMapping("/changePass")
+    public ResponseEntity<UserDTO> changePass(@RequestBody ChangePasswordDTO passwordDTO) {
+        return new ResponseEntity<>(((UserService) service).changePassword(passwordDTO), HttpStatus.OK);
+
     }
 }
