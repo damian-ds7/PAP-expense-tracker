@@ -1,5 +1,7 @@
 package com.example.expenseapi.utils;
 
+import com.example.expenseapi.dto.UserDTO;
+import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
@@ -15,15 +17,21 @@ import java.util.Optional;
 public class AuthHelper {
     private static UserRepository userRepository;
     private static MembershipRepository membershipRepository;
+    private static UserMapper userMapper;
 
     @Autowired
-    public AuthHelper(UserRepository userRepository, MembershipRepository membershipRepository) {
+    public AuthHelper(UserRepository userRepository, MembershipRepository membershipRepository, UserMapper userMapper) {
         AuthHelper.userRepository = userRepository;
         AuthHelper.membershipRepository = membershipRepository;
+        AuthHelper.userMapper = userMapper;
     }
 
     public static String getUserEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public static User getUser() {
+        return userRepository.findByEmail(getUserEmail()).get();
     }
 
     public static String getGroupName() {
