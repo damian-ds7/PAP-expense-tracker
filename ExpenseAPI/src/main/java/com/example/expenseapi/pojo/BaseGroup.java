@@ -26,7 +26,7 @@ public class BaseGroup {
     @Column(name = "name", nullable = false)
     protected String name;
 
-    public BaseGroup(String name) {
+    public BaseGroup(@NonNull String name) {
         this.name = name;
     }
 }

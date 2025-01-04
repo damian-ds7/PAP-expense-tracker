@@ -23,8 +23,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final RoleRepository roleRepository;
+    private final PreferenceRepository preferenceRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, MethodOfPaymentRepository methodOfPaymentRepository, RoleRepository roleRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, MethodOfPaymentRepository methodOfPaymentRepository, RoleRepository roleRepository, PreferenceRepository preferenceRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -35,6 +36,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.roleRepository = roleRepository;
+        this.preferenceRepository = preferenceRepository;
     }
 
     public static void main(String[] args) {
@@ -51,6 +53,8 @@ public class ExpenseApiApplication implements CommandLineRunner {
         Role[] roles = null;
         MethodOfPayment[] methods = null;
         Membership[] memberships = null;
+        Preference[] preferences = null;
+
         if (methodOfPaymentRepository.count() == 0) {
             methods = new MethodOfPayment[]{
                     new MethodOfPayment("cash"),
@@ -58,6 +62,14 @@ public class ExpenseApiApplication implements CommandLineRunner {
 
             };
             methodOfPaymentRepository.saveAll(Arrays.asList(methods));
+        }
+        if (currencyRepository.count() == 0) {
+            currencies = new Currency[]{
+                    new Currency("Zlotowka", "PLN", 1),
+                    new Currency("Dollar", "USD", CurrencyRatesFetcher.getCurrencyRates("USD")),
+                    new Currency("Euro", "EUR", CurrencyRatesFetcher.getCurrencyRates("EUR"))
+            };
+            currencyRepository.saveAll(Arrays.asList(currencies));
         }
         if (groupRepository.count() == 0) {
             groups = new Group[]{
@@ -73,12 +85,22 @@ public class ExpenseApiApplication implements CommandLineRunner {
             };
             archivedGroupRepository.saveAll(Arrays.asList(archivedGroups));
         }
+        if (preferenceRepository.count() == 0) {
+            preferences = new Preference[] {
+                    new Preference(currencies[0], methods[0]),
+                    new Preference(currencies[1], methods[1]),
+                    new Preference(currencies[2], methods[0]),
+                    new Preference(currencies[0], methods[1]),
+            };
+            preferenceRepository.saveAll(Arrays.asList(preferences));
+        }
+
         if (userRepository.count() == 0) {
             users = new User[]{
-                    new User("Herkules1", "Herkules1", "herkules1@gmail.com", passwordEncoder.encode("123")),
-                    new User("Herkules2", "Herkules2", "herkules2@gmail.com", passwordEncoder.encode("234")),
-                    new User("Herkules3", "Herkules3", "herkules3@gmail.com", passwordEncoder.encode("345")),
-                    new User("Herkules4", "Herkules4", "herkules4@gmail.com", passwordEncoder.encode("456"))
+                    new User("Herkules1", "Herkules1", "herkules1@gmail.com", preferences[0], passwordEncoder.encode("123")),
+                    new User("Herkules2", "Herkules2", "herkules2@gmail.com", preferences[1], passwordEncoder.encode("234")),
+                    new User("Herkules3", "Herkules3", "herkules3@gmail.com", preferences[2], passwordEncoder.encode("345")),
+                    new User("Herkules4", "Herkules4", "herkules4@gmail.com", preferences[3], passwordEncoder.encode("456"))
             };
             userRepository.saveAll(Arrays.asList(users));
         }
@@ -106,14 +128,6 @@ public class ExpenseApiApplication implements CommandLineRunner {
                     new Category("Transport")
             };
             categoryRepository.saveAll((Arrays.asList(categories)));
-        }
-        if (currencyRepository.count() == 0) {
-            currencies = new Currency[]{
-                    new Currency("Zlotowka", "PLN", 1),
-                    new Currency("Dollar", "USD", CurrencyRatesFetcher.getCurrencyRates("USD")),
-                    new Currency("Euro", "EUR", CurrencyRatesFetcher.getCurrencyRates("EUR"))
-            };
-            currencyRepository.saveAll(Arrays.asList(currencies));
         }
         if (expenseRepository.count() == 0) {
             Expense[] expenses = new Expense[] {

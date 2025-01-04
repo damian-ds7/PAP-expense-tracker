@@ -17,7 +17,7 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<ExpenseDTO> getExpensesForUser();
     ExpInfo getExpInfo(String group);
     ExpInfo getExpInfo();
-    Map<String, Double> getMapResult(ExpenseFilter filter, String currCode, String keyType);
+    Map<String, Double> getMapResult(ExpenseFilter filter, String keyType);
     Optional<ExpenseDTO> getRecentExpense(String groupName);
     Map<LocalDate, List<ExpenseDTO>> getGroupExpenseAsDateMap(String name);
     Map<Category, List<ExpenseDTO>> getGroupExpenseAsCategoryMap(String name);

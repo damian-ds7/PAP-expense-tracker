@@ -3,6 +3,7 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.filter.ExpenseFilter;
+import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.pojo.Currency;
 import com.example.expenseapi.repository.*;
@@ -24,8 +25,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MembershipRepository membershipRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final ExpenseMapper expenseMapper;
+    private final UserMapper userMapper;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper, UserMapper userMapper) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
@@ -33,6 +35,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         this.membershipRepository = membershipRepository;
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.expenseMapper = expenseMapper;
+        this.userMapper = userMapper;
     }
 
     public ExpenseDTO save(ExpenseCreateDTO expenseDTO) {
@@ -58,6 +61,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
 
     @Override
     public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
+        User user = AuthHelper.getUser();
+        if (createDTO.getUser() == null) {
+            createDTO.setUser(userMapper.userToUserDTO(user));
+        }
+        if (createDTO.getCurrencyCode() == null) {
+            createDTO.setCurrencyCode(user.getPreference().getCurrency().getSymbol());
+        }
+        if (createDTO.getMethodOfPayment() == null) {
+            createDTO.setMethodOfPayment(user.getPreference().getMethod().getName());
+        }
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
         Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
         if (membershipOpt.isEmpty()) {
@@ -68,17 +81,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             Category category = categoryRepository.findByName(createDTO.getCategoryName());
             expense.setCategory(category);
         }
-        if (createDTO.getMethodOfPayment() != null) {
-            MethodOfPayment method = methodOfPaymentRepository.findByName(createDTO.getMethodOfPayment());
-            expense.setMethod(method);
-        }
-        if (createDTO.getCurrencyCode() != null) {
-            Currency currency = currencyRepository.findBySymbol(createDTO.getCurrencyCode());
-            expense.setCurrency(currency);
-        }
         if (createDTO.getExpenseDate() != null) {
             expense.setDate(createDTO.getExpenseDate());
         }
+        expense.setMethod(methodOfPaymentRepository.findByName(createDTO.getMethodOfPayment()));
+        expense.setCurrency(currencyRepository.findBySymbol(createDTO.getCurrencyCode()));
         Expense savedExpense = expenseRepository.save(expense);
         return expenseMapper.expenseToExpenseDTO(savedExpense);
     }
@@ -119,9 +126,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    public Map<String, Double> getMapResult(ExpenseFilter filter, String currCode, String keyType) {
+    public Map<String, Double> getMapResult(ExpenseFilter filter,  String keyType) {
         List<ExpenseDTO> result = searchExpensesDTO(filter);
-        Currency currency = currencyRepository.findBySymbol(currCode);
+        Currency currency = currencyRepository.findBySymbol(AuthHelper.getUser().getPreference().getCurrency().getSymbol());
         Function<ExpenseDTO, String> keyExtractor = findKeyExtractor(keyType);
         if (keyExtractor == null) throw new IllegalArgumentException("Invalid key type");
         return totalExpensesMap(result, keyExtractor, currency);

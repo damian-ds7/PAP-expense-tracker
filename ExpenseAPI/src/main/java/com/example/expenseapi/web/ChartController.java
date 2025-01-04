@@ -28,7 +28,6 @@ public class ChartController {
     public ResponseEntity<Map<String, Double>> getMapResult(
             @RequestParam(required = false) String beginDate,
             @RequestParam(required = false) String endDate,
-            @RequestParam(required = false, defaultValue = "PLN") String currCode,
             @RequestParam(required = false) List<String> categoryNames,
             @RequestParam(required = false) List<String> emails,
             @RequestParam(required = false) List<String> methods,
@@ -42,6 +41,6 @@ public class ChartController {
         filter.setMethodsOfPayment(methods);
         if (beginDate != null) filter.setBeginDate(LocalDate.parse(beginDate));
         if (endDate != null) filter.setEndDate(LocalDate.parse(endDate));
-        return new ResponseEntity<>(service.getMapResult(filter, currCode, keyPattern), HttpStatus.OK);
+        return new ResponseEntity<>(service.getMapResult(filter, keyPattern), HttpStatus.OK);
     }
 }
