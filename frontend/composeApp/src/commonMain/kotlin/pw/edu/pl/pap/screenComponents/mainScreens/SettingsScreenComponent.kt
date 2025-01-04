@@ -6,11 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.inputFields.ButtonData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import androidx.compose.runtime.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 
 class SettingsScreenComponent(
     private val onLogOut: () -> Unit,

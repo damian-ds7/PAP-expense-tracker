@@ -13,7 +13,7 @@ import pw.edu.pl.pap.data.uiSetup.inputFields.DatePickerData
 import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 
@@ -36,7 +36,7 @@ open class BaseExpenseScreenComponent(
     protected open var date: MutableState<LocalDate> = mutableStateOf(Clock.System.todayIn(TimeZone.UTC))
 
 
-    protected open var newPrice: MutableState<String> = mutableStateOf("")
+    protected open var price: MutableState<String> = mutableStateOf("")
 
     protected val currencies = listOf("PLN", "EUR", "USD")
     //TODO fetch currencies
@@ -57,7 +57,7 @@ open class BaseExpenseScreenComponent(
     protected open var userIndex: MutableState<Int> = mutableStateOf(0)
 
 
-    val canConfirm by derivedStateOf { newPrice.value.isNotEmpty() }
+    val canConfirm by derivedStateOf { price.value.isNotEmpty() }
 
     fun setupInputFields() {
         _inputFieldsData.clear()
@@ -96,12 +96,12 @@ open class BaseExpenseScreenComponent(
                 InputFieldData(
                     title = "Price: ",
                     textFieldData = TextFieldData(
-                        parameter = newPrice,
+                        parameter = price,
                         onChange = { newParameter ->
                             val sanitizedInput = sanitizePriceInput(newParameter)
 
                             if (sanitizedInput != null) {
-                                coroutineScope.launch { updatePrice(sanitizedInput, newPrice) }
+                                coroutineScope.launch { updatePrice(sanitizedInput, price) }
                             }
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)

@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 import pw.edu.pl.pap.util.sortingSystem.GroupMapKey

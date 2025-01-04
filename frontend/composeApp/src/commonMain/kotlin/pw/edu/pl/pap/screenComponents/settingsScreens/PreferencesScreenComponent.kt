@@ -1,15 +1,12 @@
 package pw.edu.pl.pap.screenComponents.settingsScreens
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 
 class PreferencesScreenComponent (
     baseSettingsScreenComponent: BaseSettingsScreenComponent

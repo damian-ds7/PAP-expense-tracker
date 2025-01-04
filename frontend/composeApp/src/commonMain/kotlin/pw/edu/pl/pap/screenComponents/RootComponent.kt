@@ -18,8 +18,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
+import pw.edu.pl.pap.data.databaseAssociatedData.ChartFilterParams
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
+import pw.edu.pl.pap.screenComponents.chartsScreens.ChartsFilterScreenComponent
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.*
 import pw.edu.pl.pap.screenComponents.settingsScreens.*
@@ -70,6 +72,9 @@ class RootComponent(
 
         @Serializable
         data object ChartsScreen : Configuration()
+
+        @Serializable
+        data class  ChartsFilterScreen(val filterParams: ChartFilterParams)
 
         @Serializable
         data object SettingsScreen : Configuration()
@@ -128,6 +133,8 @@ class RootComponent(
         data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
 
         data class ChartsScreen(val component: ChartsScreenComponent) : Child()
+        data class ChartsFilterScreen(val component: ChartsFilterScreenComponent)
+
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
 
         data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()

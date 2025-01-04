@@ -8,6 +8,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import pw.edu.pl.pap.data.databaseAssociatedData.ChartFilterParams
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 import pw.edu.pl.pap.util.charts.ChartData
 import pw.edu.pl.pap.util.charts.FilterTimeFrames
 import pw.edu.pl.pap.util.dateFunctions.getCurrentDate

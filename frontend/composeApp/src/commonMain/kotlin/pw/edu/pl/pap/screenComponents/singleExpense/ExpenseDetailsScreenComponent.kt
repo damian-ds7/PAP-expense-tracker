@@ -5,7 +5,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 import pw.edu.pl.pap.util.formatForTextField
 
 class ExpenseDetailsScreenComponent(
@@ -22,7 +22,7 @@ class ExpenseDetailsScreenComponent(
 
     override var date: MutableState<LocalDate> = mutableStateOf(expense.expenseDate)
 
-    override var newPrice: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
+    override var price: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
 
     override var currencyIndex: MutableState<Int> = mutableStateOf(expense.currency.id.toInt() - 1)
 

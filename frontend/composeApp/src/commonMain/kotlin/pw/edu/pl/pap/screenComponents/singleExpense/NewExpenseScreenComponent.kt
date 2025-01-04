@@ -1,15 +1,9 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
-import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 
 class NewExpenseScreenComponent(
     baseComponent: BaseScreenComponent,
@@ -22,7 +16,7 @@ class NewExpenseScreenComponent(
     override fun confirm() {
         val newExpense = NewExpense(
             title = title.value,
-            price = newPrice.value.toFloat(),
+            price = price.value.toFloat(),
             user = users[userIndex.value],
             groupName = currentUserGroup.name,
             categoryName = categories[categoryIndex.value],
