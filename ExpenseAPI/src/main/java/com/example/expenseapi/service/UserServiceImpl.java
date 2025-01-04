@@ -2,6 +2,7 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
+import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.User;
@@ -55,6 +56,26 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
             temp.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
             userRepository.save(temp);
             response = userMapper.userToUserDTO(temp);
+        }
+        return response;
+    }
+
+    @Override
+    public UserDTO update(UserUpdateDTO userUpdateDTO) {
+        Optional<User> user = findByEmail(AuthHelper.getUserEmail());
+        UserDTO response = null;
+        if (user.isPresent()) {
+            User temp = user.get();
+            if (userUpdateDTO.getEmail() != null){
+                temp.setEmail(userUpdateDTO.getEmail());
+            }
+            if (userUpdateDTO.getName() != null){
+                temp.setName(userUpdateDTO.getName());
+            }
+            if (userUpdateDTO.getSurname() != null){
+                temp.setSurname(userUpdateDTO.getSurname());
+            }
+            response = userMapper.userToUserDTO(userRepository.save(temp));
         }
         return response;
     }
