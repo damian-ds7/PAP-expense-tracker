@@ -26,7 +26,7 @@ fun MonthYearSwitcher(
             Icon(Icons.Filled.ChevronLeft, contentDescription = "Previous time frame")
         }
         Box(
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier.width(130.dp),
             contentAlignment = Alignment.Center
         ) {
             text()
