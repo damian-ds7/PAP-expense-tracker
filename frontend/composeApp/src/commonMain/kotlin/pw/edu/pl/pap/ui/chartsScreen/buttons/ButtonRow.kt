@@ -25,7 +25,7 @@ fun ButtonRow(
             Row(
                 modifier = Modifier.align(Alignment.CenterStart),
             ) {
-                FilterMenuButton { }
+                FilterMenuButton { component.onFilterClick(component.chartFilters.value, component.currentUserGroup.value!!, "category") }
             }
             TimeFramePicker(component)
             Row(
