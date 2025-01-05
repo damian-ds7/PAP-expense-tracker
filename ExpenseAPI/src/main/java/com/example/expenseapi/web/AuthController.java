@@ -2,6 +2,7 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.UserRepository;
+import com.example.expenseapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @Tag(name="Authentication Controller", description = "Controller to enable registration")
 public class AuthController {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -32,11 +33,11 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "A user with the provided email already exists.")
     })
     public ResponseEntity<HttpStatus> registerUser(@RequestBody User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (userService.findByEmail(user.getEmail()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        userService.save(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
