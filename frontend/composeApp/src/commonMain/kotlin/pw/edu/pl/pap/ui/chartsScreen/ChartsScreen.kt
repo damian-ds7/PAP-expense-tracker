@@ -13,6 +13,7 @@ import pw.edu.pl.pap.ui.chartsScreen.buttons.ButtonRow
 import pw.edu.pl.pap.ui.chartsScreen.menus.GroupSelection
 import pw.edu.pl.pap.ui.chartsScreen.menus.TabBar
 import pw.edu.pl.pap.util.constants.horizontalPadding
+import pw.edu.pl.pap.util.formatForDisplay
 
 //TODO add plot and plot filters menu
 @Composable
@@ -49,7 +50,7 @@ fun ChartsScreen(component: ChartsScreenComponent) {
                 GroupSelection(component)
             }
             Text(
-                text = "Total: ${component.getTotal()} zł",
+                text = "Total: ${formatForDisplay(component.getTotal().toFloat())} zł",
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleLarge,
             )
