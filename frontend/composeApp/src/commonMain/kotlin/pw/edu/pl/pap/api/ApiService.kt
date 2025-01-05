@@ -11,6 +11,9 @@ class ApiService(
     val expenseApiClient = ExpenseApiClient(baseApiClient)
     val groupApiClient = GroupApiClient(baseApiClient)
     val chartsApiClient = ChartsApiClient(baseApiClient)
+    val currencyApiClient = CurrencyApiClient(baseApiClient)
+    val categoryApiClient = CategoryApiClient(baseApiClient)
+    val paymentMethodApiClient = PaymentMethodApiClient(baseApiClient)
 
     fun updateBaseUrl(newUrl: String) {
         baseApiClient.setUrl(newUrl)
