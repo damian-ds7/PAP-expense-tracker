@@ -12,12 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pw.edu.pl.pap.data.uiSetup.inputFields.*
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
 import pw.edu.pl.pap.util.dateFunctions.dateToMillis
@@ -57,7 +58,7 @@ private fun createField(data: InputFieldData) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = data.title)
-                when(data) {
+                when (data) {
                     is InputFieldData.DropdownListData -> createDropdownList(data)
                     is InputFieldData.DatePickerData -> createDatePicker(data)
                     is InputFieldData.TextFieldData -> {
@@ -67,6 +68,8 @@ private fun createField(data: InputFieldData) {
                             createTextField(data)
                         }
                     }
+
+                    is InputFieldData.CheckboxData -> createCheckBox(data)
                     else -> return@Row
                 }
             }
@@ -222,4 +225,105 @@ private fun createClickableCard(data: InputFieldData.ButtonData) {
             )
         }
     }
+}
+
+@Composable
+private fun createCheckBox(data: InputFieldData.CheckboxData) {
+    val checkedStates = remember {
+        mutableStateListOf<Boolean>().apply {
+            val result = List(data.itemList.size) { index ->
+                data.selectedIndices?.contains(index) ?: true
+            }
+            addAll(result)
+        }
+    }
+
+    val parentStateAndText by derivedStateOf {
+        when {
+            checkedStates.all { it } -> ToggleableState.On to "All"
+            checkedStates.none { it } -> ToggleableState.Off to "None"
+            else -> ToggleableState.Indeterminate to "Selected ${checkedStates.count { it }}"
+        }
+    }
+
+    val (parentState, text) = parentStateAndText
+
+//    val (parentState, text) by derivedStateOf {
+//        when {
+//            checkedStates.all { it } -> ToggleableState.On to "All"
+//            checkedStates.none { it } -> ToggleableState.Off to "None"
+//            else -> ToggleableState.Indeterminate to "Selected ${checkedStates.count { it }}"
+//        }
+//    }
+
+    var showDropdown by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .width(250.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showDropdown = true },
+            contentAlignment = Alignment.Center
+        )
+        {
+            Text(text = text, modifier = Modifier.padding(3.dp))
+
+            DropdownMenu(
+                expanded = showDropdown,
+                modifier = Modifier.padding(8.dp),
+                onDismissRequest = {
+                    val selectedIndices = when (parentState) {
+                        ToggleableState.On -> null
+                        ToggleableState.Off -> {
+                            checkedStates.fill(true)
+                            null
+                        }
+                        else -> checkedStates.mapIndexedNotNull { idx, value ->
+                            if (value) idx else null
+                        }
+                    }
+                    data.onConfirm(selectedIndices)
+                    showDropdown = false
+                }) {
+
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        TriStateCheckbox(
+                            state = parentState,
+                            onClick = {
+                                val newState = parentState != ToggleableState.On
+                                checkedStates.forEachIndexed { index, _ ->
+                                    checkedStates[index] = newState
+                                }
+                            }
+                        )
+                        Text("Select all")
+                    }
+                    checkedStates.forEachIndexed { index, checked ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                        ) {
+                            Checkbox(
+                                checked = checked,
+                                onCheckedChange = { isChecked ->
+                                    checkedStates[index] = isChecked
+                                }
+                            )
+                            Text(data.itemList[index])
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

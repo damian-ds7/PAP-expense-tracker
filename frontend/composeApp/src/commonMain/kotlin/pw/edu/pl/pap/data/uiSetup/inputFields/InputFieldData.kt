@@ -2,6 +2,7 @@ package pw.edu.pl.pap.data.uiSetup.inputFields
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import kotlinx.datetime.LocalDate
 
@@ -32,5 +33,12 @@ sealed class InputFieldData(open val title: String) {
         val isColored: Boolean = false,
         val customColor: Color = Color.Red.copy(alpha = 0.2f),
         val onClick: () -> Unit,
+    ) : InputFieldData(title)
+
+    data class CheckboxData (
+        override val title: String,
+        val itemList: List<String>,
+        val selectedIndices: SnapshotStateList<Int>? = null,
+        val onConfirm: (List<Int>?) -> Unit
     ) : InputFieldData(title)
 }
