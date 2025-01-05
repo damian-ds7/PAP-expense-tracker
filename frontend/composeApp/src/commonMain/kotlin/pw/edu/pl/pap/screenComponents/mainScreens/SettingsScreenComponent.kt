@@ -4,9 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.uiSetup.inputFields.ButtonData
-import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 
 class SettingsScreenComponent(
@@ -29,8 +28,7 @@ class SettingsScreenComponent(
         onYes = {
             showLogOutDialog.value = false
             onLogOut()
-        }
-    )
+        })
 //    private var debounceJob by mutableStateOf<Job?>(null)
 //
 //    private fun onServerAddressChange(newAddress: String) {
@@ -49,60 +47,33 @@ class SettingsScreenComponent(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
-                    title = "",
-                    isButton = true,
-                    buttonData = ButtonData(
-                        title = "Change server address",
-                        onClick = {
-                            coroutineScope.launch { onChangeServerAddressClicked() }
-                        }
-                    )
-                ),
-                InputFieldData(
-                    title = "",
-                    isButton = true,
-                    buttonData = ButtonData(
-                        title = "Edit personal user data",
-                        onClick = {
-                            coroutineScope.launch { onUserPersonalsClicked() }
-                        },
-                    )
-                ),
-                InputFieldData(
-                    title = "",
-                    isButton = true,
-                    buttonData = ButtonData(
-                        title = "Change password",
-                        onClick = {
-                            coroutineScope.launch { onChangePasswordClicked() }
-                        },
-                    )
-                ),
-                InputFieldData(
-                    title = "",
-                    isButton = true,
-                    buttonData = ButtonData(
-                        title = "Edit preferences",
-                        onClick = {
-                            coroutineScope.launch { onEditPreferencesClicked() }
-                        },
-                    )
-                ),
-                InputFieldData(
-                    title = "",
-                    isButton = true,
-                    buttonData = ButtonData(
-                        title = "LOG OUT",
-                        isColored = true,
-                        onClick = { showLogOutDialog.value = true }
-                    )
-                ),
-            )
-        )
+                InputFieldData.ButtonData(
+                title = "Change server address", onClick = {
+                    coroutineScope.launch { onChangeServerAddressClicked() }
+                }),
+            InputFieldData.ButtonData(
+                title = "Edit personal user data",
+                onClick = {
+                    coroutineScope.launch { onUserPersonalsClicked() }
+                },
+            ),
+            InputFieldData.ButtonData(
+                title = "Change password",
+                onClick = {
+                    coroutineScope.launch { onChangePasswordClicked() }
+                },
+            ),
+            InputFieldData.ButtonData(
+                title = "Edit preferences",
+                onClick = {
+                    coroutineScope.launch { onEditPreferencesClicked() }
+                },
+            ),
+            InputFieldData.ButtonData(
+                title = "LOG OUT", isColored = true, onClick = { showLogOutDialog.value = true }),
+        ))
     }
 }
-
 
 
 //TODO edit personal user data

@@ -38,8 +38,8 @@ fun InputFields(inputFieldsData: List<InputFieldData>) {
 
 @Composable
 private fun createField(data: InputFieldData) {
-    if (data.isButton) {
-        createClickableCard(data.buttonData!!)
+    if (data is InputFieldData.ButtonData) {
+        createClickableCard(data)
     } else {
         Card(
             shape = RoundedCornerShape(8.dp),
@@ -57,14 +57,17 @@ private fun createField(data: InputFieldData) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = data.title)
-                if (data.isDropdownList) {
-                    createDropdownList(data.dropdownListData!!)
-                } else if (data.isDatePicker) {
-                    createDatePicker(data.datePickerData!!)
-                } else if (data.isPassword) {
-                    createPasswordField(data.textFieldData!!)
-                } else {
-                    createTextField(data.textFieldData!!)
+                when(data) {
+                    is InputFieldData.DropdownListData -> createDropdownList(data)
+                    is InputFieldData.DatePickerData -> createDatePicker(data)
+                    is InputFieldData.TextFieldData -> {
+                        if (data.password) {
+                            createPasswordField(data)
+                        } else {
+                            createTextField(data)
+                        }
+                    }
+                    else -> return@Row
                 }
             }
         }
@@ -73,7 +76,7 @@ private fun createField(data: InputFieldData) {
 
 @Composable
 private fun createTextField(
-    data: TextFieldData
+    data: InputFieldData.TextFieldData
 ) {
     TextField(
         value = data.parameter.value,
@@ -84,7 +87,7 @@ private fun createTextField(
 
 @Composable
 private fun createDropdownList(
-    data: DropdownListData
+    data: InputFieldData.DropdownListData
 ) {
     var showDropdown by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
@@ -125,7 +128,7 @@ private fun createDropdownList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun createDatePicker(
-    data: DatePickerData
+    data: InputFieldData.DatePickerData
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     val selectedDate by remember { mutableStateOf(data.date.value) }
@@ -173,7 +176,7 @@ private fun createDatePicker(
 
 @Composable
 private fun createPasswordField(
-    data: TextFieldData
+    data: InputFieldData.TextFieldData
 ) {
     var visibility by rememberSaveable { mutableStateOf(false) }
 
@@ -192,7 +195,7 @@ private fun createPasswordField(
 }
 
 @Composable
-private fun createClickableCard(data: ButtonData) {
+private fun createClickableCard(data: InputFieldData.ButtonData) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier

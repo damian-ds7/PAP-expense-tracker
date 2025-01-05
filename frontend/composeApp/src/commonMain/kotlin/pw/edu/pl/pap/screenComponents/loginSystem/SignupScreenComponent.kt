@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 import pw.edu.pl.pap.util.validateEmail
 
 class SignupScreenComponent(
@@ -23,33 +22,27 @@ class SignupScreenComponent(
         super.setupInputFields()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Confirm password",
-                    isPassword = true,
-                    textFieldData = TextFieldData(
-                        parameter = confirmedPassword,
-                        onChange = {
-                            coroutineScope.launch { confirmedPassword.value = it }
-                        },
-                    )
+                    parameter = confirmedPassword,
+                    onChange = {
+                        coroutineScope.launch { confirmedPassword.value = it }
+                    },
+                    password = true
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Name",
-                    textFieldData = TextFieldData(
-                        parameter = name,
-                        onChange = {
-                            coroutineScope.launch { name.value = it }
-                        },
-                    )
+                    parameter = name,
+                    onChange = {
+                        coroutineScope.launch { name.value = it }
+                    },
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Surname",
-                    textFieldData = TextFieldData(
-                        parameter = surname,
-                        onChange = {
-                            coroutineScope.launch { surname.value = it }
-                        },
-                    )
+                    parameter = surname,
+                    onChange = {
+                        coroutineScope.launch { surname.value = it }
+                    },
                 )
             )
         )
@@ -67,9 +60,9 @@ class SignupScreenComponent(
         //TODO push new user
         //TODO wait for response
         //TODO set token
-            showFailedLoginWarning.value = true
-            //TODO set failedLoginMessage
-            failedLoginMessage.value = "Something went wrong"
+        showFailedLoginWarning.value = true
+        //TODO set failedLoginMessage
+        failedLoginMessage.value = "Something went wrong"
         onConfirm()
     }
 

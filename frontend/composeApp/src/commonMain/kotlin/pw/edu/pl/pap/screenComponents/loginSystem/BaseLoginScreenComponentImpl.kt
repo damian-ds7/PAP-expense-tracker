@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.uiSetup.inputFields.*
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 
 open class BaseLoginScreenComponentImpl(
     baseLoginScreenComponent: BaseLoginScreenComponent
@@ -26,24 +26,20 @@ open class BaseLoginScreenComponentImpl(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Email: ",
-                    textFieldData = TextFieldData(
-                        parameter = email,
-                        onChange = {
-                            coroutineScope.launch { email.value = it }
-                        }
-                    )
+                    parameter = email,
+                    onChange = {
+                        coroutineScope.launch { email.value = it }
+                    }
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Password",
-                    isPassword = true,
-                    textFieldData = TextFieldData(
-                        parameter = password,
-                        onChange = {
-                            coroutineScope.launch {password.value = it}
-                        }
-                    )
+                    parameter = password,
+                    onChange = {
+                        coroutineScope.launch { password.value = it }
+                    },
+                    password = true
                 )
             )
         )

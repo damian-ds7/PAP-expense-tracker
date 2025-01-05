@@ -6,9 +6,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 
-class UserPersonalDataScreenComponent (
+class UserPersonalDataScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
@@ -43,32 +42,26 @@ class UserPersonalDataScreenComponent (
         fetchUserData()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Email: ",
-                    textFieldData = TextFieldData(
-                        parameter = email,
-                        onChange = {
-                            coroutineScope.launch { email.value = it }
-                        }
-                    )
+                    parameter = email,
+                    onChange = {
+                        coroutineScope.launch { email.value = it }
+                    }
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Name: ",
-                    textFieldData = TextFieldData(
-                        parameter = name,
-                        onChange = {
-                            coroutineScope.launch { name.value = it }
-                        },
-                    )
+                    parameter = name,
+                    onChange = {
+                        coroutineScope.launch { name.value = it }
+                    },
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Surname: ",
-                    textFieldData = TextFieldData(
-                        parameter = surname,
-                        onChange = {
-                            coroutineScope.launch { surname.value = it }
-                        },
-                    )
+                    parameter = surname,
+                    onChange = {
+                        coroutineScope.launch { surname.value = it }
+                    },
                 )
             )
         )

@@ -5,10 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
 
 
-class ServerAdressScreenComponent (
+class ServerAdressScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
@@ -34,14 +33,12 @@ class ServerAdressScreenComponent (
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Server address: ",
-                    textFieldData = TextFieldData(
-                        parameter = serverAddress,
-                        onChange = {
-                            coroutineScope.launch { serverAddress.value = it }
-                        }
-                    )
+                    parameter = serverAddress,
+                    onChange = {
+                        coroutineScope.launch { serverAddress.value = it }
+                    }
                 )
             )
         )
