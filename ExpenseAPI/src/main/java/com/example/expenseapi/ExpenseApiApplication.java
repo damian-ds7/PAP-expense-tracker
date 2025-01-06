@@ -117,8 +117,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
                     new Membership(users[1], groups[0], roles[0]),
                     new Membership(users[2], groups[1], roles[1]),
                     new Membership(users[0], groups[1], roles[1]),
-                    new Membership(users[0], archivedGroups[0], roles[0]),
-                    new Membership(users[1], archivedGroups[1], roles[1]),
+                    new Membership(users[1], groups[1], roles[1]),
             };
             membershipRepository.saveAll(Arrays.asList(memberships));
         }
