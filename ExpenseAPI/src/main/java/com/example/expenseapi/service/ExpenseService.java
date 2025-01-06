@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.pojo.Category;
 import com.example.expenseapi.pojo.ExpInfo;
 import com.example.expenseapi.pojo.Expense;
@@ -17,10 +17,12 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<ExpenseDTO> getExpensesForUser();
     ExpInfo getExpInfo(String group);
     ExpInfo getExpInfo();
-    Map<String, Double> getMapResult(ExpenseFilter filter, String currCode, String keyType);
+    Map<String, Double> getMapResult(ExpenseFilter filter, String keyType);
     Optional<ExpenseDTO> getRecentExpense(String groupName);
     Map<LocalDate, List<ExpenseDTO>> getGroupExpenseAsDateMap(String name);
     Map<Category, List<ExpenseDTO>> getGroupExpenseAsCategoryMap(String name);
     List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter);
     ExpenseDTO createExpense(ExpenseCreateDTO createDTO);
+    ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO);
+    List<String> getPatternKeys();
 }

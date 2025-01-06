@@ -1,6 +1,7 @@
 package com.example.expenseapi.controller;
 
 import com.example.expenseapi.utils.TokenGenerator;
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,121 @@ public class ExpanseControllerIT {
     public ExpanseControllerIT(MockMvc mockMvc, TokenGenerator gen) {
         this.mockMvc = mockMvc;
         this.gen = gen;
+    }
+
+    @Test
+    void testCreate_NotLoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @Transactional
+    void testCreate_AllFieldsProvided() throws Exception {
+        String jsonBody = """
+                {
+                    "title": "Test",
+                    "price": 100,
+                    "categoryName": "food",
+                    "expenseDate": "2025-01-06",
+                    "groupName": "family",
+                    "methodOfPayment": "cash",
+                    "currencyCode": "PLN"
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser))
+                        .contentType("application/json")
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category.name").value("food"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.expenseDate").value("2025-01-06"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.groupName").value("family"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.methodOfPayment.name").value("cash"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.currency.symbol").value("PLN"));
+    }
+
+    @Test
+    @Transactional
+    void testCreate_OnlyNecessaryFieldsProvided() throws Exception {
+        String jsonBody = """
+                {
+                    "title": "Test",
+                    "price": 100,
+                    "categoryName": "food",
+                    "groupName": "family"
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser))
+                        .contentType("application/json")
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Test"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.category.name").value("food"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.groupName").value("family"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.methodOfPayment.name").value("cash"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.currency.symbol").value("PLN"));
+    }
+
+    @Test
+    void testCreate_UserNotInGroup() throws Exception {
+        String jsonBody = """
+                {
+                    "title": "Test",
+                    "price": 100,
+                    "categoryName": "food",
+                    "groupName": "family"
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(inactiveUser))
+                        .contentType("application/json")
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testCreate_UnknownGroup() throws Exception {
+        String jsonBody = """
+                {
+                    "title": "Test",
+                    "price": 100,
+                    "categoryName": "food",
+                    "groupName": "unknown"
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser))
+                        .contentType("application/json")
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testCreate_EmptyBody() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser))
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void testCreate_MissingFields() throws Exception {
+        String jsonBody = """
+                {
+                    "title": "Test",
+                    "price": 100
+                }
+                """;
+        mockMvc.perform(MockMvcRequestBuilders.post("/expense/create")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser))
+                        .contentType("application/json")
+                        .content(jsonBody))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test

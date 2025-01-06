@@ -1,4 +1,4 @@
-package com.example.expenseapi.utils;
+package com.example.expenseapi.specification;
 
 import com.example.expenseapi.pojo.Expense;
 import org.springframework.data.jpa.domain.Specification;

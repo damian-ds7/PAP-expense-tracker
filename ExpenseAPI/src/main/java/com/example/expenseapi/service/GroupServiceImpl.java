@@ -6,7 +6,7 @@ import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.GroupRepository;
 import com.example.expenseapi.repository.RoleRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.expenseapi.utils.AuthHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
 
     @Override
     public List<BaseGroup> getBaseGroups() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = AuthHelper.getUserEmail();
         return membershipService.getBaseGroupsByUserId(userService.findByEmail(email).get().getId());
     }
 
@@ -44,7 +44,7 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
 
     @Override
     public Group save(Group entity) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = AuthHelper.getUserEmail();
         Optional<User> user = userService.findByEmail(email);
         Group newGroup = super.save(entity);
         membershipService.save(new Membership(user.get(), newGroup, roleRepository.findById(1L).get()));
