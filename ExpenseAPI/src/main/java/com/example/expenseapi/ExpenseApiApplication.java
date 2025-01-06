@@ -58,7 +58,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         if (methodOfPaymentRepository.count() == 0) {
             methods = new MethodOfPayment[]{
                     new MethodOfPayment("cash"),
-                    new MethodOfPayment("debt-card")
+                    new MethodOfPayment("debit card")
 
             };
             methodOfPaymentRepository.saveAll(Arrays.asList(methods));

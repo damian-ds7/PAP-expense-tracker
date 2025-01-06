@@ -23,4 +23,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Map<Category, List<ExpenseDTO>> getGroupExpenseAsCategoryMap(String name);
     List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter);
     ExpenseDTO createExpense(ExpenseCreateDTO createDTO);
+    ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO);
+    List<String> getPatternKeys();
 }

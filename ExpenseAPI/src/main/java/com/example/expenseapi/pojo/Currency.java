@@ -8,7 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "currencies")
+@Table(name = "currencies", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"}),
+        @UniqueConstraint(columnNames = {"symbol"})
+})
 public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

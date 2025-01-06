@@ -2,6 +2,8 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
+import com.example.expenseapi.exception.BadRequestException;
+import com.example.expenseapi.exception.ForbiddenException;
 import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.*;
@@ -10,8 +12,13 @@ import com.example.expenseapi.repository.*;
 import com.example.expenseapi.mapper.ExpenseMapper;
 import com.example.expenseapi.utils.AuthHelper;
 import com.example.expenseapi.specification.ExpenseSpecification;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.beans.FeatureDescriptor;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -62,6 +69,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
         User user = AuthHelper.getUser();
+        if (areNeededFieldsProvided(createDTO)) {
+            throw new BadRequestException("Title, price, category name and group name are required");
+        }
         if (createDTO.getUser() == null) {
             createDTO.setUser(userMapper.userToUserDTO(user));
         }
@@ -74,7 +84,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
         Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
         if (membershipOpt.isEmpty()) {
-            throw new IllegalArgumentException("Invalid membership ID");
+            throw new ForbiddenException("User is not a member of the group");
         }
         expense.setMembership(membershipOpt.get());
         if (createDTO.getCategoryName() != null) {
@@ -130,7 +140,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         List<ExpenseDTO> result = searchExpensesDTO(filter);
         Currency currency = currencyRepository.findBySymbol(AuthHelper.getUser().getPreference().getCurrency().getSymbol());
         Function<ExpenseDTO, String> keyExtractor = findKeyExtractor(keyType);
-        if (keyExtractor == null) throw new IllegalArgumentException("Invalid key type");
+        if (keyExtractor == null) throw new BadRequestException("Invalid key type");
         return totalExpensesMap(result, keyExtractor, currency);
     }
 
@@ -188,13 +198,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return value;
     }
 
+    @Override
+    public List<String> getPatternKeys() {
+        return Arrays.asList("category", "method", "user");
+    }
+
     private Function<ExpenseDTO, String> findKeyExtractor(String keyType) {
         return switch (keyType) {
             case "category" -> e -> e.getCategory().getName();
-            case "method" -> ExpenseDTO::getMethodOfPayment;
+            case "method" -> e-> e.getMethodOfPayment().getName();
             case "user" -> e -> e.getUser().getEmail();
-            case "month" -> e -> e.getExpenseDate().getMonth().name();
-            case "year" -> e -> String.valueOf(e.getExpenseDate().getYear());
             default -> null;
         };
     }
@@ -207,5 +220,30 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             map.put(key, map.getOrDefault(key, 0.0) + price);
         }
         return map;
+    }
+
+    private static String[] getNullPropertyNames(Object source) {
+        BeanWrapper beanWrapper = new BeanWrapperImpl(source);
+        return Arrays.stream(beanWrapper.getPropertyDescriptors())
+                .map(FeatureDescriptor::getName)
+                .filter(propertyName -> beanWrapper.getPropertyValue(propertyName) == null)
+                .toArray(String[]::new);
+    }
+
+    @Override
+    public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
+        Expense expense = expenseRepository.findById(id).orElse(null);
+        Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
+        BeanUtils.copyProperties(updatedExpense, expense, getNullPropertyNames(updatedExpense));
+        expense.setMethod(methodOfPaymentRepository.findByName(updatedExpense.getMethod().getName()));
+        return expenseMapper.expenseToExpenseDTO(expenseRepository.save(expense));
+    }
+
+    private boolean areNeededFieldsProvided(ExpenseCreateDTO expenseCreateDTO) {
+        return expenseCreateDTO.getTitle() == null ||
+                expenseCreateDTO.getPrice() == null ||
+                expenseCreateDTO.getCategoryName() == null ||
+                expenseCreateDTO.getGroupName() == null;
+
     }
 }
