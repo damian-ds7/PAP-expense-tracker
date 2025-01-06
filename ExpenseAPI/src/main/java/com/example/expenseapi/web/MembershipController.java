@@ -1,9 +1,6 @@
 package com.example.expenseapi.web;
 
-import com.example.expenseapi.pojo.BaseMembership;
-import com.example.expenseapi.pojo.Membership;
-import com.example.expenseapi.pojo.TemporaryMembership;
-import com.example.expenseapi.pojo.User;
+import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.TemporaryMembershipService;
 import com.example.expenseapi.service.UserService;
@@ -40,7 +37,7 @@ public class MembershipController extends GenericController<Membership, Long> {
             @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
                     content = @Content)
     })
-    public ResponseEntity<HttpStatus> save(@RequestBody BaseMembership entity, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
+    public ResponseEntity<HttpStatus> save(@RequestBody Membership entity, @AuthenticationPrincipal org.springframework.security.core.userdetails.User user) {
         String email = user.getUsername();
         User mUser = userService.findByEmail(email).get();
         if (((MembershipService) service).getRole(mUser, entity).equals("admin")) {
