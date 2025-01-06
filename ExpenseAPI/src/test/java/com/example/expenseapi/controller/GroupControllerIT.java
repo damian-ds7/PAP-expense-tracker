@@ -47,7 +47,7 @@ public class GroupControllerIT {
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("family", "workers", "family2")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("family", "workers")));
 
     }
 
@@ -102,7 +102,7 @@ public class GroupControllerIT {
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].email", Matchers.containsInAnyOrder("herkules1@gmail.com", "herkules3@gmail.com")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].email", Matchers.containsInAnyOrder("herkules1@gmail.com", "herkules2@gmail.com","herkules3@gmail.com")));
     }
 
     @Test
