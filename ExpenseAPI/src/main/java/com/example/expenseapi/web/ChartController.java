@@ -23,6 +23,13 @@ public class ChartController {
         this.service = service;
     }
 
+
+    @GetMapping("/keys")
+    @Operation(summary = "Retrieves all possible keyPatterns")
+    public ResponseEntity<List<String>> getAllPossibleKeyPatterns() {
+        return new ResponseEntity<>(service.getPatternKeys(), HttpStatus.OK);
+    }
+
     @GetMapping("/map-result/{group}/{keyPattern}")
     @Operation(summary = "Retrieves a map<String, TotalExpanses> based on the given filter")
     public ResponseEntity<Map<String, Double>> getMapResult(

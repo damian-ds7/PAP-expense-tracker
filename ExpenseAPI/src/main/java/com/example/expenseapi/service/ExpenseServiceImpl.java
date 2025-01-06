@@ -193,13 +193,16 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return value;
     }
 
+    @Override
+    public List<String> getPatternKeys() {
+        return Arrays.asList("category", "method", "user");
+    }
+
     private Function<ExpenseDTO, String> findKeyExtractor(String keyType) {
         return switch (keyType) {
             case "category" -> e -> e.getCategory().getName();
             case "method" -> ExpenseDTO::getMethodOfPayment;
             case "user" -> e -> e.getUser().getEmail();
-            case "month" -> e -> e.getExpenseDate().getMonth().name();
-            case "year" -> e -> String.valueOf(e.getExpenseDate().getYear());
             default -> null;
         };
     }
