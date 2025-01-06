@@ -5,6 +5,13 @@ import com.example.expenseapi.pojo.TemporaryMembership;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.TemporaryMembershipService;
 import com.example.expenseapi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tempMembership")
+@Tag(name="Temporary Membership Controller", description = "Controller to accept or decline invitations")
 public class TemporaryMembershipController extends GenericController<TemporaryMembership, Long> {
     private final MembershipService membershipService;
     private final TemporaryMembershipService temporaryMembershipService;
@@ -27,6 +35,13 @@ public class TemporaryMembershipController extends GenericController<TemporaryMe
     }
 
     @PostMapping("/accept/{id}")
+    @Operation(summary = "Accept a membership invitation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Invitation successfully accepted.",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request. Invalid membership ID or unauthorized action.",
+                    content = @Content)
+    })
     public ResponseEntity<HttpStatus> acceptInvitation(@AuthenticationPrincipal User user, @PathVariable Long id) {
         com.example.expenseapi.pojo.User mUser = userService.findByEmail(user.getUsername()).get();
         TemporaryMembership temporaryMembership = temporaryMembershipService.get(id);
@@ -41,6 +56,13 @@ public class TemporaryMembershipController extends GenericController<TemporaryMe
     }
 
     @DeleteMapping("/decline/{id}")
+    @Operation(summary = "Decline a membership invitation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Invitation successfully declined.",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Bad request. Invalid membership ID or unauthorized action.",
+                    content = @Content)
+    })
     public ResponseEntity<HttpStatus> declineInvitation(@AuthenticationPrincipal User user, @PathVariable Long id) {
         com.example.expenseapi.pojo.User mUser = userService.findByEmail(user.getUsername()).get();
         TemporaryMembership temporaryMembership = temporaryMembershipService.get(id);
@@ -53,6 +75,10 @@ public class TemporaryMembershipController extends GenericController<TemporaryMe
     }
 
     @GetMapping("/invitations")
+    @Operation(summary = "Get all pending membership invitations")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved list of invitations.",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = TemporaryMembership.class))))
     public ResponseEntity<List<TemporaryMembership>> getInvitations(@AuthenticationPrincipal User user) {
         com.example.expenseapi.pojo.User mUser = userService.findByEmail(user.getUsername()).get();
         return new ResponseEntity<>(temporaryMembershipService.getByUserId(mUser.getId()), HttpStatus.OK);

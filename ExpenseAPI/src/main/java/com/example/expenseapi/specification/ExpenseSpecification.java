@@ -1,20 +1,18 @@
-package com.example.expenseapi.utils;
+package com.example.expenseapi.specification;
 
 import com.example.expenseapi.pojo.Expense;
-import com.example.expenseapi.pojo.Membership;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class ExpenseSpecification {
-    public static Specification<Expense> hasCategory(String categoryName) {
+    public static Specification<Expense> hasCategory(List<String> categoryNames) {
         return (root, query, criteriaBuilder) -> {
-            if (categoryName == null || categoryName.isBlank()) {
+            if (categoryNames == null || categoryNames.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("category").get("name"), categoryName);
+            return root.get("category").get("name").in(categoryNames);
         };
     }
 
@@ -75,18 +73,21 @@ public class ExpenseSpecification {
         };
     }
 
+    public static Specification<Expense> hasMethod(List<String> methods) {
+        return (root, query, cb) -> {
+            if (methods == null || methods.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("method").get("name").in(methods);
+        };
+    }
+
     public static Specification<Expense> hasGroup(String groupName) {
         return (root, query, cb) -> {
             if (groupName == null || groupName.isBlank()) {
                 return cb.conjunction();
             }
-            Subquery<Long> subQuery = query.subquery(Long.class);
-            Root<Membership> membershipRoot = subQuery.from(Membership.class);
-            subQuery.select(membershipRoot.get("user").get("id"));
-            subQuery.where(
-                    cb.equal(membershipRoot.join("group").get("name"), groupName)
-            );
-            return cb.in(root.get("user").get("id")).value(subQuery);
+            return cb.equal(root.get("membership").get("group").get("name"), groupName);
         };
     }
 
@@ -95,7 +96,16 @@ public class ExpenseSpecification {
             if (email == null) {
                 return cb.conjunction();
             }
-            return cb.equal(root.get("user").get("email"), email);
+            return cb.equal(root.get("membership").get("user").get("email"), email);
+        };
+    }
+
+    public static Specification<Expense> isUserInList(List<String> emails) {
+        return (root, query, cb) -> {
+            if (emails == null || emails.isEmpty()) {
+                return cb.conjunction();
+            }
+            return root.get("membership").get("user").get("email").in(emails);
         };
     }
 

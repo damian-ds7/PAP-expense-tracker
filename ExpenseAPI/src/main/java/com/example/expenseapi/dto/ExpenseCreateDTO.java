@@ -11,13 +11,13 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpenseFilter {
-    private String categoryName;
-    private LocalDate date;
-    private LocalDate beginDate;
-    private LocalDate endDate;
-    private Double priceMin;
-    private Double priceMax;
+public class ExpenseCreateDTO {
+    private String title;
+    private Double price;
+    private UserDTO user;
     private String groupName;
-    private String email;
+    private String categoryName;
+    private LocalDate expenseDate = LocalDate.now();
+    private String methodOfPayment;
+    private String currencyCode;
 }
