@@ -7,9 +7,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class BaseMembership {
+@MappedSuperclass
+public class BaseMembership<T> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base_membership_gen")
     @SequenceGenerator(
@@ -27,14 +26,14 @@ public abstract class BaseMembership {
     @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_id", referencedColumnName = "id")
-    protected BaseGroup group;
+    protected T group;
 
     @NonNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     protected Role role;
 
-    public BaseMembership(User user, BaseGroup group, Role role) {
+    public BaseMembership(User user, T group, Role role) {
         this.user = user;
         this.group = group;
         this.role = role;
