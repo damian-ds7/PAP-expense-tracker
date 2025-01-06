@@ -4,6 +4,7 @@ import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +27,14 @@ public class ChartController {
 
     @GetMapping("/keys")
     @Operation(summary = "Retrieves all possible keyPatterns")
+    @ApiResponse(responseCode = "200", description = "All keys available")
     public ResponseEntity<List<String>> getAllPossibleKeyPatterns() {
         return new ResponseEntity<>(service.getPatternKeys(), HttpStatus.OK);
     }
 
     @GetMapping("/map-result/{group}/{keyPattern}")
     @Operation(summary = "Retrieves a map<String, TotalExpanses> based on the given filter")
+    @ApiResponse(responseCode = "200", description = "Expenses grouped by given conditions")
     public ResponseEntity<Map<String, Double>> getMapResult(
             @RequestParam(required = false) String beginDate,
             @RequestParam(required = false) String endDate,
