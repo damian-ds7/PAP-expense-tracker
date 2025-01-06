@@ -84,9 +84,7 @@ public class GroupControllerIT {
     void testGroupMembers_UnknownGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/group/members/unknown")
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -111,9 +109,7 @@ public class GroupControllerIT {
     void testGroupMembers_UserNotInGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/group/members/family")
                         .header("Authorization", "Bearer " + gen.getToken(user2)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -126,9 +122,7 @@ public class GroupControllerIT {
     void testGroupAdmins_UnknownGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/group/admins/unknown")
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
     @Test
@@ -153,9 +147,7 @@ public class GroupControllerIT {
     void testGroupAdmins_UserNotInGroup() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/group/admins/family")
                         .header("Authorization", "Bearer " + gen.getToken(user2)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0]").doesNotExist());
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
     }
 
 }
