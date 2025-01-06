@@ -9,9 +9,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class BaseGroup {
+@MappedSuperclass
+public class BaseGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base_group_gen")
     @SequenceGenerator(
