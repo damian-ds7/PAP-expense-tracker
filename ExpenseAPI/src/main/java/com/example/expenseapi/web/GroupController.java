@@ -2,6 +2,7 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.pojo.Group;
+import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,26 @@ public class GroupController extends GenericController<Group, Long>{
     public GroupController(MembershipService membershipService, GroupService groupService) {
         super(groupService);
         this.membershipService = membershipService;
+    }
+
+    @GetMapping("/all/base")
+    @Operation(summary = "Get all base groups")
+    @ApiResponse(responseCode = "200", description = "List of base groups.",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = BaseGroup.class)))
+    )
+    public ResponseEntity<List<BaseGroup>> getAllBaseGroups() {
+        return new ResponseEntity<>(((GroupService) service).getBaseGroups(), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/active")
+    @Operation(summary = "Get all active groups")
+    @ApiResponse(responseCode = "200", description = "List of active groups.",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = Group.class)))
+    )
+    public ResponseEntity<List<Group>> getActiveGroups() {
+        return new ResponseEntity<>(((GroupService) service).getActiveGroups(), HttpStatus.OK);
     }
 
     @GetMapping("/members/{group}")

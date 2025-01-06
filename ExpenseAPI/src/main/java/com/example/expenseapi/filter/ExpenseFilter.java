@@ -1,4 +1,4 @@
-package com.example.expenseapi.dto;
+package com.example.expenseapi.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

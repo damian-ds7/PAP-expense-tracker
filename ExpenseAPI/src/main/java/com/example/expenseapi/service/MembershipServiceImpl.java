@@ -1,12 +1,14 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.UserDTO;
+import com.example.expenseapi.exception.ForbiddenException;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.BaseMembership;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
+import com.example.expenseapi.utils.AuthHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +34,9 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
 
     @Override
     public List<UserDTO> findAdmins(String group) {
+        if (!AuthHelper.isGroupNameValid(group)) {
+            throw new ForbiddenException("User is not a member of the group");
+        }
         return membershipRepository.findAdmins(group)
                 .stream().map(userMapper::userToUserDTO)
                 .toList();
@@ -39,6 +44,9 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
 
     @Override
     public List<UserDTO> findUsers(String group) {
+        if (!AuthHelper.isGroupNameValid(group)) {
+            throw new ForbiddenException("User is not a member of the group");
+        }
         return membershipRepository.findUsers(group)
                 .stream().map(userMapper::userToUserDTO)
                 .toList();

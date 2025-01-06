@@ -1,4 +1,4 @@
-package com.example.expenseapi.pojo;
+package com.example.expenseapi.exception;
 
 public class ExpenseNotFound extends RuntimeException{
     public ExpenseNotFound(Long id) {

@@ -8,7 +8,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "currencies")
+@Table(name = "currencies", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"}),
+        @UniqueConstraint(columnNames = {"symbol"})
+})
 public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class Currency {
     @Column(name = "exchange_rate", nullable = false)
     private double exchangeRate = 1.0;
 
-    public Currency(String name, String symbol, double exchangeRate) {
+    public Currency(@NonNull String name, @NonNull String symbol, double exchangeRate) {
         this.name = name;
         this.symbol = symbol;
         this.exchangeRate = exchangeRate;

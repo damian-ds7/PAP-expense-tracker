@@ -1,6 +1,6 @@
 package com.example.expenseapi.utils;
 
-import com.example.expenseapi.dto.ExpenseFilter;
+import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.service.ExpenseService;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
@@ -32,7 +32,7 @@ public class ChartDrawer {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setBeginDate(LocalDate.parse(year + "-01-01"));
         filter.setEndDate(LocalDate.parse(year + "-12-31"));
-        Map<String, Double> monthlyExpenses = expenseService.getMapResult(filter, "PLN", "year");
+        Map<String, Double> monthlyExpenses = expenseService.getMapResult(filter, "year");
         for (Map.Entry<String, Double> entry : monthlyExpenses.entrySet()) {
             dataset.addValue(entry.getValue(), "Expenses", entry.getKey());
         }

@@ -1,5 +1,11 @@
 package com.example.expenseapi.service;
 
+import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.Group;
 
-public interface GroupService extends GenericService<Group, Long> {}
+import java.util.List;
+
+public interface GroupService extends GenericService<Group, Long> {
+    List<BaseGroup> getBaseGroups();
+    List<Group> getActiveGroups();
+}
