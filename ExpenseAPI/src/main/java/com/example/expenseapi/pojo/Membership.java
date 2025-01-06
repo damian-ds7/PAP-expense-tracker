@@ -8,8 +8,8 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "memberships")
-public class Membership extends BaseMembership{
-    public Membership(User user, BaseGroup group, Role role){
+public class Membership extends BaseMembership<Group>{
+    public Membership(User user, Group group, Role role){
         super(user, group, role);
     }
 
