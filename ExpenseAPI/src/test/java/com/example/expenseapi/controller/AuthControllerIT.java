@@ -1,6 +1,5 @@
 package com.example.expenseapi.controller;
 
-import com.example.expenseapi.utils.TokenGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,12 +15,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class AuthControllerIT {
     private final MockMvc mockMvc;
-    private final TokenGenerator tokenGenerator;
 
     @Autowired
-    public AuthControllerIT(MockMvc mockMvc, TokenGenerator tokenGenerator) {
+    public AuthControllerIT(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
-        this.tokenGenerator = tokenGenerator;
     }
 
     @Test
