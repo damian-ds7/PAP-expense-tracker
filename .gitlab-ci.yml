@@ -1,0 +1,25 @@
+stages:
+  - build
+  - test
+  - integration_test
+
+integration_tests:
+  stage: integration_test
+  image: maven:3.9.2-eclipse-temurin-21
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  before_script:
+    - cd ExpenseAPI
+    - mvn clean compile
+  script:
+    - mvn test -Dtest=controllerTests.MyControllerTests
+  cache:
+    paths:
+      - ExpenseAPI/.m2/repository
+  artifacts:
+    reports:
+      junit: ExpenseAPI/target/surefire-reports/*.xml
+    paths:
+      - ExpenseAPI/target/surefire-reports
+  rules:
+    - if: '$CI_COMMIT_BRANCH'
