@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.screenComponents.groupScreens
+package pw.edu.pl.pap.screenComponents.groupScreens.groupEdit
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch

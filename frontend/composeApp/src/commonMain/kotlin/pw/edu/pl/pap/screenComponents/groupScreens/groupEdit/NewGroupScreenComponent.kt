@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.screenComponents.groupScreens
+package pw.edu.pl.pap.screenComponents.groupScreens.groupEdit
 
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup

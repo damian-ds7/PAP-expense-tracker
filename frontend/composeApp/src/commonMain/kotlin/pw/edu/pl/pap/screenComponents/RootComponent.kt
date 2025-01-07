@@ -1,6 +1,5 @@
 package pw.edu.pl.pap.screenComponents
 
-import androidx.compose.runtime.collectAsState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.*
@@ -24,9 +23,9 @@ import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.chartsScreens.ChartsFilterScreenComponent
-import pw.edu.pl.pap.screenComponents.groupScreens.EditGroupScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.groupEdit.EditGroupScreenComponent
 import pw.edu.pl.pap.screenComponents.groupScreens.MemberScreenComponent
-import pw.edu.pl.pap.screenComponents.groupScreens.NewGroupScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.groupEdit.NewGroupScreenComponent
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.ChartsScreenComponent
 import pw.edu.pl.pap.screenComponents.mainScreens.GroupScreenComponent

@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.screenComponents.groupScreens
+package pw.edu.pl.pap.screenComponents.groupScreens.groupEdit
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
@@ -8,7 +8,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.BaseScreenComponent
-import pw.edu.pl.pap.util.formatForTextField
 
 class EditGroupScreenComponent(
     baseComponent: BaseScreenComponent,

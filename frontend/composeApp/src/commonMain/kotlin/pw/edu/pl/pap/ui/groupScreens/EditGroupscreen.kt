@@ -2,7 +2,7 @@ package pw.edu.pl.pap.ui.groupScreens
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.screenComponents.groupScreens.EditGroupScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.groupEdit.EditGroupScreenComponent
 import pw.edu.pl.pap.ui.common.BackDeleteAddButtonRow
 import pw.edu.pl.pap.ui.common.ConfirmationPopup
 import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogFactory
