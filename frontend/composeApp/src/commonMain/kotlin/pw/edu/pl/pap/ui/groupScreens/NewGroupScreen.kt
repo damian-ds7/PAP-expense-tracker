@@ -1,19 +1,21 @@
-package pw.edu.pl.pap.ui.addExpense
+package pw.edu.pl.pap.ui.groupScreens
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.screenComponents.singleExpense.NewExpenseScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.NewGroupScreenComponent
 import pw.edu.pl.pap.ui.common.ConfirmOrBackButtonRow
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 
 @Composable
-fun NewExpenseScreen(
-    component: NewExpenseScreenComponent
-    ){
+fun NewGroupScreen(
+    component: NewGroupScreenComponent
+){
     val scope = rememberCoroutineScope()
 
-    Header("New expense")
+    Header("New group")
+    component.setupInputFields()
     InputFields(component.inputFieldsData)
 
     ConfirmOrBackButtonRow(

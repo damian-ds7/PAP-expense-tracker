@@ -41,4 +41,10 @@ sealed class InputFieldData(open val title: String) {
         val selectedIndices: SnapshotStateList<Int>? = null,
         val onConfirm: (List<Int>?) -> Unit
     ) : InputFieldData(title)
+
+    data class UserBalanceButtonData (
+        override val title: String,
+        val balance: Float,
+        val onClick: () -> Unit,
+    ) : InputFieldData(title)
 }

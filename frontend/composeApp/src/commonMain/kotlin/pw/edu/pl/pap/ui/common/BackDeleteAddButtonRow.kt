@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.expenseDetails
+package pw.edu.pl.pap.ui.common
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,12 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import pw.edu.pl.pap.ui.common.TextButton
 import pw.edu.pl.pap.util.constants.padding
 
 
 @Composable
-fun ExpenseDetailsButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete: () -> Unit, isConfirmEnabled: Boolean) {
+fun BackDeleteAddButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete: () -> Unit, isConfirmEnabled: Boolean) {
     Box(
         modifier = Modifier
             .fillMaxSize()

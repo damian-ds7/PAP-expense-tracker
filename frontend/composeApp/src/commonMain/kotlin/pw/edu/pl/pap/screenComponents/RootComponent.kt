@@ -1,5 +1,6 @@
 package pw.edu.pl.pap.screenComponents
 
+import androidx.compose.runtime.collectAsState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.*
@@ -20,10 +21,15 @@ import pw.edu.pl.pap.api.ApiService
 import pw.edu.pl.pap.api.authApi.LoginApi
 import pw.edu.pl.pap.data.databaseAssociatedData.ChartFilterParams
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
+import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.screenComponents.chartsScreens.ChartsFilterScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.EditGroupScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.MemberScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.NewGroupScreenComponent
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.ChartsScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.GroupScreenComponent
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.screenComponents.mainScreens.SettingsScreenComponent
 import pw.edu.pl.pap.screenComponents.settingsScreens.*
@@ -82,6 +88,17 @@ class RootComponent(
             val currentKeyPattern: String
         ) : Configuration()
 
+        data class GroupScreen(val userGroup: UserGroup) : Configuration()
+
+        @Serializable
+        data class MemberScreen(val userGroup: UserGroup, val user: User) : Configuration()
+
+        @Serializable
+        data object NewGroupScreen : Configuration()
+
+        @Serializable
+        data class EditGroupScreen(val userGroup: UserGroup) : Configuration()
+
         @Serializable
         data object SettingsScreen : Configuration()
 
@@ -132,9 +149,16 @@ class RootComponent(
         data class ExpenseDetailsScreen(val component: ExpenseDetailsScreenComponent) : Child()
 
         data class ChartsScreen(val component: ChartsScreenComponent) : Child()
+
         data class ChartsFilterScreen(val component: ChartsFilterScreenComponent) : Child()
 
+        data class GroupScreen(val component: GroupScreenComponent) : Child()
+
         data class SettingsScreen(val component: SettingsScreenComponent) : Child()
+
+        data class MemberScreen(val component: MemberScreenComponent) : Child()
+        data class NewGroupScreen(val component: NewGroupScreenComponent) : Child()
+        data class EditGroupScreen(val component: EditGroupScreenComponent) : Child()
 
         data class ServerAddressScreen(val component: ServerAdressScreenComponent) : Child()
         data class UserPersonalDataScreen(val component: UserPersonalDataScreenComponent) : Child()
@@ -152,7 +176,16 @@ class RootComponent(
         when (item) {
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Charts -> navigation.bringToFront(Configuration.ChartsScreen)
-            NavBarItem.Groups -> navigation.bringToFront(Configuration.HomeScreen)
+            NavBarItem.Groups -> {
+                val activeInstance = childStack.value.active.instance
+                if (activeInstance is Child.HomeScreen) {
+                    val homeComponent = activeInstance.component
+                    val userGroup = homeComponent.currentUserGroup.value!!
+                    navigation.bringToFront(Configuration.GroupScreen(userGroup))
+                } else {
+                    // never happens
+                }
+            }
             NavBarItem.Settings -> navigation.bringToFront(Configuration.SettingsScreen)
         }
     }
@@ -271,6 +304,72 @@ class RootComponent(
                     )
                 )
             }
+
+            is Configuration.GroupScreen -> Child.GroupScreen(
+                component = GroupScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onUserClicked = { userGroup, user ->
+                        navigation.pushNew(Configuration.MemberScreen(userGroup, user))
+                    },
+//                    onInvitationsClicked = { userGroup ->
+//                        navigation.pushNew(Configuration.InvitationsScreen(userGroup))
+//                    },
+                    //TODO
+                    onInvitationsClicked = {},
+                    onNewGroupClicked = { navigation.pushNew(Configuration.NewGroupScreen)},
+                    onEditGroupClicked = { userGroup ->
+                        navigation.pushNew(Configuration.EditGroupScreen(userGroup))
+                    },
+                    currentUserGroup = configuration.userGroup,
+                )
+            )
+
+            is Configuration.MemberScreen -> Child.MemberScreen(
+                component = MemberScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onBack = { navigation.pop() },
+                    user = configuration.user,
+                    currentUserGroup = configuration.userGroup
+                )
+            )
+
+            is Configuration.EditGroupScreen -> Child.EditGroupScreen(
+                component = EditGroupScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onDismiss = { navigation.pop() },
+//                    onSave = {
+//                        navigation.pop()
+//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+//                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenEdit(configuration.expense)
+//                        )
+//                    },
+//                    onDelete = {
+//                        navigation.pop()
+//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+//                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenDelete(configuration.expense)
+//                        )
+//                    },
+                    onSave = {},
+                    onDelete = {},
+                    //TODO
+                    group = configuration.userGroup
+                )
+            )
+
+            is Configuration.NewGroupScreen -> Child.NewGroupScreen(
+                component = NewGroupScreenComponent(
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onDismiss = { navigation.pop () },
+                    onSave = {}
+//                            onSave = {
+//                        navigation.pop()
+//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
+//                            HomeScreenComponent.NavigationState.FromNewExpenseScreen
+//                        )
+//                    },
+                    //TODO
+                )
+            )
 
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(

@@ -1,4 +1,4 @@
-package pw.edu.pl.pap.ui.expenseDetails
+package pw.edu.pl.pap.ui.common.DialogFactory
 
 sealed class ConfirmationDialogState {
     data object None: ConfirmationDialogState()

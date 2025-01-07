@@ -1,27 +1,28 @@
-package pw.edu.pl.pap.ui.expenseDetails
+package pw.edu.pl.pap.ui.groupScreens
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.screenComponents.groupScreens.EditGroupScreenComponent
 import pw.edu.pl.pap.ui.common.BackDeleteAddButtonRow
 import pw.edu.pl.pap.ui.common.ConfirmationPopup
 import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogFactory
-import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogState
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
+import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogState
 
 @Composable
-fun ExpenseDetailsScreen(
-    component: ExpenseDetailsScreenComponent,
+fun EditGroupScreen(
+    component: EditGroupScreenComponent,
 ) {
     val scope = rememberCoroutineScope()
     var confirmDialogState by remember { mutableStateOf<ConfirmationDialogState>(ConfirmationDialogState.None) }
     val dialogFactory = remember { ConfirmationDialogFactory(
         onDismiss = component.onDismiss,
-        onDelete = { component.deleteExpense() }
+        onDelete = { component.deleteGroup() }
     ) }
 
-    Header("Expense Details")
+    Header("Edit Group")
+    component.setupInputFields()
     InputFields(component.inputFieldsData)
 
     BackDeleteAddButtonRow(
@@ -59,7 +60,7 @@ fun ExpenseDetailsScreen(
     }
 }
 
-fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
+fun handleBack(component: EditGroupScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
     if (component.noChange) {
         component.onDismiss()
     } else {
