@@ -3,7 +3,6 @@ package pw.edu.pl.pap.api
 import io.ktor.client.call.*
 import io.ktor.client.statement.*
 import pw.edu.pl.pap.api.endpoints.GroupEndpoint
-<<<<<<< frontend/composeApp/src/commonMain/kotlin/pw/edu/pl/pap/api/GroupApiClient.kt
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup

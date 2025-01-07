@@ -3,8 +3,7 @@ package pw.edu.pl.pap.screenComponents.groupScreens
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 
 open class BaseGroupEditScreenComponent(
     baseComponent: BaseScreenComponent,
@@ -23,14 +22,12 @@ open class BaseGroupEditScreenComponent(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Name: ",
-                    textFieldData = TextFieldData(
-                        parameter = name,
-                        onChange = {
-                            coroutineScope.launch { name.value = it }
-                        }
-                    )
+                    parameter = name,
+                    onChange = {
+                        coroutineScope.launch { name.value = it }
+                    }
                 )
             )
         )

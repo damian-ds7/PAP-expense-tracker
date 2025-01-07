@@ -4,9 +4,8 @@ import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.data.uiSetup.inputFields.ButtonData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.UserBalanceButtonData
+import pw.edu.pl.pap.screenComponents.BaseScreenComponent
 
 class GroupScreenComponent(
     private val onUserClicked: (UserGroup, User) -> Unit,
@@ -39,14 +38,10 @@ class GroupScreenComponent(
         _inputFieldsData.addAll(
             userNames.zip(balances).mapIndexed { index, (username, balance) ->
                 val user = users[index]
-                InputFieldData(
-                    title = "",
-                    isUserBalanceButton = true,
-                    userBalanceButtonData = UserBalanceButtonData(
-                        title = username,
-                        balance = balance.toFloat(),
-                        onClick = { onUserClicked(currentUserGroup, user) }
-                    )
+                InputFieldData.UserBalanceButtonData(
+                    title = username,
+                    balance = balance.toFloat(),
+                    onClick = { onUserClicked(currentUserGroup, user) }
                 )
             }
         )

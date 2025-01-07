@@ -29,6 +29,7 @@ import pw.edu.pl.pap.screenComponents.groupScreens.MemberScreenComponent
 import pw.edu.pl.pap.screenComponents.groupScreens.NewGroupScreenComponent
 import pw.edu.pl.pap.screenComponents.loginSystem.*
 import pw.edu.pl.pap.screenComponents.mainScreens.ChartsScreenComponent
+import pw.edu.pl.pap.screenComponents.mainScreens.GroupScreenComponent
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.screenComponents.mainScreens.SettingsScreenComponent
 import pw.edu.pl.pap.screenComponents.settingsScreens.*
