@@ -12,14 +12,16 @@ sealed class InvitationData(open val group: UserGroup) {
 
     data class SentInvitationData (
         val receiver: User,
+        val id: Long,
         override val group: UserGroup,
-        val onCancel: (UserGroup) -> Unit,
+        val onCancel: (Long) -> Unit,
     ) : InvitationData(group)
 
     data class ReceivedInvitationData (
         val sender: User,
+        val id: Long,
         override val group: UserGroup,
-        val onConfirm: (User, UserGroup) -> Unit,
-        val onCancel: (User, UserGroup) -> Unit,
+        val onConfirm: (Long) -> Unit,
+        val onCancel: (Long) -> Unit,
     ) : InvitationData(group)
 }
