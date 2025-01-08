@@ -4,6 +4,7 @@ import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.exception.ForbiddenException;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.BaseGroup;
+import com.example.expenseapi.pojo.Group;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
@@ -52,10 +53,10 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    public String getRole(User user, Membership entity) {
+    public String getRole(User user, Group group) {
         return getMembershipsByUserId(user.getId())
                 .stream()
-                .filter(membership -> membership.getGroup().getId().equals(entity.getGroup().getId()))
+                .filter(membership -> membership.getGroup().getId().equals(group.getId()))
                 .findFirst()
                 .get()
                 .getRole()
