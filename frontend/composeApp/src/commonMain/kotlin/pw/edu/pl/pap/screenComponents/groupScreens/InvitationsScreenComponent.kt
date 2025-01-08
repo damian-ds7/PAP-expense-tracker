@@ -84,7 +84,7 @@ open class InvitationsScreenComponent(
         isPostSearchClicked.value = true
     }
 
-    fun invite(user: User){
+    private fun invite(user: User){
         // (User, group)
         //TODO
     }
