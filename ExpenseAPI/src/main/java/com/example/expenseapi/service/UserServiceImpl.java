@@ -3,6 +3,7 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.dto.UserUpdateDTO;
+import com.example.expenseapi.exception.BadRequestException;
 import com.example.expenseapi.exception.ForbiddenException;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.mapper.UserMapper;
@@ -79,7 +80,9 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
         UserDTO response = null;
         if (user.isPresent()) {
             User temp = user.get();
-            if (userUpdateDTO.getEmail() != null){
+            if (userUpdateDTO.getEmail() != null) {
+                if (userRepository.findByEmail(userUpdateDTO.getEmail()).isPresent())
+                    throw new BadRequestException("Email already exists");
                 temp.setEmail(userUpdateDTO.getEmail());
             }
             if (userUpdateDTO.getName() != null){

@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "currencies", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"name"}),
         @UniqueConstraint(columnNames = {"symbol"})
 })
 public class Currency {
@@ -19,10 +18,6 @@ public class Currency {
     private Long id;
 
     @NonNull
-    @Column(name = "name", nullable = false)
-    private String name = "Zlotowka";
-
-    @NonNull
     @Column(name = "symbol", nullable = false)
     private String symbol = "PLN";
 
@@ -30,8 +25,7 @@ public class Currency {
     @Column(name = "exchange_rate", nullable = false)
     private double exchangeRate = 1.0;
 
-    public Currency(@NonNull String name, @NonNull String symbol, double exchangeRate) {
-        this.name = name;
+    public Currency(@NonNull String symbol, double exchangeRate) {
         this.symbol = symbol;
         this.exchangeRate = exchangeRate;
     }
