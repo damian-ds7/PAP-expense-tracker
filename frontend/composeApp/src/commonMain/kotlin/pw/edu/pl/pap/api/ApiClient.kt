@@ -4,9 +4,9 @@ import io.ktor.client.statement.*
 import pw.edu.pl.pap.api.endpoints.ApiEndpoint
 
 interface ApiClient {
-    suspend fun get(endpoint: ApiEndpoint): HttpResponse
+    suspend fun get(endpoint: ApiEndpoint, body: Any? = null): HttpResponse
 
-    suspend fun post(endpoint: ApiEndpoint, body: Any?): HttpResponse
+    suspend fun post(endpoint: ApiEndpoint, body: Any? = null): HttpResponse
 
     suspend fun put(endpoint: ApiEndpoint, body: Any): HttpResponse
 

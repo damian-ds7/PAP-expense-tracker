@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.screenComponents.BaseScreenComponent
@@ -58,13 +59,15 @@ open class InvitationsScreenComponent(
     }
 
     fun fetchCurrentInvites(){
-        // received and sent
-        //TODO
+        runBlocking {
+            //TODO
+        }
     }
 
     fun search(){
-        // available users (name and surname)
-        //TODO
+        runBlocking{
+            //TODO
+        }
     }
 
     fun invite(){

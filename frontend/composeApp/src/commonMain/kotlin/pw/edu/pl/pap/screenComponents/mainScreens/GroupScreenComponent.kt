@@ -19,8 +19,6 @@ class GroupScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    val isAdmin: Boolean = true
-    //TODO fetch if is admin
 
     //temp
     private val users = listOf(

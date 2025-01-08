@@ -7,7 +7,7 @@ class TemporaryMembershipApiClient(baseApiClient: BaseApiClient) :
     ApiClient by baseApiClient {
 
     suspend fun accept(id: Long): HttpResponse {
-        return post(TemporaryMembershipEndpoint.Accept(id), null)
+        return post(TemporaryMembershipEndpoint.Accept(id))
     }
 
     suspend fun decline(id: Long): HttpResponse {
