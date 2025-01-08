@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.expenseapi.dto.CursorPageResponse;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.filter.ExpenseFilter;
@@ -19,7 +20,7 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     ExpInfo getExpInfo();
     Map<String, Double> getMapResult(ExpenseFilter filter, String keyType);
     Optional<ExpenseDTO> getRecentExpense(String groupName);
-    Map<LocalDate, List<ExpenseDTO>> getGroupExpenseAsDateMap(String name, int page, int size);
+    CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>> getGroupExpenseAsDateMap(String name, Long lastId, LocalDate lastDate, int size, boolean desc);
     Map<Category, List<ExpenseDTO>> getGroupExpenseAsCategoryMap(String name, int page, int size);
     List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter);
     ExpenseDTO createExpense(ExpenseCreateDTO createDTO);
