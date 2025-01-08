@@ -15,12 +15,19 @@ open class InvitationsScreenComponent(
 ) : BaseScreenComponent by baseComponent {
 
     var isNewInvitationsScreen: MutableState<Boolean> = mutableStateOf(false)
+    var isPostSearchClicked: MutableState<Boolean> = mutableStateOf(false)
 
     private val _newInvitationInputFieldsData = mutableStateListOf<InputFieldData>()
     val newInvitationInputFieldsData: List<InputFieldData> get() = _newInvitationInputFieldsData
 
-    private val _pendingInvitationInputFieldsData = mutableStateListOf<InputFieldData>()
-    val pendingInvitationInputFieldsData: List<InputFieldData> get() = _pendingInvitationInputFieldsData
+    private val _availableNewInvitationsData  = mutableStateListOf<InputFieldData>()
+    val availableNewInvitationsData: List<InputFieldData> get() = _availableNewInvitationsData
+
+    private val _receivedInvitationData = mutableStateListOf<InputFieldData>()
+    val receivedInvitationData: List<InputFieldData> get() = _receivedInvitationData
+
+    private val _sentInvitationData = mutableStateListOf<InputFieldData>()
+    val sentInvitationData: List<InputFieldData> get() = _sentInvitationData
 
     protected open var name: MutableState<String> = mutableStateOf("")
     protected open var surname: MutableState<String> = mutableStateOf("")
@@ -47,10 +54,28 @@ open class InvitationsScreenComponent(
         )
     }
 
+    fun fetchCurrentInvites(){
+        //TODO
+    }
+
     fun search(){
         //TODO
     }
 
+    fun invite(){
+        //TODO
+    }
 
+    fun acceptInvite(){
+        //TODO
+    }
+
+    fun declineInvite(){
+        //TODO
+    }
+
+    fun cancelInvite(){
+        //TODO
+    }
 
 }
