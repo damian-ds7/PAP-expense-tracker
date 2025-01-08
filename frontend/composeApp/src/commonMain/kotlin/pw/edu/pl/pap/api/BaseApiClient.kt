@@ -28,7 +28,7 @@ open class BaseApiClient(
         }
     }
 
-    override suspend fun post(endpoint: ApiEndpoint, body: Any): HttpResponse {
+    override suspend fun post(endpoint: ApiEndpoint, body: Any?): HttpResponse {
         return httpClient.post("$baseUrl${endpoint.path}") {
             contentType(ContentType.Application.Json)
             bearerAuth(userToken)
