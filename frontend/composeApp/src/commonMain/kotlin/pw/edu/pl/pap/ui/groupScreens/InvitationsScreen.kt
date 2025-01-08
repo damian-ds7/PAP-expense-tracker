@@ -21,7 +21,7 @@ fun InvitationsScreen (component: InvitationsScreenComponent) {
         isHighlighted = component.isNewInvitationsScreen.value
     )
 
-    if (component.isNewInvitationsScreen.value){
+    if (component.isNewInvitationsScreen.value && !component.isPostSearchClicked.value){
         InputFields(component.newInvitationInputFieldsData)
 
         ConfirmOrBackButtonRow(
@@ -29,8 +29,10 @@ fun InvitationsScreen (component: InvitationsScreenComponent) {
             onBack = { component.coroutineScope.launch { component.onDismiss() } },
             onConfirm = { component.coroutineScope.launch { component.search() } }
         )
-    } else {
+    } else if (component.isNewInvitationsScreen.value && component.isPostSearchClicked.value) {
         //TODO
+    } else {
+
     }
 
 }
