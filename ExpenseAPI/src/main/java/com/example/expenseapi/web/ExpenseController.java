@@ -1,4 +1,5 @@
 package com.example.expenseapi.web;
+import com.example.expenseapi.dto.CursorPageResponse;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.pojo.Category;
@@ -76,8 +77,16 @@ public class ExpenseController extends GenericController<Expense, Long> {
     @GetMapping("/dateMap/group/{name}")
     @Operation(summary = "Returns objects grouped by date for group of logged-in user")
     @ApiResponse(responseCode = "200", description = "All expenses grouped by date")
-    public ResponseEntity<Map<LocalDate, List<ExpenseDTO>>> getDateExpensesMap(@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsDateMap(name, page, size), HttpStatus.OK);
+    public ResponseEntity<CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>>> getDateExpensesMap(
+            @PathVariable String name,
+            @RequestParam(defaultValue = "0") Long lastId,
+            @RequestParam(defaultValue = "") String lastDate,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "desc") String order) {
+        boolean desc = order.equals("desc");
+        LocalDate lastDateParsed = lastDate.isEmpty() ? null : LocalDate.parse(lastDate);
+        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsDateMap(
+                name, lastId, lastDateParsed, size, desc), HttpStatus.OK);
     }
 
     @GetMapping("/categoryMap/group/{name}")
