@@ -124,7 +124,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         if (categoryRepository.count() == 0) {
             categories = new Category[]{
                     new Category(),
-                    new Category("Transport")
+                    new Category("transport")
             };
             categoryRepository.saveAll((Arrays.asList(categories)));
         }

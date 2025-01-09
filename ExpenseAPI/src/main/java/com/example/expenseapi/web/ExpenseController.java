@@ -97,7 +97,7 @@ public class ExpenseController extends GenericController<Expense, Long> {
             @RequestParam(defaultValue = "0") Long lastId,
             @RequestParam(defaultValue = "") String lastCategory,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "desc") String order) {
+            @RequestParam(defaultValue = "asc") String order) {
         boolean desc = order.equals("desc");
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name, lastId, lastCategory, size, desc), HttpStatus.OK);
     }
