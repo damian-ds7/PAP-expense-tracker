@@ -4,7 +4,7 @@ import com.example.expenseapi.dto.CursorPageResponse;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
 import com.example.expenseapi.exception.BadRequestException;
-import com.example.expenseapi.exception.ForbiddenException;
+import com.example.expenseapi.exception.ForbiddenRequestException;
 import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.*;
@@ -92,7 +92,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
         Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
         if (membershipOpt.isEmpty()) {
-            throw new ForbiddenException("User is not a member of the group");
+            throw new ForbiddenRequestException("User is not a member of the group");
         }
         expense.setMembership(membershipOpt.get());
         if (createDTO.getCategoryName() != null) {

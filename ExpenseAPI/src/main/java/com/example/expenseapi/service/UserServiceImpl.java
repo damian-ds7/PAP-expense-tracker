@@ -4,7 +4,7 @@ import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.exception.BadRequestException;
-import com.example.expenseapi.exception.ForbiddenException;
+import com.example.expenseapi.exception.ForbiddenRequestException;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.Preference;
@@ -50,7 +50,7 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
     @Override
     public List<UserDTO> searchUsersDTO(UserFilter filter, String groupName) {
         if (!AuthHelper.isGroupNameValid(groupName))
-            throw new ForbiddenException("User is not in the group");
+            throw new ForbiddenRequestException("User is not in the group");
         Specification<User> spec = Specification.where(null);
         spec = spec.and(UserSpecification.nameContains(filter.getName()));
         spec = spec.and(UserSpecification.surnameContains(filter.getSurname()));

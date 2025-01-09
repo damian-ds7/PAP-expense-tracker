@@ -1,7 +1,7 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.UserDTO;
-import com.example.expenseapi.exception.ForbiddenException;
+import com.example.expenseapi.exception.ForbiddenRequestException;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.Group;
@@ -35,7 +35,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @Override
     public List<UserDTO> findAdmins(String group) {
         if (!AuthHelper.isGroupNameValid(group)) {
-            throw new ForbiddenException("User is not a member of the group");
+            throw new ForbiddenRequestException("User is not a member of the group");
         }
         return membershipRepository.findAdmins(group)
                 .stream().map(userMapper::userToUserDTO)
@@ -45,7 +45,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @Override
     public List<UserDTO> findUsers(String group) {
         if (!AuthHelper.isGroupNameValid(group)) {
-            throw new ForbiddenException("User is not a member of the group");
+            throw new ForbiddenRequestException("User is not a member of the group");
         }
         return membershipRepository.findUsers(group)
                 .stream().map(userMapper::userToUserDTO)
