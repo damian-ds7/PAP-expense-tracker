@@ -18,10 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -66,22 +63,22 @@ public class AuthController {
             @ApiResponse(responseCode = "403", description = "Access forbidden.",
                     content = @Content)
     })
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO loginRequestDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(), loginRequestDTO.getPassword())
+                new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword())
         );
-        String accessToken = jwtUtil.generateAccessToken(loginRequestDTO.getEmail());
-        RefreshToken refreshToken = refreshTokenService.createAndSave(loginRequestDTO.getEmail());
+        String accessToken = jwtUtil.generateAccessToken(authRequestDTO.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createAndSave(authRequestDTO.getEmail());
         return new ResponseEntity<>(new AuthResponseDTO(
                 accessToken,
                 refreshToken.getToken()),
                 HttpStatus.OK);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(@RequestBody String refreshTokenValue) {
-        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(refreshTokenValue);
-        if (jwtUtil.isTokenExpired(refreshTokenValue) || refreshToken.isEmpty())
+    @PostMapping("/refresh/{token}")
+    public ResponseEntity<String> refreshToken(@PathVariable String token) {
+        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(token);
+        if (jwtUtil.isTokenExpired(token) || refreshToken.isEmpty())
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         String accessToken = jwtUtil.generateAccessToken(refreshToken.get().getUser().getEmail());
         return new ResponseEntity<>(accessToken, HttpStatus.OK);
