@@ -2,7 +2,9 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.AuthRequestDTO;
 import com.example.expenseapi.dto.AuthResponseDTO;
+import com.example.expenseapi.pojo.RefreshToken;
 import com.example.expenseapi.pojo.User;
+import com.example.expenseapi.service.RefreshTokenService;
 import com.example.expenseapi.service.UserService;
 import com.example.expenseapi.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 @Tag(name="Authentication Controller", description = "Controller to enable registration")
@@ -29,11 +33,13 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    private final RefreshTokenService refreshTokenService;
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @PostMapping("/register")
@@ -64,15 +70,20 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(), loginRequestDTO.getPassword())
         );
+        String accessToken = jwtUtil.generateAccessToken(loginRequestDTO.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createAndSave(loginRequestDTO.getEmail());
         return new ResponseEntity<>(new AuthResponseDTO(
-                jwtUtil.generateAccessToken(loginRequestDTO.getEmail()),
-                jwtUtil.generateRefreshToken(loginRequestDTO.getEmail())),
+                accessToken,
+                refreshToken.getToken()),
                 HttpStatus.OK);
     }
 
-    @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(@RequestBody String refreshToken) {
-        return ResponseEntity.ok("Token refreshed");
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody String refreshTokenValue) {
+        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(refreshTokenValue);
+        if (jwtUtil.isTokenExpired(refreshTokenValue) || refreshToken.isEmpty())
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        String accessToken = jwtUtil.generateAccessToken(refreshToken.get().getUser().getEmail());
+        return new ResponseEntity<>(accessToken, HttpStatus.OK);
     }
-
 }
