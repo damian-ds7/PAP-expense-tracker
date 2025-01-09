@@ -38,9 +38,10 @@ public class AuthControllerIT {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/login")
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken").exists());
     }
-
 
     @Test
     void testLoginWrongEmail() throws Exception {
@@ -98,5 +99,10 @@ public class AuthControllerIT {
                         .content(jsonRequestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
+    }
+
+    @Test
+    void testRefresh() throws Exception {
+
     }
 }
