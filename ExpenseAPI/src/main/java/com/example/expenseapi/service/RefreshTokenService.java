@@ -5,6 +5,6 @@ import com.example.expenseapi.pojo.RefreshToken;
 import java.util.Optional;
 
 public interface RefreshTokenService extends GenericService<RefreshToken, Long> {
-    RefreshToken createAndSave(String email);
+    RefreshToken findOrCreateToken(String email);
     Optional<RefreshToken> findByToken(String token);
 }

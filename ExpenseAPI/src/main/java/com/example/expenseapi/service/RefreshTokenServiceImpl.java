@@ -24,7 +24,18 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
     }
 
     @Override
-    public RefreshToken createAndSave(String email) {
+    public RefreshToken findOrCreateToken(String email) {
+        Optional<RefreshToken> optToken = refreshTokenRepository.findByUser_Email(email);
+        return optToken.orElseGet(() -> createAndSave(email));
+
+
+    }
+    @Override
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
+    }
+
+    private RefreshToken createAndSave(String email) {
         RefreshToken refreshToken = new RefreshToken();
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty())
@@ -33,9 +44,5 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
         refreshToken.setUser(user.get());
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
-    }
-    @Override
-    public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepository.findByToken(token);
     }
 }

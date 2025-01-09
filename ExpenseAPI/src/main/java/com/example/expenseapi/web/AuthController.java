@@ -73,7 +73,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword())
         );
         String accessToken = jwtUtil.generateAccessToken(authRequestDTO.getEmail());
-        RefreshToken refreshToken = refreshTokenService.createAndSave(authRequestDTO.getEmail());
+        RefreshToken refreshToken = refreshTokenService.findOrCreateToken(authRequestDTO.getEmail());
         return new ResponseEntity<>(new AuthResponseDTO(
                 accessToken,
                 refreshToken.getToken()),
