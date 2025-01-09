@@ -2,8 +2,10 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.dto.AuthRequestDTO;
 import com.example.expenseapi.dto.AuthResponseDTO;
+import com.example.expenseapi.dto.RefreshTokenDTO;
 import com.example.expenseapi.pojo.RefreshToken;
 import com.example.expenseapi.pojo.User;
+import com.example.expenseapi.repository.RefreshTokenRepository;
 import com.example.expenseapi.service.RefreshTokenService;
 import com.example.expenseapi.service.UserService;
 import com.example.expenseapi.utils.JwtUtil;
@@ -31,12 +33,15 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenService refreshTokenService, RefreshTokenRepository refreshTokenRepository) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.refreshTokenService = refreshTokenService;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @PostMapping("/register")
@@ -75,11 +80,16 @@ public class AuthController {
                 HttpStatus.OK);
     }
 
-    @PostMapping("/refresh/{token}")
-    public ResponseEntity<String> refreshToken(@PathVariable String token) {
-        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(token);
-        if (jwtUtil.isTokenExpired(token) || refreshToken.isEmpty())
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenDTO token) {
+        Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(token.getRefreshToken());
+        if (refreshToken.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if (jwtUtil.isTokenExpired(token.getRefreshToken())) {
+            refreshTokenRepository.delete(refreshToken.get());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         String accessToken = jwtUtil.generateAccessToken(refreshToken.get().getUser().getEmail());
         return new ResponseEntity<>(accessToken, HttpStatus.OK);
     }
