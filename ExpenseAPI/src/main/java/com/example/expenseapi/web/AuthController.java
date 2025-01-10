@@ -94,7 +94,7 @@ public class AuthController {
         if (refreshToken.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if (jwtUtil.isTokenExpired(token.getRefreshToken())) {
+        if (refreshTokenService.isTokenExpired(token.getRefreshToken())) {
             refreshTokenRepository.delete(refreshToken.get());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

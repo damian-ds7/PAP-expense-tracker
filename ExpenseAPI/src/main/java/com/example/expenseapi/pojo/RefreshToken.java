@@ -3,6 +3,8 @@ package com.example.expenseapi.pojo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,5 +26,7 @@ public class RefreshToken {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
+    @NonNull
+    @Column(nullable = false)
+    Instant expiryDate;
 }

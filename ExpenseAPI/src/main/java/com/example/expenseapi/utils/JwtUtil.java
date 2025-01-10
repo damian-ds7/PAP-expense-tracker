@@ -44,13 +44,15 @@ public class JwtUtil {
         return extractEmail(token).equals(email) && !isTokenExpired(token);
     }
 
-    public boolean isTokenExpired(String token){
+    public Date getExpiration(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getExpiration()
-                .before(new Date());
+                .getExpiration();
+    }
+    public boolean isTokenExpired(String token){
+        return getExpiration(token).before(new Date());
     }
 }
