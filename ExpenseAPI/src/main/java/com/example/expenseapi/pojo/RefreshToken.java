@@ -29,4 +29,10 @@ public class RefreshToken {
     @NonNull
     @Column(nullable = false)
     Instant expiryDate;
+
+    public RefreshToken(@NonNull String token, @NonNull User user, @NonNull Instant expiryDate) {
+        this.token = token;
+        this.user = user;
+        this.expiryDate = expiryDate;
+    }
 }
