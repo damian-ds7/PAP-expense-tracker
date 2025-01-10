@@ -80,11 +80,11 @@ public class ExpenseController extends GenericController<Expense, Long> {
     public ResponseEntity<CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>>> getDateExpensesMap(
             @PathVariable String name,
             @RequestParam(defaultValue = "0") Long lastId,
-            @RequestParam(defaultValue = "") String lastDate,
+            @RequestParam(defaultValue = "") String lastKey,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "desc") String order) {
         boolean desc = order.equals("desc");
-        LocalDate lastDateParsed = lastDate.isEmpty() ? null : LocalDate.parse(lastDate);
+        LocalDate lastDateParsed = lastKey.isEmpty() ? null : LocalDate.parse(lastKey);
         return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsDateMap(
                 name, lastId, lastDateParsed, size, desc), HttpStatus.OK);
     }
@@ -95,11 +95,11 @@ public class ExpenseController extends GenericController<Expense, Long> {
     public ResponseEntity<CursorPageResponse<Map<Category, List<ExpenseDTO>>>> getCategoryExpenseMap(
             @PathVariable String name,
             @RequestParam(defaultValue = "0") Long lastId,
-            @RequestParam(defaultValue = "") String lastCategory,
+            @RequestParam(defaultValue = "") String lastKey,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "asc") String order) {
         boolean desc = order.equals("desc");
-        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name, lastId, lastCategory, size, desc), HttpStatus.OK);
+        return new ResponseEntity<>(((ExpenseService) service).getGroupExpenseAsCategoryMap(name, lastId, lastKey, size, desc), HttpStatus.OK);
     }
 
     @GetMapping("/recent/{groupName}")

@@ -188,7 +188,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         response.setHasMore(expenses.size() == size);
         if (!expenses.isEmpty()) {
             ExpenseDTO lastItem = expenses.getLast();
-            response.setNextLastDate(lastItem.getExpenseDate());
+            response.setNextLastKey(lastItem.getExpenseDate().toString());
             response.setNextLastId(lastItem.getId());
         }
         return response;
@@ -226,7 +226,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         response.setHasMore(dtos.size() == size);
         if (!dtos.isEmpty()) {
             ExpenseDTO lastDto = dtos.getLast();
-            response.setNextLastCategory(lastDto.getCategory().getName());
+            response.setNextLastKey(lastDto.getCategory().getName());
             response.setNextLastId(lastDto.getId());
         }
 
