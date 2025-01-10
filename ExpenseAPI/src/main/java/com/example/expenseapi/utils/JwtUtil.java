@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -49,15 +51,18 @@ public class JwtUtil {
         return extractEmail(token).equals(email) && !isTokenExpired(token);
     }
 
-    public Date getExpiration(String token) {
+    public LocalDate getExpiration(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getExpiration();
+                .getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
     public boolean isTokenExpired(String token){
-        return getExpiration(token).before(new Date());
+        return getExpiration(token).isBefore(LocalDate.now());
     }
 }
