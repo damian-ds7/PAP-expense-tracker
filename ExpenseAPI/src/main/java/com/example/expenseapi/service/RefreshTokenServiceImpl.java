@@ -8,6 +8,7 @@ import com.example.expenseapi.repository.UserRepository;
 import com.example.expenseapi.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
     public boolean isTokenExpired(String token) {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
         if (refreshToken.isPresent()) {
-            return refreshToken.get().getExpiryDate().isBefore(LocalDate.now());
+            return refreshToken.get().getExpiryDate().isBefore(Instant.now());
         }
         else throw new BadRequestException("Token does not exist");
     }
@@ -51,7 +52,7 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
             throw new BadRequestException("Invalid email");
         refreshToken.setToken(jwtUtil.generateRefreshToken(email));
         refreshToken.setUser(user.get());
-        refreshToken.setExpiryDate(jwtUtil.getExpiration(refreshToken.getToken()));
+        refreshToken.setExpiryDate(jwtUtil.getExpiration(refreshToken.getToken()).toInstant());
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }

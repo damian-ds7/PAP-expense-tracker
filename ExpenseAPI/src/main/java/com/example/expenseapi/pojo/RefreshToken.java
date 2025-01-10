@@ -3,7 +3,8 @@ package com.example.expenseapi.pojo;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.Instant;
+
 
 @Getter
 @Setter
@@ -28,5 +29,5 @@ public class RefreshToken {
 
     @NonNull
     @Column(name = "expiry_date", nullable = false)
-    LocalDate expiryDate;
+    Instant expiryDate;
 }

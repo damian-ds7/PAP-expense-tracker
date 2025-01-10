@@ -51,18 +51,15 @@ public class JwtUtil {
         return extractEmail(token).equals(email) && !isTokenExpired(token);
     }
 
-    public LocalDate getExpiration(String token) {
+    public Date getExpiration(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getExpiration()
-                .toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+                .getExpiration();
     }
     public boolean isTokenExpired(String token){
-        return getExpiration(token).isBefore(LocalDate.now());
+        return getExpiration(token).before(new Date());
     }
 }

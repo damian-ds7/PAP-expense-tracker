@@ -78,5 +78,5 @@ CREATE TABLE refresh_tokens (
     id LONG AUTO_INCREMENT PRIMARY KEY,
     token VARCHAR2(255) NOT NULL,
     user_id LONG NOT NULL,
-    expiry_date DATE
+    expiry_date TIMESTAMP
 );
