@@ -92,11 +92,11 @@ public class AuthController {
     public ResponseEntity<String> refreshToken(@RequestBody RefreshTokenDTO token) {
         Optional<RefreshToken> refreshToken = refreshTokenService.findByToken(token.getRefreshToken());
         if (refreshToken.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         if (refreshTokenService.isTokenExpired(token.getRefreshToken())) {
             refreshTokenRepository.delete(refreshToken.get());
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         String accessToken = jwtUtil.generateAccessToken(refreshToken.get().getUser().getEmail());
         return new ResponseEntity<>(accessToken, HttpStatus.OK);
