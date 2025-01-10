@@ -108,13 +108,6 @@ public class ExpenseApiApplication implements CommandLineRunner {
             };
             userRepository.saveAll(Arrays.asList(users));
         }
-        if (refreshTokenRepository.count() == 0) {
-            tokens = new RefreshToken[] {
-                    new RefreshToken("token1", users[0], Instant.now().plusSeconds(60 * 60)),
-                    new RefreshToken("token2", users[1], Instant.now().minusSeconds(60 * 60))
-            };
-            refreshTokenRepository.saveAll(Arrays.asList(tokens));
-        }
 
         if (roleRepository.count() == 0) {
             roles = new Role[]{
