@@ -110,30 +110,33 @@ public class AuthControllerIT {
 
     @Test
     void testRefreshUserWithActiveToken() throws Exception {
+        long startCount = refreshTokenRepository.count();
         String jsonRequestBody = """
                 {
                 "refreshToken": "token1"
                 }
-                """;
+                """; // token1 is active assigned to user with email herkules1@gmail.com
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh")
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").exists());
+        assertThat(refreshTokenRepository.count()).isEqualTo(startCount);
     }
 
     @Test
     void testRefreshUserWithExpiredToken() throws Exception {
+        long startCount = refreshTokenRepository.count();
         String jsonRequestBody = """
                 {
                 "refreshToken": "token2"
                 }
-                """;
+                """; // token2 is expired assigned to user with email herkules2@gmail.com
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh")
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
-        assertThat(refreshTokenRepository.count()).isEqualTo(1);
+        assertThat(refreshTokenRepository.count()).isEqualTo(startCount - 1);
     }
 
     @Test
@@ -142,7 +145,7 @@ public class AuthControllerIT {
                 {
                 "refreshToken": "token3"
                 }
-                """;
+                """; // token3 does not exist in the database
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/refresh")
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON))
