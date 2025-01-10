@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 
@@ -24,8 +25,9 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final RoleRepository roleRepository;
     private final PreferenceRepository preferenceRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, MethodOfPaymentRepository methodOfPaymentRepository, RoleRepository roleRepository, PreferenceRepository preferenceRepository) {
+    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, MethodOfPaymentRepository methodOfPaymentRepository, RoleRepository roleRepository, PreferenceRepository preferenceRepository, RefreshTokenRepository refreshTokenRepository) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -37,6 +39,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.roleRepository = roleRepository;
         this.preferenceRepository = preferenceRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     public static void main(String[] args) {
@@ -54,6 +57,7 @@ public class ExpenseApiApplication implements CommandLineRunner {
         MethodOfPayment[] methods = null;
         Membership[] memberships = null;
         Preference[] preferences = null;
+        RefreshToken[] tokens = null;
 
         if (methodOfPaymentRepository.count() == 0) {
             methods = new MethodOfPayment[]{
@@ -104,6 +108,14 @@ public class ExpenseApiApplication implements CommandLineRunner {
             };
             userRepository.saveAll(Arrays.asList(users));
         }
+        if (refreshTokenRepository.count() == 0) {
+            tokens = new RefreshToken[] {
+                    new RefreshToken("token1", users[0], Instant.now().plusSeconds(60 * 60)),
+                    new RefreshToken("token2", users[1], Instant.now().minusSeconds(60 * 60))
+            };
+            refreshTokenRepository.saveAll(Arrays.asList(tokens));
+        }
+
         if (roleRepository.count() == 0) {
             roles = new Role[]{
                     new Role("admin"),
