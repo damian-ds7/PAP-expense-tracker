@@ -28,7 +28,8 @@ public class CacheConfig {
                 "searchExpensesPagesDTO",
                 "expensesUserPage",
                 "categories",
-                "currencies"
+                "currencies",
+                "methods"
         );
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
