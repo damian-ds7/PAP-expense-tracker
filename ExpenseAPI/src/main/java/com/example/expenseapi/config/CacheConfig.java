@@ -10,8 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableCaching
+@EnableCaching  // Włącza mechanizm cache'owania w Spring
 public class CacheConfig {
+
     @Bean
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager(
@@ -25,11 +26,12 @@ public class CacheConfig {
                 "groupExpenseCategoryMap",
                 "searchExpensesDTO",
                 "searchExpensesPagesDTO",
-                "expensesUserPage"
+                "expensesUserPage",
+                "categoriesAll"
         );
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
-                .maximumSize(1000)
+                .maximumSize(2000)
         );
         return cacheManager;
     }
