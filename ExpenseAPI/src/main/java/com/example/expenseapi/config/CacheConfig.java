@@ -45,11 +45,6 @@ public class CacheConfig {
 
     @Bean
     public KeyGenerator userBasedKeyGenerator() {
-        return new KeyGenerator() {
-            @Override
-            public Object generate(Object target, Method method, Object... params) {
-                return AuthHelper.getUser().getId();
-            }
-        };
+        return (target, method, params) -> AuthHelper.getUser().getId();
     }
 }
