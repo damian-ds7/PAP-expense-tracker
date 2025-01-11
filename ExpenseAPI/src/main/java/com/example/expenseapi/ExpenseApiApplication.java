@@ -9,11 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class ExpenseApiApplication implements CommandLineRunner {
-    final ExpenseRepository expenseRepository;
-    final UserRepository userRepository;
+
+    private final ExpenseRepository expenseRepository;
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final GroupRepository groupRepository;
     private final MembershipRepository membershipRepository;
@@ -24,7 +26,19 @@ public class ExpenseApiApplication implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final PreferenceRepository preferenceRepository;
 
-    public ExpenseApiApplication(ExpenseRepository expenseRepository, UserRepository userRepository, CategoryRepository categoryRepository, GroupRepository groupRepository, MembershipRepository membershipRepository, ArchivedGroupRepository archivedGroupRepository, CurrencyRepository currencyRepository, PasswordEncoder passwordEncoder, MethodOfPaymentRepository methodOfPaymentRepository, RoleRepository roleRepository, PreferenceRepository preferenceRepository, RefreshTokenRepository refreshTokenRepository) {
+    public ExpenseApiApplication(
+            ExpenseRepository expenseRepository,
+            UserRepository userRepository,
+            CategoryRepository categoryRepository,
+            GroupRepository groupRepository,
+            MembershipRepository membershipRepository,
+            ArchivedGroupRepository archivedGroupRepository,
+            CurrencyRepository currencyRepository,
+            PasswordEncoder passwordEncoder,
+            MethodOfPaymentRepository methodOfPaymentRepository,
+            RoleRepository roleRepository,
+            PreferenceRepository preferenceRepository
+    ) {
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -44,100 +58,155 @@ public class ExpenseApiApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Group[] groups = null;
-        User[] users = null;
-        Category[] categories = null;
-        ArchivedGroup[] archivedGroups = null;
-        Currency[] currencies = null;
-        Role[] roles = null;
-        MethodOfPayment[] methods = null;
-        Membership[] memberships = null;
-        Preference[] preferences = null;
-        RefreshToken[] tokens = null;
+        initMethodOfPayments();
+        initCurrencies();
+        initGroups();
+        initArchivedGroups();
+        initPreferences();
+        initUsers();
+        initRoles();
+        initMemberships();
+        initCategories();
+        initExpenses();
+    }
 
+    private void initMethodOfPayments() {
         if (methodOfPaymentRepository.count() == 0) {
-            methods = new MethodOfPayment[]{
+            List<MethodOfPayment> methods = Arrays.asList(
                     new MethodOfPayment("cash"),
                     new MethodOfPayment("debit card")
-
-            };
-            methodOfPaymentRepository.saveAll(Arrays.asList(methods));
+            );
+            methodOfPaymentRepository.saveAll(methods);
         }
+    }
+
+    private void initCurrencies() {
         if (currencyRepository.count() == 0) {
-            currencies = new Currency[]{
-                    new Currency("PLN", 1),
+            List<Currency> currencies = Arrays.asList(
+                    new Currency("PLN", 1.0),
                     new Currency("USD", 4.0),
                     new Currency("EUR", 5.0)
-            };
-            currencyRepository.saveAll(Arrays.asList(currencies));
+            );
+            currencyRepository.saveAll(currencies);
         }
+    }
+
+    private void initGroups() {
         if (groupRepository.count() == 0) {
-            groups = new Group[]{
+            List<Group> groups = Arrays.asList(
                     new Group("family"),
-                    new Group("workers"),
-            };
-            groupRepository.saveAll(Arrays.asList(groups));
+                    new Group("workers")
+            );
+            groupRepository.saveAll(groups);
         }
+    }
+
+    private void initArchivedGroups() {
         if (archivedGroupRepository.count() == 0) {
-            archivedGroups = new ArchivedGroup[]{
+            List<ArchivedGroup> archivedGroups = Arrays.asList(
                     new ArchivedGroup("family2"),
-                    new ArchivedGroup("workers2"),
-            };
-            archivedGroupRepository.saveAll(Arrays.asList(archivedGroups));
+                    new ArchivedGroup("workers2")
+            );
+            archivedGroupRepository.saveAll(archivedGroups);
         }
+    }
+
+    private void initPreferences() {
         if (preferenceRepository.count() == 0) {
-            preferences = new Preference[] {
-                    new Preference(currencies[0], methods[0]),
-                    new Preference(currencies[1], methods[1]),
-                    new Preference(currencies[2], methods[0]),
-                    new Preference(currencies[0], methods[1]),
-            };
-            preferenceRepository.saveAll(Arrays.asList(preferences));
-        }
+            Currency pln = currencyRepository.findBySymbol("PLN").orElseThrow();
+            Currency usd = currencyRepository.findBySymbol("USD").orElseThrow();
+            Currency eur = currencyRepository.findBySymbol("EUR").orElseThrow();
 
+            MethodOfPayment cash = methodOfPaymentRepository.findByName("cash").orElseThrow();
+            MethodOfPayment card = methodOfPaymentRepository.findByName("debit card").orElseThrow();
+
+            List<Preference> preferences = Arrays.asList(
+                    new Preference(pln, cash),
+                    new Preference(usd, card),
+                    new Preference(eur, cash),
+                    new Preference(pln, card)
+            );
+            preferenceRepository.saveAll(preferences);
+        }
+    }
+
+    private void initUsers() {
         if (userRepository.count() == 0) {
-            users = new User[]{
-                    new User("Herkules1", "Herkules1", "herkules1@gmail.com", preferences[0], passwordEncoder.encode("123")),
-                    new User("Herkules2", "Herkules2", "herkules2@gmail.com", preferences[1], passwordEncoder.encode("234")),
-                    new User("Herkules3", "Herkules3", "herkules3@gmail.com", preferences[2], passwordEncoder.encode("345")),
-                    new User("Herkules4", "Herkules4", "herkules4@gmail.com", preferences[3], passwordEncoder.encode("456"))
-            };
-            userRepository.saveAll(Arrays.asList(users));
-        }
+            List<Preference> allPreferences = preferenceRepository.findAll();
+            if (allPreferences.size() < 4) {
+                return;
+            }
+            User u1 = new User("Herkules1", "Herkules1", "herkules1@gmail.com", allPreferences.get(0), passwordEncoder.encode("123"));
+            User u2 = new User("Herkules2", "Herkules2", "herkules2@gmail.com", allPreferences.get(1), passwordEncoder.encode("234"));
+            User u3 = new User("Herkules3", "Herkules3", "herkules3@gmail.com", allPreferences.get(2), passwordEncoder.encode("345"));
+            User u4 = new User("Herkules4", "Herkules4", "herkules4@gmail.com", allPreferences.get(3), passwordEncoder.encode("456"));
 
+            userRepository.saveAll(Arrays.asList(u1, u2, u3, u4));
+        }
+    }
+
+    private void initRoles() {
         if (roleRepository.count() == 0) {
-            roles = new Role[]{
+            List<Role> roles = Arrays.asList(
                     new Role("admin"),
-                    new Role("member"),
-            };
-            roleRepository.saveAll(Arrays.asList(roles));
+                    new Role("member")
+            );
+            roleRepository.saveAll(roles);
         }
+    }
+
+    private void initMemberships() {
         if (membershipRepository.count() == 0) {
-            memberships = new Membership[] {
-                    new Membership(users[0], groups[0], roles[0]),
-                    new Membership(users[1], groups[0], roles[0]),
-                    new Membership(users[2], groups[1], roles[1]),
-                    new Membership(users[0], groups[1], roles[1]),
-                    new Membership(users[1], groups[1], roles[1]),
-            };
-            membershipRepository.saveAll(Arrays.asList(memberships));
+            List<User> users = userRepository.findAll();
+            List<Group> groups = groupRepository.findAll();
+            List<Role> roles = roleRepository.findAll();
+            if (users.size() < 3 || groups.size() < 2 || roles.size() < 2) {
+                return;
+            }
+            Membership m1 = new Membership(users.get(0), groups.get(0), roles.get(0));
+            Membership m2 = new Membership(users.get(1), groups.get(0), roles.get(0));
+            Membership m3 = new Membership(users.get(2), groups.get(1), roles.get(1));
+            Membership m4 = new Membership(users.get(0), groups.get(1), roles.get(1));
+            Membership m5 = new Membership(users.get(1), groups.get(1), roles.get(1));
+
+            membershipRepository.saveAll(Arrays.asList(m1, m2, m3, m4, m5));
         }
+    }
+
+    private void initCategories() {
         if (categoryRepository.count() == 0) {
-            categories = new Category[]{
+            List<Category> categories = Arrays.asList(
                     new Category(),
                     new Category("transport")
-            };
-            categoryRepository.saveAll((Arrays.asList(categories)));
+            );
+            categoryRepository.saveAll(categories);
         }
+    }
+
+    private void initExpenses() {
         if (expenseRepository.count() == 0) {
-            Expense[] expenses = new Expense[] {
-                    new Expense("lunch", 50, memberships[0], categories[0], LocalDate.of(2024, 10, 10), currencies[0], methods[0]),
-                    new Expense("dinner", 100, memberships[0], categories[0], LocalDate.of(2025, 11, 30), currencies[0], methods[0]),
-                    new Expense("train-ticket", 200, memberships[1], categories[1], LocalDate.of(2024, 12, 22), currencies[1], methods[1]),
-                    new Expense("groceries", 300, memberships[2], categories[0], currencies[0], methods[0]),
-                    new Expense("fast-food", 300, memberships[2], categories[0], currencies[2], methods[1]),
-            };
-            expenseRepository.saveAll(Arrays.asList(expenses));
+            List<Membership> memberships = membershipRepository.findAll();
+            List<Category> categories = categoryRepository.findAll();
+            List<Currency> currencies = currencyRepository.findAll();
+            List<MethodOfPayment> methods = methodOfPaymentRepository.findAll();
+
+            if (memberships.size() < 3 || categories.isEmpty()
+                    || currencies.isEmpty() || methods.isEmpty()) {
+                return;
+            }
+
+            Expense e1 = new Expense("lunch", 50, memberships.get(0), categories.get(0),
+                    LocalDate.of(2024, 10, 10), currencies.get(0), methods.get(0));
+            Expense e2 = new Expense("dinner", 100, memberships.get(0), categories.get(0),
+                    LocalDate.of(2025, 11, 30), currencies.get(0), methods.get(0));
+            Expense e3 = new Expense("train-ticket", 200, memberships.get(1), categories.get(1),
+                    LocalDate.of(2024, 12, 22), currencies.get(1), methods.get(1));
+            Expense e4 = new Expense("groceries", 300, memberships.get(2), categories.get(0),
+                    currencies.get(0), methods.get(0));
+            Expense e5 = new Expense("fast-food", 300, memberships.get(2), categories.get(0),
+                    currencies.get(2), methods.get(1));
+
+            expenseRepository.saveAll(Arrays.asList(e1, e2, e3, e4, e5));
         }
     }
 }
