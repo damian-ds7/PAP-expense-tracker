@@ -17,7 +17,7 @@ fun ExpenseDetailsScreen(
     val scope = rememberCoroutineScope()
     var confirmDialogState by remember { mutableStateOf<ConfirmationDialogState>(ConfirmationDialogState.None) }
     val dialogFactory = remember { ConfirmationDialogFactory(
-        onDismiss = component.onDismiss,
+        onDismiss = component.onBack,
         onDelete = { component.deleteExpense() }
     ) }
 
@@ -61,7 +61,7 @@ fun ExpenseDetailsScreen(
 
 fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
     if (component.noChange) {
-        component.onDismiss()
+        component.onBack()
     } else {
         showConfirmDialog(ConfirmationDialogState.GoBack)
     }

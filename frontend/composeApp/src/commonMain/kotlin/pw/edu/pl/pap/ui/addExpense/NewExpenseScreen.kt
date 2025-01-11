@@ -18,7 +18,7 @@ fun NewExpenseScreen(
 
     ConfirmOrBackButtonRow(
         text = "ADD",
-        onBack = { scope.launch { component.onDismiss() } },
+        onBack = { scope.launch { component.onBack() } },
         onConfirm = { scope.launch { component.confirm() } },
         isConfirmEnabled = component.canConfirm
     )

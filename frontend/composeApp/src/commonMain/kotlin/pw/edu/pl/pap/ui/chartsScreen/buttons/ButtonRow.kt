@@ -25,14 +25,14 @@ fun ButtonRow(
             Row(
                 modifier = Modifier.align(Alignment.CenterStart),
             ) {
-                FilterMenuButton { component.onFilterClick(component.chartFilters.value, component.currentUserGroup.value!!, "category") }
+                FilterMenuButton { component.onFilterClick() }
             }
             TimeFramePicker(component)
             Row(
                 modifier = Modifier.align(Alignment.CenterEnd),
             ) {
                 RefreshButton {
-                    component.updateNavigationState(ChartsScreenComponent.NavigationState.InitialLoad)
+                    component.updateNavigationState(ChartsScreenComponent.NavigationState.LoadData)
                 }
             }
         }

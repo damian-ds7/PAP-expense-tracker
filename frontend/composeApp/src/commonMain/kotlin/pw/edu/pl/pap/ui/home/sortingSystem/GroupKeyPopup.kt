@@ -24,9 +24,7 @@ fun GroupKeyPopup(
     val selectedOption by component.currentGroupingKey.collectAsState()
     var isLoading by remember {mutableStateOf(false)}
     var pendingAction: (() -> Unit)? by remember { mutableStateOf(null) }
-    println("$selectedOption - $currentOrder")
 
-//    println("$selectedOption - $currentOrder")
     LoadingPopup(
         isLoading = isLoading
     )
