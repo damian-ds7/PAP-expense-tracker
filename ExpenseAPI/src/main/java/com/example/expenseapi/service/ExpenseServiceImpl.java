@@ -104,11 +104,10 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         }
         fillDefaultsFromUserPreferences(createDTO, user);
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
-        Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
-        if (membershipOpt.isEmpty()) {
-            throw new ForbiddenRequestException("User is not a member of the group");
-        }
-        expense.setMembership(membershipOpt.get());
+        Membership membership = membershipRepository
+                .findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName())
+                .orElseThrow(() -> new ForbiddenRequestException("User is not a member of the group"));
+        expense.setMembership(membership);
         if (createDTO.getCategoryName() != null) {
             Category category = categoryRepository.findByName(createDTO.getCategoryName());
             expense.setCategory(category);
