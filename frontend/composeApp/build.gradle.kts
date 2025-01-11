@@ -63,6 +63,15 @@ kotlin {
     sourceSets.commonMain.dependencies {
         implementation(kotlin("reflect"))
     }
+
+    sourceSets {
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test) // Zależność do testów Kotlin
+                implementation(libs.ktor.mock)  // Ktor Mock Engine
+            }
+        }
+    }
 }
 
 val localPropertiesFile = rootProject.file("local.properties")
