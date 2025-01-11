@@ -97,7 +97,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @Override
     @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public void deleteAllMembershipsForUserId(Long id) {
-        membershipRepository.deleteByUserId(id);
+        membershipRepository.deleteAllByUserId(id);
     }
 
     @Override
