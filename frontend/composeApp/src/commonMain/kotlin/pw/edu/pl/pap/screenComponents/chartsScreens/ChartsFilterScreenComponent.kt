@@ -1,128 +1,109 @@
 package pw.edu.pl.pap.screenComponents.chartsScreens
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.databaseAssociatedData.*
+import org.koin.core.component.inject
+import pw.edu.pl.pap.data.databaseAssociatedData.Category
+import pw.edu.pl.pap.data.databaseAssociatedData.PaymentMethod
+import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
-import kotlin.reflect.KProperty1
+import pw.edu.pl.pap.repositories.data.ChartsRepository
+import pw.edu.pl.pap.repositories.data.ConfigRepository
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
+import pw.edu.pl.pap.util.listFunctions.getIndicesFromItems
+import pw.edu.pl.pap.util.listFunctions.getItemsFromIndices
 
 class ChartsFilterScreenComponent(
-    baseComponent: BaseScreenComponent,
-    val onDismiss: () -> Unit,
-    private val onConfirm: (ChartFilterParams, String) -> Unit,
-    private val filterParams: ChartFilterParams,
-    private val currentGroup: UserGroup,
-    currentKeyPattern: String
-) : BaseScreenComponent by baseComponent {
+    baseComponent: BaseComponent, val onDismiss: () -> Unit, val onSave: () -> Unit
+) : BaseComponent by baseComponent {
 
-    private val _inputFieldsData = mutableStateListOf<InputFieldData>()
-    val inputFieldsData: SnapshotStateList<InputFieldData> get() = _inputFieldsData
+    private val chartsRepository: ChartsRepository by inject()
+    private val groupRepository: GroupRepository by inject()
+    private val configRepository: ConfigRepository by inject()
 
-    private lateinit var users: List<User>
-    private lateinit var methods: List<PaymentMethod>
-    private lateinit var categories: List<Category>
-    private lateinit var patternKeys: List<String>
+
+    private val _inputFieldsData = MutableStateFlow<List<InputFieldData>>(emptyList())
+    val inputFieldsData: StateFlow<List<InputFieldData>> get() = _inputFieldsData
 
     private var selectedCategories: SnapshotStateList<Int>? = null
     private var selectedEmails: SnapshotStateList<Int>? = null
     private var selectedMethods: SnapshotStateList<Int>? = null
     private lateinit var selectedKeyPattern: MutableState<Int>
 
+    private lateinit var users: List<User>
+    private val methods: List<PaymentMethod> = configRepository.paymentMethods.value
+    private val categories: List<Category> = configRepository.categories.value
+    private val patternKeys: List<String> = configRepository.keyPatterns.value
+
+
+    private val currentKeyPattern = chartsRepository.keyPattern.value
+    private val filterParams = chartsRepository.chartFilters
+
     init {
         coroutineScope.launch {
-            val categoriesCor = async { apiService.categoryApiClient.getCategories() }
-            val usersCor = async { apiService.groupApiClient.getUsersInGroup(currentGroup.name) }
-            val methodsCor = async { apiService.paymentMethodApiClient.getMethods() }
-            try {
-                categories = categoriesCor.await()
-                users = usersCor.await()
-                methods = methodsCor.await()
-                patternKeys = listOf("category", "user", "method") //TODO add api request for keys
+            users = groupRepository.getUsersInCurrentGroup()
+            initializeSelected()
+            initializeInputFieldsData()
 
-                selectedCategories =
-                    getIndicesFromItems(categories, filterParams.categoryNames, Category::name)?.toMutableStateList()
-                selectedEmails = getIndicesFromItems(users, filterParams.emails, User::email)?.toMutableStateList()
-                selectedMethods =
-                    getIndicesFromItems(methods, filterParams.methods, PaymentMethod::name)?.toMutableStateList()
-                selectedKeyPattern = mutableStateOf(patternKeys.indexOf(currentKeyPattern))
-
-                initializeInputFieldsData()
-            } catch (e: Exception) {
-                println("Error fetching data: ${e.message}")
-            }
         }
+    }
+
+    private fun initializeSelected() {
+        selectedCategories =
+            getIndicesFromItems(categories, filterParams.value.categoryNames, Category::name)?.toMutableStateList()
+        selectedEmails = getIndicesFromItems(users, filterParams.value.emails, User::email)?.toMutableStateList()
+        selectedMethods =
+            getIndicesFromItems(methods, filterParams.value.methods, PaymentMethod::name)?.toMutableStateList()
+        selectedKeyPattern = mutableStateOf(patternKeys.indexOf(currentKeyPattern))
+
     }
 
     private fun initializeInputFieldsData() {
-        _inputFieldsData.clear()
-        _inputFieldsData.addAll(
-            listOf(
-                InputFieldData.DropdownListData(
-                    title = "Group by",
-                    itemList = patternKeys,
-                    selectedIndex = selectedKeyPattern,
-                    onItemClick = { selectedKeyPattern.value = it }),
-                InputFieldData.CheckboxData(
-                    title = "Categories",
-                    itemList = categories.map { it.name },
-                    selectedIndices = selectedCategories,
-                    onConfirm = { selectedCategories = it?.toMutableStateList() }),
-                InputFieldData.CheckboxData(
-                    title = "Users",
-                    itemList = users.map { "${it.name} ${it.surname}" },
-                    selectedIndices = selectedEmails,
-                    onConfirm = { selectedEmails = it?.toMutableStateList() }),
-                InputFieldData.CheckboxData(
-                    title = "Payment methods",
-                    itemList = methods.map { it.name },
-                    selectedIndices = selectedMethods,
-                    onConfirm = { selectedMethods = it?.toMutableStateList() })
-            )
+        _inputFieldsData.value = listOf(
+            InputFieldData.DropdownListData(
+                title = "Group by",
+                itemList = patternKeys,
+                selectedIndex = selectedKeyPattern,
+                onItemClick = { selectedKeyPattern.value = it }),
+            InputFieldData.CheckboxData(
+                title = "Categories",
+                itemList = categories.map { it.name },
+                selectedIndices = selectedCategories,
+                onConfirm = { selectedCategories = it?.toMutableStateList() }),
+            InputFieldData.CheckboxData(
+                title = "Users",
+                itemList = users.map { "${it.name} ${it.surname}" },
+                selectedIndices = selectedEmails,
+                onConfirm = { selectedEmails = it?.toMutableStateList() }),
+            InputFieldData.CheckboxData(
+                title = "Payment methods",
+                itemList = methods.map { it.name },
+                selectedIndices = selectedMethods,
+                onConfirm = { selectedMethods = it?.toMutableStateList() })
         )
     }
 
-    private fun <T : Any> getIndicesFromItems(
-        dataList: List<T>, items: List<String>?, field: KProperty1<T, *>
-    ): List<Int>? {
-        return items?.let {
-            dataList.mapIndexedNotNull { index, item ->
-                val fieldValue = field.get(item) as? String
-                if (fieldValue in items) index else null
-            }
-        }
-    }
-
-    private fun <T : Any> getItemsFromIndices(
-        dataList: List<T>, indices: List<Int>?, field: KProperty1<T, *>
-    ): List<String>? {
-        return indices?.let {
-            dataList.mapIndexedNotNull { index, item ->
-                if (index in indices) field.get(item) as? String else null
-            }
-        }
-    }
-
     fun confirm() {
-        val newFilterParams = filterParams.copy(
+        val newFilterParams = filterParams.value.copy(
             categoryNames = getItemsFromIndices(categories, selectedCategories, Category::name),
             emails = getItemsFromIndices(users, selectedEmails, User::email),
             methods = getItemsFromIndices(methods, selectedMethods, PaymentMethod::name)
         )
-        onConfirm(newFilterParams, patternKeys[selectedKeyPattern.value])
+        chartsRepository.updateFilterParams(newFilterParams)
+        chartsRepository.updateKeyPattern(patternKeys[selectedKeyPattern.value])
+        onSave()
     }
 
     //TODO find a way to force recomposition after reset
 //    fun reset() {
-//        selectedCategories = null
-//        selectedEmails = null
-//        selectedMethods = null
-//        selectedKeyPattern.value = 0 //TODO switch to default key probably category needs improving
+//        chartsRepository.resetFilters()
+//        initializeSelected()
 //        initializeInputFieldsData()
 //    }
 }

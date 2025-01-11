@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.util.sortingSystem.forEachList
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
@@ -89,15 +87,12 @@ fun GroupedExpensesList(
     onExpenseClick: (Expense) -> Unit
 ) {
     val groupedExpenses by component.groupedExpenses.collectAsState()
-    val order by groupedExpenses.groupingOrder.collectAsState()
 
-    key(order) {
-        groupedExpenses.forEachList { (key, expenseList) ->
-            Header(key.asString())
+    groupedExpenses.forEach { (key, expenseList) ->
+        Header(key.asString())
 
-            expenseList.forEach { expense ->
-                ExpenseBlock(expense, onClick = onExpenseClick)
-            }
+        expenseList.forEach { expense ->
+            ExpenseBlock(expense, onClick = onExpenseClick)
         }
     }
 }

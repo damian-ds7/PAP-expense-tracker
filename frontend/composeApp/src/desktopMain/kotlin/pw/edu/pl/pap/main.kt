@@ -19,8 +19,7 @@ fun main() = application {
     val lifecycle = LifecycleRegistry()
     val rootComponent = remember {
         RootComponent(
-            componentContext = DefaultComponentContext(lifecycle = lifecycle),
-            baseUrl = "http://localhost:8080"
+            componentContext = DefaultComponentContext(lifecycle = lifecycle)
         )
     }
 
@@ -30,6 +29,6 @@ fun main() = application {
         state = state,
     ) {
         window.minimumSize = Dimension(500, 600)
-        App(rootComponent)
+        App(rootComponent, "http://localhost:8080/")
     }
 }

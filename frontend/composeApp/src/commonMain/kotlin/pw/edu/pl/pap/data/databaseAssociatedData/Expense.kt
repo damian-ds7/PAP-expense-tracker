@@ -10,7 +10,7 @@ data class Expense(
     val price: Float,
     val expenseDate: LocalDate,
     val category: Category,
-    val methodOfPayment: MethodOfPayment,
+    val methodOfPayment: PaymentMethod,
     val currency: Currency,
     val user: User,
     val groupName: String

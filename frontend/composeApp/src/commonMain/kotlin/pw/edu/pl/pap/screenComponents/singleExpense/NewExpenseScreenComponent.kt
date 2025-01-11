@@ -1,16 +1,19 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class NewExpenseScreenComponent(
-    baseComponent: BaseScreenComponent,
-    onDismiss: () -> Unit,
-    onSave: () -> Unit,
+    baseComponent: BaseComponent,
+    onBack: () -> Unit,
     private val currentUserGroup: UserGroup,
-) : BaseExpenseScreenComponent(baseComponent, onDismiss, onSave) {
+) : BaseExpenseScreenComponent(baseComponent, onBack) {
+
+    private val groupRepository: GroupRepository by inject(GroupRepository::class.java)
 
     init {
         setupInputFields()
@@ -28,9 +31,10 @@ class NewExpenseScreenComponent(
             currencyCode = currencies[currencyIndex.value]
         )
 
-        runBlocking{
-            apiService.expenseApiClient.postNewExpense(newExpense)
-            onSave()
+        coroutineScope.launch {
+            expenseRepository.addExpense(newExpense)
+            expenseRepository.getRecentExpense(groupRepository.currentUserGroup.value?.name!!)
+            onBack()
         }
     }
 }

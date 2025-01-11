@@ -8,17 +8,20 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.ExpenseRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.sanitizePriceInput
 import pw.edu.pl.pap.util.updatePrice
 
 open class BaseExpenseScreenComponent(
-    baseComponent: BaseScreenComponent,
-    val onDismiss: () -> Unit,
-    val onSave: () -> Unit
-) : BaseScreenComponent by baseComponent {
+    baseComponent: BaseComponent,
+    val onBack: () -> Unit,
+) : BaseComponent by baseComponent {
+
+    protected val expenseRepository: ExpenseRepository by inject()
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData

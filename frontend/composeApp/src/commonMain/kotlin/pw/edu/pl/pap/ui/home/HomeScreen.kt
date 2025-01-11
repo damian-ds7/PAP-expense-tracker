@@ -19,8 +19,6 @@ fun HomeScreen(component: HomeScreenComponent) {
     var isLoading by remember { mutableStateOf(true) }
     var showGroupingKeyMenu by remember { mutableStateOf(false) }
     var showUserGroupMenu by remember { mutableStateOf(false) }
-//    val homeInfo by component.homeInfo.collectAsState()
-//    val groupedExpenses by component.groupedExpenses.collectAsState()
 
     LaunchedEffect(component.navigationState.collectAsState().value) {
         component.getDataBasedOnState()
@@ -63,10 +61,6 @@ fun HomeScreen(component: HomeScreenComponent) {
                     }
                 })
             }
-
-//            else -> Text(
-//                text = "No data available", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
-//            )
         }
 
 

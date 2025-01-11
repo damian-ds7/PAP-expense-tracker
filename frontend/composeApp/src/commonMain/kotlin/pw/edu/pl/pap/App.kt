@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -26,7 +25,9 @@ import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
 import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
-import androidx.compose.runtime.getValue
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import pw.edu.pl.pap.di.authModule
 import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
 import pw.edu.pl.pap.ui.chartsScreen.filterScreen.ChartsFilterScreen
 import pw.edu.pl.pap.ui.groupScreens.*
@@ -34,7 +35,22 @@ import pw.edu.pl.pap.ui.settingsScreens.*
 
 // Todo refactor function, tweak animations
 @Composable
-fun App(rootComponent: RootComponent) {
+fun App(rootComponent: RootComponent, baseUrl: String) {
+
+    remember {
+        startKoin {
+            properties(mapOf("baseUrl" to baseUrl))
+            modules(authModule)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            stopKoin()
+        }
+    }
+
+
     val childStack = rootComponent.childStack.subscribeAsState()
     val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
 

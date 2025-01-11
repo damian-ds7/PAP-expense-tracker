@@ -22,7 +22,9 @@ fun EditGroupScreen(
     ) }
 
     Header("Edit Group")
+
     component.setupInputFields()
+
     InputFields(component.inputFieldsData)
 
     BackDeleteAddButtonRow(

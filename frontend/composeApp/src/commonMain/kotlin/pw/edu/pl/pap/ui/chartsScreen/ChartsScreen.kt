@@ -16,7 +16,6 @@ import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.formatForDisplay
 
 
-//TODO add plot and plot filters menu
 @Composable
 fun ChartsScreen(component: ChartsScreenComponent) {
     val plotData by component.plotData.collectAsState()

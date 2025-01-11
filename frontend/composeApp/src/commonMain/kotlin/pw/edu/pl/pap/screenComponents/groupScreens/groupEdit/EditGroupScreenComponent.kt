@@ -1,28 +1,25 @@
-package pw.edu.pl.pap.screenComponents.groupScreens.groupEdit
+package pw.edu.pl.pap.screenComponents.groupScreens
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import io.ktor.http.*
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class EditGroupScreenComponent(
-    baseComponent: BaseScreenComponent,
+    baseComponent: BaseComponent,
     onDismiss: () -> Unit,
     onSave: () -> Unit,
     private val onDelete: () -> Unit,
-    private val group: UserGroup
 ) : BaseGroupEditScreenComponent(baseComponent, onDismiss, onSave) {
 
-    override var name: MutableState<String> = mutableStateOf(group.name)
+    override var name: MutableState<String> = mutableStateOf(groupRepository.getCurrentGroupName())
 
-    val noChange by derivedStateOf { canConfirm && name.value == group.name }
+    val noChange by derivedStateOf { canConfirm && name.value == name.value }
 
     override fun confirm() {
-        val newGroup = group.copy(name = name.value)
+        val newGroup = group?.copy(name = name.value)!!
 
         if (newGroup == group) {
             onDismiss()
@@ -30,9 +27,8 @@ class EditGroupScreenComponent(
         }
 
         coroutineScope.launch {
-            if (apiService.groupApiClient.updateGroup(newGroup).status.isSuccess()) {
-                onSave()
-            }
+            groupRepository.updateGroup(newGroup)
+            onSave()
         }
 
         println("Updated Group ${newGroup.id} from ${group.name} to ${newGroup.name}")
@@ -41,9 +37,9 @@ class EditGroupScreenComponent(
     fun deleteGroup() {
         println("Deleting group $group")
         coroutineScope.launch {
-            if (apiService.groupApiClient.deleteGroup(group.id).status.isSuccess()) {
-                onDelete()
-            }
+            groupRepository.deleteGroup(group!!)
+            onDelete()
+
         }
     }
 }

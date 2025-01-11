@@ -3,63 +3,38 @@ package pw.edu.pl.pap.screenComponents.mainScreens
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
-import pw.edu.pl.pap.data.databaseAssociatedData.ChartFilterParams
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
-import pw.edu.pl.pap.util.charts.ChartData
+import pw.edu.pl.pap.repositories.data.ChartsRepository
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.charts.FilterTimeFrames
-import pw.edu.pl.pap.util.dateFunctions.getCurrentDate
-import pw.edu.pl.pap.util.dateFunctions.getFirstAndLastDayOfAMonth
-import pw.edu.pl.pap.util.dateFunctions.getFirstAndLastDayOfAYear
-import java.util.*
 
 class ChartsScreenComponent(
-    baseComponent: BaseScreenComponent,
-    val onFilterClick: (ChartFilterParams, UserGroup, String) -> Unit,
-) : BaseScreenComponent by baseComponent {
+    baseComponent: BaseComponent,
+    val onFilterClick: () -> Unit,
+) : BaseComponent by baseComponent {
+
+    private val chartsRepository: ChartsRepository by inject()
+    private val groupRepository: GroupRepository by inject()
 
     sealed class NavigationState {
-        data object InitialLoad : NavigationState()
         data object LoadData : NavigationState()
         data object Empty : NavigationState()
-
-        data class FromFilterScreen(
-            val filterParams: ChartFilterParams,
-            val patternKey: String
-        ) : NavigationState()
     }
 
-    private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.InitialLoad)
+    private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.LoadData)
     val navigationState: StateFlow<NavigationState> get() = _navigationState
 
     fun updateNavigationState(newState: NavigationState) {
         _navigationState.value = newState
     }
 
-
+    //TODO refactor or remove
     fun getDataBasedOnState() {
         when (_navigationState.value) {
-            is NavigationState.InitialLoad -> {
-                coroutineScope.launch {
-                    populateGroupList()
-                    getPlotData()
-                }
-            }
-
-            is NavigationState.LoadData  -> {
-                coroutineScope.launch {
-                    getPlotData()
-                }
-            }
-
-            is NavigationState.FromFilterScreen -> {
-                val newKeyPattern = (_navigationState.value as NavigationState.FromFilterScreen).patternKey
-                val newFilterParams = (_navigationState.value as NavigationState.FromFilterScreen).filterParams
-                _keyPattern.value = newKeyPattern
-                _chartFilters.value = newFilterParams
+            is NavigationState.LoadData -> {
                 coroutineScope.launch {
                     getPlotData()
                 }
@@ -72,54 +47,27 @@ class ChartsScreenComponent(
         _navigationState.value = NavigationState.Empty
     }
 
-    private val _chartFilters = MutableStateFlow(ChartFilterParams())
-    val chartFilters: StateFlow<ChartFilterParams> get() = _chartFilters
+    val chartFilters = chartsRepository.chartFilters
 
-    private val _keyPattern = MutableStateFlow("category") //TODO fetch default keyPattern
+    private val keyPattern = chartsRepository.keyPattern
 
-    private val _plotData = MutableStateFlow<ChartData>(TreeMap())
-    val plotData: StateFlow<ChartData> get() = _plotData
+    val plotData = chartsRepository.plotData
 
-    private val _userGroupInfo = MutableStateFlow<List<UserGroup>>(emptyList())
-    val userGroupInfo: StateFlow<List<UserGroup>> get() = _userGroupInfo
+    val userGroupInfo = groupRepository.allGroups
 
-    private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
-    val currentUserGroup: StateFlow<UserGroup?> get() = _currentUserGroup
+    val currentUserGroup = groupRepository.currentUserGroup
 
-    private val _currentTimeFrame = MutableStateFlow(FilterTimeFrames.MONTH)
-    val currentTimeFrame: StateFlow<FilterTimeFrames> get() = _currentTimeFrame
+    val currentTimeFrame = chartsRepository.currentTimeFrame
 
-    private val _currentTimeBounds = MutableStateFlow<Pair<LocalDate?, LocalDate?>>(
-        getFirstAndLastDayOfAMonth(
-            getCurrentDate()
-        )
-    )
-    val currentTimeBounds: StateFlow<Pair<LocalDate?, LocalDate?>> get() = _currentTimeBounds
+    val currentTimeBounds = chartsRepository.currentTimeBounds
 
     fun updateCurrentUserGroup(key: UserGroup) {
-        _currentUserGroup.value = key
+        groupRepository.updateCurrentGroup(key)
         _navigationState.value = NavigationState.LoadData
     }
 
-    private suspend fun populateGroupList() {
-        val userGroupInfo = apiService.groupApiClient.getUserGroups()
-        _userGroupInfo.value = userGroupInfo
-        _currentUserGroup.value = _userGroupInfo.value.first()
-        println(_userGroupInfo.value)
-        println(_currentUserGroup.value)
-    }
-
     private suspend fun getPlotData() {
-        val beginDate = currentTimeBounds.value.first
-        val endDate = currentTimeBounds.value.second
-
-        _chartFilters.value = _chartFilters.value.copy(beginDate = beginDate, endDate = endDate)
-
-        println("get plot data")
-        _plotData.value = apiService.chartsApiClient.getData(
-            _currentUserGroup.value!!.name, _keyPattern.value, _chartFilters.value
-        )
-        println(_plotData.value)
+        chartsRepository.getPlotData(groupRepository.getCurrentGroupName())
     }
 
     fun getTotal(): Double {
@@ -127,20 +75,7 @@ class ChartsScreenComponent(
     }
 
     fun changeTimeFrame(newTimeFrame: FilterTimeFrames) {
-        when (newTimeFrame) {
-            FilterTimeFrames.MONTH -> {
-                _currentTimeBounds.value = getFirstAndLastDayOfAMonth(getCurrentDate())
-            }
-
-            FilterTimeFrames.YEAR -> {
-                _currentTimeBounds.value = getFirstAndLastDayOfAYear(getCurrentDate())
-            }
-
-            FilterTimeFrames.CUSTOM -> {
-                _currentTimeBounds.value = Pair(null, null)
-            }
-        }
-        _currentTimeFrame.value = newTimeFrame
+        chartsRepository.changeTimeFrame(newTimeFrame)
         _navigationState.value = NavigationState.LoadData
     }
 
@@ -153,25 +88,7 @@ class ChartsScreenComponent(
     fun modifyTimeBounds(
         amount: Int,
     ) {
-        val curDate = _currentTimeBounds.value.first!!
-        val unit: DateTimeUnit
-        val newDate: LocalDate
-
-        when (_currentTimeFrame.value) {
-            FilterTimeFrames.MONTH -> {
-                unit = DateTimeUnit.MONTH
-                newDate = curDate.plus(amount, unit)
-                _currentTimeBounds.value = getFirstAndLastDayOfAMonth(newDate)
-            }
-
-            FilterTimeFrames.YEAR -> {
-                unit = DateTimeUnit.YEAR
-                newDate = curDate.plus(amount, unit)
-                _currentTimeBounds.value = getFirstAndLastDayOfAYear(newDate)
-            }
-
-            FilterTimeFrames.CUSTOM -> return
-        }
+        chartsRepository.modifyTimeBounds(amount)
         _navigationState.value = NavigationState.LoadData
     }
 
@@ -183,8 +100,7 @@ class ChartsScreenComponent(
      * @param endDate time bounds end date
      */
     fun modifyTimeBounds(beginDate: LocalDate?, endDate: LocalDate?) {
-        val newTimeBounds = Pair(beginDate, endDate)
-        _currentTimeBounds.value = newTimeBounds
+        chartsRepository.modifyTimeBounds(beginDate, endDate)
         _navigationState.value = NavigationState.LoadData
     }
 }

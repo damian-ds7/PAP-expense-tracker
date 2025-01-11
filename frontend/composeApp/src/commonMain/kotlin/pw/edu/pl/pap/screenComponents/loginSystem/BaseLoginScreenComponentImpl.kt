@@ -4,11 +4,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.auth.LoginRepository
 
 open class BaseLoginScreenComponentImpl(
     baseLoginScreenComponent: BaseLoginScreenComponent
 ) : BaseLoginScreenComponent by baseLoginScreenComponent {
+
+    protected val loginRepository: LoginRepository by inject()
 
     protected open val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData

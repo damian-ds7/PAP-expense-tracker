@@ -1,37 +1,40 @@
 package pw.edu.pl.pap.screenComponents.mainScreens
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.data.databaseAssociatedData.TotalExpenses
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
-import pw.edu.pl.pap.util.sortingSystem.ExpenseMap
+import pw.edu.pl.pap.repositories.data.ExpenseRepository
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
-import pw.edu.pl.pap.util.sortingSystem.GroupMapKey
-import pw.edu.pl.pap.util.sortingSystem.Order
 
 class HomeScreenComponent(
-    baseScreenComponent: BaseScreenComponent,
+    baseScreenComponent: BaseComponent,
     val onAddExpenseButtonClicked: (UserGroup) -> Unit,
     val onExpenseClick: (Expense) -> Unit
-) : BaseScreenComponent by baseScreenComponent {
+) : BaseComponent by baseScreenComponent {
 
     sealed class NavigationState {
         data object InitialLoad : NavigationState()
         data object FromNewExpenseScreen : NavigationState()
-        data class FromExpenseDetailsScreenEdit(val expense: Expense) : NavigationState()
-        data class FromExpenseDetailsScreenDelete(val expense: Expense) : NavigationState()
         data object Empty : NavigationState()
     }
+
+    private val expenseRepository: ExpenseRepository by inject()
+    private val groupRepository: GroupRepository by inject()
 
     private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.InitialLoad)
     val navigationState: StateFlow<NavigationState> get() = _navigationState
 
+    init {
+        if (groupRepository.currentUserGroup.value == null) {
+            runBlocking { populateGroupList() }
+        }
+    }
 
     fun updateNavigationState(newState: NavigationState) {
         _navigationState.value = newState
@@ -40,7 +43,6 @@ class HomeScreenComponent(
     fun getDataBasedOnState() {
         when (_navigationState.value) {
             is NavigationState.InitialLoad -> {
-                fetchHomeInfo()
                 fetchAllExpenses()
             }
 
@@ -48,141 +50,58 @@ class HomeScreenComponent(
                 getRecentExpense()
             }
 
-            is NavigationState.FromExpenseDetailsScreenEdit -> {
-                val expense = (_navigationState.value as NavigationState.FromExpenseDetailsScreenEdit).expense
-                updateExpense(expense)
-            }
-
-            is NavigationState.FromExpenseDetailsScreenDelete -> {
-                val expense = (_navigationState.value as NavigationState.FromExpenseDetailsScreenDelete).expense
-                deleteExpense(expense)
-            }
-
             is NavigationState.Empty -> {
                 // Do nothing
             }
         }
-        fetchHomeInfo()
         updateNavigationState(NavigationState.Empty)
+        fetchHomeInfo()
     }
 
-    private val _userGroupInfo = MutableStateFlow<List<UserGroup>?>(null)
-    val userGroupInfo: StateFlow<List<UserGroup>?> get() = _userGroupInfo
+    val userGroupInfo = groupRepository.allGroups
 
-    private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
-    val currentUserGroup: StateFlow<UserGroup?> get() = _currentUserGroup
+    val currentUserGroup = groupRepository.currentUserGroup
 
     fun updateUserGroup(key: UserGroup) {
-        _currentUserGroup.value = key
+        groupRepository.updateCurrentGroup(key)
     }
 
-    private val _homeInfo = MutableStateFlow<TotalExpenses?>(null)
-    val homeInfo: StateFlow<TotalExpenses?> get() = _homeInfo
-
     private suspend fun populateGroupList() {
-        when (_userGroupInfo.value) {
-            null -> {
-                val userGroupInfo = apiService.groupApiClient.getUserGroups()
-                _userGroupInfo.value = userGroupInfo
-                _currentUserGroup.value = _userGroupInfo.value?.first()
-            }
-            else -> return
-        }
+        groupRepository.getGroups()
+    }
+
+    val homeInfo = expenseRepository.homeInfo
+    val groupedExpenses = expenseRepository.groupedExpenses
+
+    val currentGroupingKey = expenseRepository.currentGroupingKey
+    val currentGroupingOrder = expenseRepository.currentGroupingOrder
+
+    fun updateGroupingKey(key: GroupKey) {
+        expenseRepository.updateGroupingKey(key)
     }
 
     private fun fetchHomeInfo() {
-        runBlocking {
-            try {
-                populateGroupList()
-                val homeData = apiService.expenseApiClient.getTotalExpensesForGroup(currentUserGroup.value?.name)
-                _homeInfo.value = homeData.first()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private val _groupedExpenses = MutableStateFlow(ExpenseMap())
-    val groupedExpenses: StateFlow<ExpenseMap> get() = _groupedExpenses
-
-    private val _currentGroupingKey = MutableStateFlow(GroupKey.DATE)
-    val currentGroupingKey: StateFlow<GroupKey> get() = _currentGroupingKey
-
-    val currentGroupingOrder: StateFlow<Order>
-        get() = _groupedExpenses.value.groupingOrder
-
-    fun updateGroupingKey(key: GroupKey) {
-        _currentGroupingKey.value = key
-    }
-
-    private fun currentExpenseMethod(): (String?) -> Flow<ExpenseMap> {
-        return when (_currentGroupingKey.value) {
-            GroupKey.DATE -> apiService.expenseApiClient::getExpenseDateMapForGroup
-            GroupKey.CATEGORY -> apiService.expenseApiClient::getExpenseCatMapForGroup
+        coroutineScope.launch {
+            expenseRepository.getTotalExpenses(groupRepository.getCurrentGroupName())
         }
     }
 
     private fun fetchAllExpenses() {
-        println("FETCH EXPENSES")
-        runBlocking {
-            try {
-                val getExpenseMap = currentExpenseMethod()
-                getExpenseMap(_currentUserGroup.value?.name).collect { expenses ->
-                    _groupedExpenses.value = expenses
-                    println(expenses.groupingOrder.value)
-                    println(_groupedExpenses.value.groupingOrder.value)
-                    println(currentGroupingOrder.value)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        coroutineScope.launch {
+            expenseRepository.loadInitialPage(groupRepository.getCurrentGroupName())
         }
     }
 
     private fun getRecentExpense() {
-//        println("RECENT EXPENSE")
-        runBlocking {
-            try {
-                apiService.expenseApiClient.getRecentExpense(currentUserGroup.value!!.name).collect { expense: Expense ->
-                    println(expense)
-                    _groupedExpenses.value.addExpense(getCurrentKey(expense), expense)
-//                    _groupedExpenses.value = _groupedExpenses.value
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun updateExpense(expense: Expense) {
-//        println("UPDATE EXPENSE")
-        runBlocking {
-            try {
-                apiService.expenseApiClient.getExpense(expense.id).collect { updatedExpense ->
-                    _groupedExpenses.value.updateExpense(getCurrentKey(updatedExpense), updatedExpense)
-                    _groupedExpenses.value = _groupedExpenses.value
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    private fun deleteExpense(expense: Expense) {
-        _groupedExpenses.value.deleteExpense(getCurrentKey(expense), expense.id)
-        _groupedExpenses.value = _groupedExpenses.value
-    }
-
-    private fun getCurrentKey(expense: Expense): GroupMapKey {
-        return when (_currentGroupingKey.value) {
-            GroupKey.DATE -> GroupMapKey.DateKey(expense.expenseDate)
-            GroupKey.CATEGORY -> GroupMapKey.StringKey(expense.category.name)
+        coroutineScope.launch {
+            expenseRepository.getRecentExpense(groupRepository.getCurrentGroupName())
         }
     }
 
     fun sortGroups() {
+        expenseRepository.switchGroupingOrder()
         coroutineScope.launch {
-            _groupedExpenses.value.switchGroupingOrder()
+            expenseRepository.loadInitialPage(groupRepository.getCurrentGroupName())
         }
     }
 }

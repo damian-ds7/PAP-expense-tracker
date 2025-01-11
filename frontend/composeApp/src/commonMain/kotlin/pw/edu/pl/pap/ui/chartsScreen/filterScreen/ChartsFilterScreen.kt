@@ -9,7 +9,8 @@ import pw.edu.pl.pap.ui.common.InputFields
 fun ChartsFilterScreen(component: ChartsFilterScreenComponent) {
     Header("Filter data")
 
-    InputFields(component.inputFieldsData)
+    val inputFieldsData by component.inputFieldsData.collectAsState()
+    InputFields(inputFieldsData)
 
     ChartsFilterScreenButtonRow(
         onBack = component.onDismiss, onConfirm = component::confirm

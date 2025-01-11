@@ -2,10 +2,9 @@ package pw.edu.pl.pap.screenComponents
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.CoroutineScope
-import pw.edu.pl.pap.api.ApiService
+import org.koin.core.component.KoinComponent
 
-open class BaseScreenComponentImpl(
+open class BaseComponentImpl(
     componentContext: ComponentContext,
-    override val apiService: ApiService,
     override val coroutineScope: CoroutineScope,
-) : BaseScreenComponent, ComponentContext by componentContext
+) : BaseComponent, ComponentContext by componentContext, KoinComponent

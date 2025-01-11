@@ -19,7 +19,6 @@ fun UserGroupPopup(
     val userGroupsInfo by component.userGroupInfo.collectAsState()
     var isLoading by remember {mutableStateOf(false)}
     var pendingAction: (() -> Unit)? by remember { mutableStateOf(null) }
-//    println("$selectedOption - $currentOrder")
     LoadingPopup(
         isLoading = isLoading
     )
@@ -49,7 +48,7 @@ fun UserGroupPopup(
 
             Spacer(modifier = Modifier.padding(padding))
 
-            userGroupsInfo?.forEach { userGroup ->
+            userGroupsInfo.forEach { userGroup ->
                 val isSelected = selectedOption?.name == userGroup.name
 
                 val onGroupClick: () -> Unit = if (!isSelected) {
@@ -82,7 +81,7 @@ private fun GroupButton(
         contentPadding = ButtonDefaults.TextButtonContentPadding,
         colors = ButtonDefaults.textButtonColors(contentColor = color)
     ) {
-        userGroup.name?.let { Text(text = it, style = MaterialTheme.typography.bodyLarge) }
+        Text(text = userGroup.name, style = MaterialTheme.typography.bodyLarge)
     }
 }
 

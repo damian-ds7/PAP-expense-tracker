@@ -341,7 +341,7 @@ private fun createClickableUserCard(data: InputFieldData.UserBalanceButtonData) 
             .height(50.dp)
             .clickable { data.onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-    ){
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -351,7 +351,7 @@ private fun createClickableUserCard(data: InputFieldData.UserBalanceButtonData) 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Text(
                     text = data.title,
                     fontSize = 18.sp,
