@@ -1,12 +1,15 @@
 package com.example.expenseapi.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.example.expenseapi.utils.AuthHelper;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -29,12 +32,24 @@ public class CacheConfig {
                 "expensesUserPage",
                 "categories",
                 "currencies",
-                "methods"
+                "methods",
+                "baseGroups",
+                "activeGroups"
         );
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
                 .maximumSize(2000)
         );
         return cacheManager;
+    }
+
+    @Bean
+    public KeyGenerator userBasedKeyGenerator() {
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                return AuthHelper.getUser().getId();
+            }
+        };
     }
 }
