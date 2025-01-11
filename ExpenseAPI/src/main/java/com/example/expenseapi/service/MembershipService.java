@@ -14,4 +14,6 @@ public interface MembershipService extends GenericService<Membership, Long> {
     List<UserDTO> findAdmins(String group);
     List<UserDTO> findUsers(String group);
     String getRole(User user, Group group);
+
+    Boolean isAdmin(String groupName);
 }

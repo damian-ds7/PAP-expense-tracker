@@ -5,6 +5,7 @@ import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.pojo.User;
+import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -23,8 +24,10 @@ import java.util.List;
 @RequestMapping("/user")
 @Tag(name="User Controller", description = "Controller to manage user objects")
 public class UserController extends GenericController<User, Long>{
-    public UserController(UserService service) {
+    private final MembershipService membershipService;
+    public UserController(UserService service, MembershipService membershipService) {
         super(service);
+        this.membershipService = membershipService;
     }
 
     @GetMapping("/search/{groupName}")
@@ -58,5 +61,12 @@ public class UserController extends GenericController<User, Long>{
     @ApiResponse(responseCode = "200", description = "User changed", content = @Content(schema = @Schema(implementation = UserDTO.class)))
     public ResponseEntity<UserDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
         return new ResponseEntity<>(((UserService) service).update(userUpdateDTO), HttpStatus.OK);
+    }
+
+    @GetMapping("/isAdmin/{groupName}")
+    @Operation(summary = "Check whether user is admin in given group")
+    @ApiResponse(responseCode = "200", description = "Status of user")
+    public ResponseEntity<Boolean> isAdmin(@PathVariable String groupName) {
+        return new ResponseEntity<>(membershipService.isAdmin(groupName), HttpStatus.OK);
     }
 }
