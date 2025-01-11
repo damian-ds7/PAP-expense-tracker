@@ -19,6 +19,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,6 +88,12 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         }
         Expense savedExpense = expenseRepository.save(entity);
         return expenseMapper.expenseToExpenseDTO(savedExpense);
+    }
+
+    @Override
+    @Cacheable(value = "ExpenseID", key = "#id")
+    public ExpenseDTO getMapped(Long id) {
+        return expenseMapper.expenseToExpenseDTO(get(id));
     }
 
     @Override
@@ -377,8 +384,21 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .toArray(String[]::new);
     }
 
-    @Override
-    @CacheEvict(value = {"expensesPage", "expInfoGroup", "expInfoAllGroups", "expensesMap", "recentExpense", "groupExpenseDateMap", "groupExpenseCategoryMap", "searchExpensesDTO", "searchExpensesPagesDTO", "expensesUserPage"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = {
+                    "expensesPage",
+                    "expInfoGroup",
+                    "expInfoAllGroups",
+                    "expensesMap",
+                    "recentExpense",
+                    "groupExpenseDateMap",
+                    "groupExpenseCategoryMap",
+                    "searchExpensesDTO",
+                    "searchExpensesPagesDTO",
+                    "expensesUserPage"
+            }, allEntries = true),
+            @CacheEvict(value = "ExpenseID", key = "#id")
+    })
     public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
         Expense expense = expenseRepository.findById(id).orElse(null);
         Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
@@ -403,27 +423,27 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return searchExpensesPagesDTO(filter, page, size);
     }
 
-    @Override
-    @CacheEvict(value = {
-            "expenses",
-            "expensesPage",
-            "expInfoGroup",
-            "expInfoAllGroups",
-            "expensesMap",
-            "recentExpense",
-            "groupExpenseDateMap",
-            "groupExpenseCategoryMap",
-            "searchExpensesDTO",
-            "searchExpensesPagesDTO",
-            "expensesUserPage"
-    }, allEntries = true)
-    public void delete(Long aLong) {
-        super.delete(aLong);
+    @Caching(evict = {
+            @CacheEvict(value = {
+                    "expensesPage",
+                    "expInfoGroup",
+                    "expInfoAllGroups",
+                    "expensesMap",
+                    "recentExpense",
+                    "groupExpenseDateMap",
+                    "groupExpenseCategoryMap",
+                    "searchExpensesDTO",
+                    "searchExpensesPagesDTO",
+                    "expensesUserPage"
+            }, allEntries = true),
+            @CacheEvict(value = "ExpenseID", key = "#id")
+    })
+    public void delete(Long id) {
+        super.delete(id);
     }
 
     @Override
     @CacheEvict(value = {
-            "expenses",
             "expensesPage",
             "expInfoGroup",
             "expInfoAllGroups",
@@ -433,7 +453,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             "groupExpenseCategoryMap",
             "searchExpensesDTO",
             "searchExpensesPagesDTO",
-            "expensesUserPage"
+            "expensesUserPage",
+            "ExpenseID"
     }, allEntries = true)
     public void deleteAllData() {
         super.deleteAllData();
