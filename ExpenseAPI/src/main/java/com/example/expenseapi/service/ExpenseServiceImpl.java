@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.beans.FeatureDescriptor;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.*;
 
@@ -210,7 +211,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     @Cacheable(value = "groupExpenseDateMap", key = "#name + '_' + #lastId + '_' + #lastDate + '_' + #size + '_' + #desc")
     public CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>> getGroupExpenseAsDateMap(String name, Long lastId, LocalDate lastDate, int size, boolean desc) {
-        List<ExpenseDTO> expenses = getExpensesForGroupCursorBased(name, lastId, lastDate, size, desc);
+        List<ExpenseDTO> expenses = getExpensesForGroupDateCursorBased(name, lastId, lastDate, size, desc);
         Map<LocalDate, List<ExpenseDTO>> grouped = expenses.stream()
                 .collect(Collectors.groupingBy(ExpenseDTO::getExpenseDate, LinkedHashMap::new, Collectors.toList()));
         CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>> response = new CursorPageResponse<>();
@@ -224,18 +225,40 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         return response;
     }
 
-    public List<ExpenseDTO> getExpensesForGroupCursorBased(String name, Long lastId, LocalDate lastDate, int size, boolean desc) {
-        Specification<Expense> spec = prepareSpecification(buildGroupFilter(name));
-        if (lastDate != null && lastId != null && lastId > 0) {
-            spec = spec.and(CursorPaginationUtils.dateCursorSpec(lastId, lastDate, desc));
+    private List<ExpenseDTO> getExpensesForGroupCursorBased(
+            String groupName,
+            Long lastId,
+            Object cursorValue,
+            int size,
+            boolean desc,
+            Function<Boolean, Sort> sortBuilder,
+            BiFunction<Long, Object, Specification<Expense>> cursorSpecBuilder
+    ) {
+        ExpenseFilter filter = buildGroupFilter(groupName);
+        Specification<Expense> spec = prepareSpecification(filter);
+        if (cursorValue != null && lastId != null && lastId > 0) {
+            spec = spec.and(cursorSpecBuilder.apply(lastId, cursorValue));
         }
-        Sort sort = CursorPaginationUtils.buildSortForDate(desc);
+        Sort sort = sortBuilder.apply(desc);
         Pageable pageable = PageRequest.of(0, size, sort);
         Page<Expense> pageResult = expenseRepository.findAll(spec, pageable);
         return pageResult.getContent()
                 .stream()
                 .map(expenseMapper::expenseToExpenseDTO)
                 .toList();
+    }
+
+
+    public List<ExpenseDTO> getExpensesForGroupDateCursorBased(String name, Long lastId, LocalDate lastDate, int size, boolean desc) {
+        return getExpensesForGroupCursorBased(
+                name,
+                lastId,
+                lastDate,
+                size,
+                desc,
+                CursorPaginationUtils::buildSortForDate,
+                (id, dateVal) -> CursorPaginationUtils.dateCursorSpec(id, (LocalDate) dateVal, desc)
+        );
     }
 
     @Override
@@ -269,17 +292,15 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             int size,
             boolean desc
     ) {
-        Specification<Expense> spec = prepareSpecification(buildGroupFilter(name));
-        if (lastCategory != null && !lastCategory.isEmpty() && lastId != null && lastId > 0) {
-            spec = spec.and(CursorPaginationUtils.categoryCursorSpec(lastId, lastCategory, desc));
-        }
-        Sort sort = CursorPaginationUtils.buildSortForCategory(desc);
-        Pageable pageable = PageRequest.of(0, size, sort);
-        Page<Expense> pageResult = expenseRepository.findAll(spec, pageable);
-        return pageResult.getContent()
-                .stream()
-                .map(expenseMapper::expenseToExpenseDTO)
-                .toList();
+        return getExpensesForGroupCursorBased(
+                name,
+                lastId,
+                lastCategory,
+                size,
+                desc,
+                CursorPaginationUtils::buildSortForCategory,
+                (id, catVal) -> CursorPaginationUtils.categoryCursorSpec(id, (String) catVal, desc)
+        );
     }
 
     @Override
