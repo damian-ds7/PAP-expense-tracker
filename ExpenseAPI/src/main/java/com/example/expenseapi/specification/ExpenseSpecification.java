@@ -40,36 +40,18 @@ public class ExpenseSpecification {
         };
     }
 
-    public static Specification<Expense> priceBetween(Double left, Double right) {
+    public static Specification<Expense> priceBetween(Double minPrice, Double maxPrice) {
         return (root, query, cb) -> {
-            if (left == null && right == null) {
+            if (minPrice == null && maxPrice == null) {
                 return cb.conjunction();
             }
-            if (left != null && right != null) {
-                return cb.between(root.get("price"), left, right);
-            } else if (left != null) {
-                return cb.greaterThanOrEqualTo(root.get("price"), left);
+            if (minPrice != null && maxPrice != null) {
+                return cb.between(root.get("price"), minPrice, maxPrice);
+            } else if (minPrice != null) {
+                return cb.greaterThanOrEqualTo(root.get("price"), minPrice);
             } else {
-                return cb.lessThanOrEqualTo(root.get("price"), right);
+                return cb.lessThanOrEqualTo(root.get("price"), maxPrice);
             }
-        };
-    }
-
-    public static Specification<Expense> priceLessThan(Double price) {
-        return (root, query, cb) -> {
-            if (price == null) {
-                return cb.conjunction();
-            }
-            return cb.lessThanOrEqualTo(root.get("price"), price);
-        };
-    }
-
-    public static Specification<Expense> priceGreaterThan(Double price) {
-        return (root, query, cb) -> {
-            if (price == null) {
-                return cb.conjunction();
-            }
-            return cb.greaterThanOrEqualTo(root.get("price"), price);
         };
     }
 
