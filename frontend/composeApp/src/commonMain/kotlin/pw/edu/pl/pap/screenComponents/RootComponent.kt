@@ -1,15 +1,8 @@
 package pw.edu.pl.pap.screenComponents
 
-import androidx.compose.runtime.collectAsState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.*
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.cache.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,7 +38,6 @@ class RootComponent(
 ) : ComponentContext by componentContext, KoinComponent {
 
     private val navigation = StackNavigation<Configuration>()
-    private lateinit var apiService: ApiService
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     private fun loadConfig() {
@@ -53,10 +45,6 @@ class RootComponent(
         coroutineScope.launch {
             configRepository.loadConfig()
         }
-        install(HttpTimeout) {
-            requestTimeoutMillis = 3000
-        }
-        install(HttpCache)
     }
 
     @Serializable
@@ -83,22 +71,18 @@ class RootComponent(
         data object ChartsScreen : Configuration()
 
         @Serializable
-        data class ChartsFilterScreen(
-            val filterParams: ChartFilterParams,
-            val currentGroup: UserGroup,
-            val currentKeyPattern: String
-        ) : Configuration()
+        data object ChartsFilterScreen : Configuration()
 
-        data class GroupScreen(val userGroup: UserGroup) : Configuration()
+        data object GroupScreen : Configuration()
 
         @Serializable
-        data class MemberScreen(val userGroup: UserGroup, val user: User) : Configuration()
+        data class MemberScreen(val user: User) : Configuration()
 
         @Serializable
         data object NewGroupScreen : Configuration()
 
         @Serializable
-        data class EditGroupScreen(val userGroup: UserGroup) : Configuration()
+        data object EditGroupScreen : Configuration()
 
         @Serializable
         data object SettingsScreen : Configuration()
@@ -176,22 +160,12 @@ class RootComponent(
     private val _activeNavBarItem = MutableStateFlow<NavBarItem>(NavBarItem.Home)
     val activeNavBarItem: StateFlow<NavBarItem> get() = _activeNavBarItem
 
-    // TODO add new screens when ready
     fun navBarItemClicked(item: NavBarItem) {
         _activeNavBarItem.value = item
         when (item) {
             NavBarItem.Home -> navigation.bringToFront(Configuration.HomeScreen)
             NavBarItem.Charts -> navigation.bringToFront(Configuration.ChartsScreen)
-            NavBarItem.Groups -> {
-                val activeInstance = childStack.value.active.instance
-                if (activeInstance is Child.HomeScreen) {
-                    val homeComponent = activeInstance.component
-                    val userGroup = homeComponent.currentUserGroup.value!!
-                    navigation.bringToFront(Configuration.GroupScreen(userGroup))
-                } else {
-                    // never happens
-                }
-            }
+            NavBarItem.Groups -> navigation.bringToFront(Configuration.GroupScreen)
             NavBarItem.Settings -> navigation.bringToFront(Configuration.SettingsScreen)
         }
     }
@@ -245,12 +219,6 @@ class RootComponent(
                 component = NewExpenseScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
                     onBack = { navigation.pop() },
-                    onAdd = {
-                        navigation.pop()
-                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
-                            HomeScreenComponent.NavigationState.FromNewExpenseScreen
-                        )
-                    },
                     currentUserGroup = configuration.userGroup
                 )
             )
@@ -266,16 +234,8 @@ class RootComponent(
             is Configuration.ChartsScreen -> Child.ChartsScreen(
                 ChartsScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
-                    onFilterClick = { filterParams, currentGroup, patternKey ->
-                        navigation.pushNew(
-                            Configuration.ChartsFilterScreen(
-                                filterParams,
-                                currentGroup,
-                                patternKey
-                            )
-                        )
-                    }
-                )
+                    onFilterClick = { navigation.pushNew(Configuration.ChartsFilterScreen)
+                    })
             )
 
             is Configuration.ChartsFilterScreen -> {
@@ -283,19 +243,12 @@ class RootComponent(
                     ChartsFilterScreenComponent(
                         baseComponent = createMainScreenComponent(componentContext),
                         onDismiss = { navigation.pop() },
-                        onConfirm = { newFilterParams, currentKeyPattern ->
+                        onSave = {
                             navigation.pop()
                             (childStack.value.active.instance as Child.ChartsScreen).component.updateNavigationState(
-                                ChartsScreenComponent.NavigationState.FromFilterScreen(
-                                    newFilterParams,
-                                    currentKeyPattern
-                                )
+                                ChartsScreenComponent.NavigationState.LoadData
                             )
-                        },
-                        filterParams = configuration.filterParams,
-                        currentGroup = configuration.currentGroup,
-                        currentKeyPattern = configuration.currentKeyPattern
-                    )
+                        })
                 )
             }
 
@@ -303,18 +256,15 @@ class RootComponent(
                 component = GroupScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
                     onUserClicked = { userGroup, user ->
-                        navigation.pushNew(Configuration.MemberScreen(userGroup, user))
+                        navigation.pushNew(Configuration.MemberScreen(user))
                     },
 //                    onInvitationsClicked = { userGroup ->
 //                        navigation.pushNew(Configuration.InvitationsScreen(userGroup))
 //                    },
                     //TODO
                     onInvitationsClicked = {},
-                    onNewGroupClicked = { navigation.pushNew(Configuration.NewGroupScreen)},
-                    onEditGroupClicked = { userGroup ->
-                        navigation.pushNew(Configuration.EditGroupScreen(userGroup))
-                    },
-                    currentUserGroup = configuration.userGroup,
+                    onNewGroupClicked = { navigation.pushNew(Configuration.NewGroupScreen) },
+                    onEditGroupClicked = { navigation.pushNew(Configuration.EditGroupScreen) },
                 )
             )
 
@@ -323,7 +273,6 @@ class RootComponent(
                     baseComponent = createMainScreenComponent(componentContext),
                     onBack = { navigation.pop() },
                     user = configuration.user,
-                    currentUserGroup = configuration.userGroup
                 )
             )
 
@@ -346,14 +295,15 @@ class RootComponent(
                     onSave = {},
                     onDelete = {},
                     //TODO
-                    group = configuration.userGroup
                 )
             )
 
             is Configuration.NewGroupScreen -> Child.NewGroupScreen(
                 component = NewGroupScreenComponent(
-                    baseComponent = createMainScreenComponent(componentContext),
-                    onDismiss = { navigation.pop () },
+                    baseComponent = createMainScreenComponent(
+                        componentContext
+                    ),
+                    onDismiss = { navigation.pop() },
                     onSave = {}
 //                            onSave = {
 //                        navigation.pop()
@@ -362,8 +312,7 @@ class RootComponent(
 //                        )
 //                    },
                     //TODO
-                )
-            )
+                ))
 
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(
