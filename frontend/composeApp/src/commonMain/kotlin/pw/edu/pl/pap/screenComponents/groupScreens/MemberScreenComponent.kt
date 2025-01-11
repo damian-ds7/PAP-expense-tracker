@@ -2,18 +2,20 @@ package pw.edu.pl.pap.screenComponents.groupScreens
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.User
-import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class MemberScreenComponent(
-    baseComponent: BaseScreenComponent,
+    baseComponent: BaseComponent,
     val user: User,
-    private val currentUserGroup: UserGroup,
     val onBack: () -> Unit
-) : BaseScreenComponent by baseComponent {
+) : BaseComponent by baseComponent {
+
+    private val groupRepository: GroupRepository by inject()
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
@@ -43,7 +45,7 @@ class MemberScreenComponent(
 
     val kickConfirmationData = ConfirmationDialogConfig(
         mainText = "Kick",
-        subText = "Are you sure you want to kick \"${user.name} ${user.surname}\" from ${currentUserGroup.name}?",
+        subText = "Are you sure you want to kick \"${user.name} ${user.surname}\" from ${groupRepository.getCurrentGroupName()}?",
         onNo = { showChangeRoleConfirmationDialog.value = false },
         onYes = {
             showChangeRoleConfirmationDialog.value = false

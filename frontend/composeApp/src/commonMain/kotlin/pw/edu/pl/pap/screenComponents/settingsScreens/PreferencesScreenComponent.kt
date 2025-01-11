@@ -4,22 +4,24 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.data.ConfigRepository
 
 class PreferencesScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
-    private val currencies = listOf("PLN", "EUR", "USD")
+    private val configRepository: ConfigRepository by inject()
 
-    //TODO fetch currencies
+    private val currencies = configRepository.currencies.value.map { it.symbol }
+
     var currencyIndex: MutableState<Int> = mutableStateOf(0)
     //TODO fetch currency
 
-    private val methodsOfPayment = listOf("Cash", "Card", "W naturze")
+    private val methodsOfPayment = configRepository.paymentMethods.value.map { it.name }
 
-    //TODO fetch methods of payment
     var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
     //TODO fetch method of payment
 

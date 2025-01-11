@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class SettingsScreenComponent(
     private val onLogOut: () -> Unit,
@@ -14,8 +14,8 @@ class SettingsScreenComponent(
     private val onUserPersonalsClicked: () -> Unit,
     private val onChangePasswordClicked: () -> Unit,
     private val onEditPreferencesClicked: () -> Unit,
-    baseComponent: BaseScreenComponent
-) : BaseScreenComponent by baseComponent {
+    baseComponent: BaseComponent
+) : BaseComponent by baseComponent {
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData

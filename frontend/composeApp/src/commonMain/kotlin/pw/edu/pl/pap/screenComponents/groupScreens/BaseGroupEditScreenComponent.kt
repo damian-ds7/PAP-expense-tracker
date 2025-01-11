@@ -2,14 +2,19 @@ package pw.edu.pl.pap.screenComponents.groupScreens
 
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 open class BaseGroupEditScreenComponent(
-    baseComponent: BaseScreenComponent,
+    baseComponent: BaseComponent,
     val onDismiss: () -> Unit,
     val onSave: () -> Unit
-) : BaseScreenComponent by baseComponent {
+) : BaseComponent by baseComponent {
+
+    protected val groupRepository: GroupRepository by inject()
+    protected val group = groupRepository.currentUserGroup.value
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData

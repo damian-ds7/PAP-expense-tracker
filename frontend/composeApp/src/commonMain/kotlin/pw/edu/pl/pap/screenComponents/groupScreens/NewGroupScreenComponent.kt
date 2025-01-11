@@ -1,21 +1,20 @@
 package pw.edu.pl.pap.screenComponents.groupScreens
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
-class NewGroupScreenComponent (
-    baseComponent: BaseScreenComponent,
+class NewGroupScreenComponent(
+    baseComponent: BaseComponent,
     onDismiss: () -> Unit,
     onSave: () -> Unit,
-//    private val currentUserGroup: UserGroup,
 ) : BaseGroupEditScreenComponent(baseComponent, onDismiss, onSave) {
 
     override fun confirm() {
         val newGroup = NewGroup(name.value)
 
-        runBlocking{
-            apiService.groupApiClient.postNewGroup(newGroup)
+        coroutineScope.launch {
+            groupRepository.addGroup(newGroup)
             onSave()
         }
     }
