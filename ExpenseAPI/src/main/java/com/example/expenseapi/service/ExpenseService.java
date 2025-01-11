@@ -28,4 +28,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     List<String> getPatternKeys();
     Page<ExpenseDTO> getExpensesForUser(int page, int size);
     Page<ExpenseDTO> searchExpensesPagesDTO(ExpenseFilter filter, int page, int size);
+
+    ExpenseDTO getMapped(Long id);
 }
