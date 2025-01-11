@@ -2,6 +2,7 @@ package pw.edu.pl.pap.ui.chartsScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,42 +26,48 @@ fun ChartsScreen(component: ChartsScreenComponent) {
         component.getDataBasedOnState()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TabBar(component)
+    Scaffold(
+        topBar = {
+            TabBar(component)
+        }) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues)) {
 
-        ButtonRow(component)
+            Column(modifier = Modifier.fillMaxSize()) {
 
-        Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f),
-            contentAlignment = Alignment.Center
-        ) {
-            if (plotData == emptyMap<String, Float>()) {
-                Text(text = "No data to display")
-            } else {
-                Chart(
-                    colors,
-                    plotData.values.toList(),
-                )
+                ButtonRow(component)
+
+                Box(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(0.5f), contentAlignment = Alignment.Center
+                ) {
+                    if (plotData == emptyMap<String, Float>()) {
+                        Text(text = "No data to display")
+                    } else {
+                        Chart(
+                            colors,
+                            plotData.values.toList(),
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box {
+                        GroupSelection(component)
+                    }
+                    Text(
+                        text = "Total: ${formatForDisplay(component.getTotal().toFloat())} zł",
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+
+                PlotDataList(colors, plotData)
             }
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box {
-                GroupSelection(component)
-            }
-            Text(
-                text = "Total: ${formatForDisplay(component.getTotal().toFloat())} zł",
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        PlotDataList(colors, plotData)
     }
 }
