@@ -9,7 +9,6 @@ import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.formatForTextField
-import kotlin.math.exp
 
 class ExpenseDetailsScreenComponent(
     baseComponent: BaseComponent,
