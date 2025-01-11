@@ -11,6 +11,8 @@ import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InvitationData
 import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.repositories.data.MembershipRepository
+import pw.edu.pl.pap.repositories.data.TemporaryMembershipRepository
 import pw.edu.pl.pap.repositories.data.UserRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.ui.groupScreens.InvitationsScreen
@@ -21,6 +23,8 @@ open class InvitationsScreenComponent(
 ) : BaseComponent by baseComponent {
 
     private val userRepository: UserRepository by inject()
+    private val membershipRepository: MembershipRepository by inject()
+    private val temporaryMembershipRepository: TemporaryMembershipRepository by inject()
 
     private val groupRepository: GroupRepository by inject()
     val currentUserGroup = groupRepository.currentUserGroup
@@ -70,8 +74,37 @@ open class InvitationsScreenComponent(
 
     fun fetchCurrentInvites(){
         runBlocking {
-            //TODO
+            temporaryMembershipRepository.getPendingInvitations()
         }
+    }
+
+    private fun setupReceivedInvitationsData() {
+        _receivedInvitationData.clear()
+        _receivedInvitationData.addAll(
+            temporaryMembershipRepository.invitationsReceived.value.map { invitation ->
+                InvitationData.ReceivedInvitationData(
+                    sender = invitation.sender,
+                    id = invitation.id,
+                    group = invitation.group,
+                    onConfirm = { coroutineScope.launch { acceptInvite(invitation.id) }},
+                    onCancel = { coroutineScope.launch { declineInvite(invitation.id)}}
+                )
+            }
+        )
+    }
+
+    private fun setupSentInvitationsData() {
+        _sentInvitationData.clear()
+        _sentInvitationData.addAll(
+            temporaryMembershipRepository.invitationsSent.value.map { invitation ->
+                InvitationData.SentInvitationData(
+                    receiver = invitation.receiver,
+                    id = invitation.id,
+                    group = invitation.group,
+                    onCancel = { coroutineScope.launch { declineInvite(invitation.id)}}
+                )
+            }
+        )
     }
 
     fun search(){
@@ -101,12 +134,12 @@ open class InvitationsScreenComponent(
         //TODO
     }
 
-    fun acceptInvite(){
+    fun acceptInvite(id: Long){
         // (User, group / id [?])
         //TODO
     }
 
-    fun declineInvite(){
+    fun declineInvite(id: Long){
         // (User, group / id [?])
         //TODO
     }
