@@ -475,6 +475,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             "ExpenseID"
     }, allEntries = true)
     public void deleteAllExpensesForUserId(Long id) {
-        expenseRepository.deleteByMembershipUserId(id);
+        expenseRepository.deleteAllByMembershipUserId(id);
     }
 }
