@@ -14,13 +14,6 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
     jvm("desktop")
 
     sourceSets {
@@ -59,11 +52,24 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+        commonTest.dependencies {
+                implementation(libs.kotlin.test)
+                implementation(libs.ktor.mock)
+        }
     }
     sourceSets.commonMain.dependencies {
         implementation(kotlin("reflect"))
     }
+
+    androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
 }
+
+
 
 val localPropertiesFile = rootProject.file("local.properties")
 val localProperties = Properties()
@@ -127,5 +133,13 @@ compose.desktop {
 tasks.withType<ProcessResources> {
     filesMatching("res/xml/network_security_config.xml") {
         expand("ip" to localProperties.getProperty("baseUrl", "localhost:8080"))
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    jvmArgs = listOf("-Dorg.gradle.parallel=true")
+    testLogging {
+        events("passed", "skipped", "failed")
     }
 }

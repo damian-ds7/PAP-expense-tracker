@@ -21,13 +21,13 @@ interface GroupApi {
     suspend fun getUsersInGroup(@Path("group") group: String): List<User>
 
     @GET("group/{id}")
-    suspend fun getGroup(@Path("id") id: Int): UserGroup
+    suspend fun getGroup(@Path("id") id: Long): UserGroup
 
     @DELETE("group/delete/{id}")
-    suspend fun deleteGroup(@Path("id") id: Int): HttpResponse
+    suspend fun deleteGroup(@Path("id") id: Long): HttpResponse
 
     @PUT("group/update/{id}")
-    suspend fun updateGroup(@Path("id") id: Int, @Body group: UserGroup): HttpResponse
+    suspend fun updateGroup(@Path("id") id: Long, @Body group: UserGroup): HttpResponse
 
     @POST("group/insert")
     suspend fun postNewGroup(@Body newGroup: NewGroup): HttpResponse

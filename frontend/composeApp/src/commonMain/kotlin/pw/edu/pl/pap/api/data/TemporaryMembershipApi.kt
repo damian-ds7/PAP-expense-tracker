@@ -15,8 +15,6 @@ interface TemporaryMembershipApi {
     @GET("tempMembership/invitations")
     suspend fun getReceived(): List<Invitation>
 
-    @GET("tempMembership/invitations")
+    @GET("tempMembership/sentInvitations")
     suspend fun getSent(): List<Invitation>
-    //TODO correct this endpoint
-
 }
