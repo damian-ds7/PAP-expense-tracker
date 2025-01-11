@@ -2,14 +2,19 @@ package pw.edu.pl.pap.repositories.auth
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import pw.edu.pl.pap.data.databaseAssociatedData.Tokens
 
 class TokenRepository {
-    private val _token = MutableStateFlow<String?>(null)
-    val token: StateFlow<String?> get() = _token
+    private var accessToken: String? = null
 
-    fun setToken(newToken: String) {
-        _token.value = newToken
+    private var refreshToken: String? = null
+
+
+    fun setTokens(tokens: Tokens) {
+        accessToken = tokens.accessToken
+        refreshToken = tokens.refreshToken
     }
 
-    fun getToken(): String = _token.value!!
+    fun getAccessToken(): String = accessToken!!
+    fun getRefreshToken(): String = refreshToken!!
 }
