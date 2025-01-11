@@ -102,15 +102,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         if (!hasAllRequiredFields(createDTO)) {
             throw new BadRequestException("Title, price, category name and group name are required");
         }
-        if (createDTO.getUser() == null) {
-            createDTO.setUser(userMapper.userToUserDTO(user));
-        }
-        if (createDTO.getCurrencyCode() == null) {
-            createDTO.setCurrencyCode(user.getPreference().getCurrency().getSymbol());
-        }
-        if (createDTO.getMethodOfPayment() == null) {
-            createDTO.setMethodOfPayment(user.getPreference().getMethod().getName());
-        }
+        fillDefaultsFromUserPreferences(createDTO, user);
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
         Optional<Membership> membershipOpt = membershipRepository.findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName());
         if (membershipOpt.isEmpty()) {
@@ -130,6 +122,18 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
                 .orElseThrow(() -> new BadRequestException("Currency not found: " + createDTO.getCurrencyCode())));
         Expense savedExpense = expenseRepository.save(expense);
         return expenseMapper.expenseToExpenseDTO(savedExpense);
+    }
+
+    private void fillDefaultsFromUserPreferences(ExpenseCreateDTO dto, User user) {
+        if (dto.getUser() == null) {
+            dto.setUser(userMapper.userToUserDTO(user));
+        }
+        if (dto.getCurrencyCode() == null) {
+            dto.setCurrencyCode(user.getPreference().getCurrency().getSymbol());
+        }
+        if (dto.getMethodOfPayment() == null) {
+            dto.setMethodOfPayment(user.getPreference().getMethod().getName());
+        }
     }
 
     @Override
