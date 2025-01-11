@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> implements MembershipService {
@@ -41,18 +42,13 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @Override
     @Cacheable(value = "admins", key = "#group")
     public List<UserDTO> findAdmins(String group) {
-        return findAdminsHelper(group);
+        return findUsersForGroup(group, membershipRepository::findAdmins);
     }
 
     @Override
     @Cacheable(value = "users", key = "#group")
     public List<UserDTO> findUsers(String group) {
-        if (!AuthHelper.isGroupNameValid(group)) {
-            throw new ForbiddenRequestException("User is not a member of the group");
-        }
-        return membershipRepository.findUsers(group)
-                .stream().map(userMapper::userToUserDTO)
-                .toList();
+        return findUsersForGroup(group, membershipRepository::findUsers);
     }
 
     @Override
@@ -99,19 +95,20 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    public Boolean isAdmin(String groupName) {
+    public Boolean isAdmin(String group) {
         User user = AuthHelper.getUser();
-        return findAdminsHelper(groupName).stream()
+        return findUsersForGroup(group, membershipRepository::findAdmins).stream()
                 .map(UserDTO::getId)
                 .anyMatch(memberId -> memberId.equals(user.getId()));
     }
 
-    private List<UserDTO> findAdminsHelper(String group) {
+    private List<UserDTO> findUsersForGroup(String group, Function<String, List<User>> repoMethod) {
         if (!AuthHelper.isGroupNameValid(group)) {
             throw new ForbiddenRequestException("User is not a member of the group");
         }
-        return membershipRepository.findAdmins(group)
-                .stream().map(userMapper::userToUserDTO)
+        return repoMethod.apply(group)
+                .stream()
+                .map(userMapper::userToUserDTO)
                 .toList();
     }
 }
