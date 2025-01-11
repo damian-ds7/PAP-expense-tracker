@@ -303,9 +303,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         );
     }
 
-    @Override
-    @Cacheable(value = "searchExpensesDTO", key = "#filter.toString()")
-    public List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
+    private List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
         if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
             filter.setGroupName(AuthHelper.getGroupName());
         }

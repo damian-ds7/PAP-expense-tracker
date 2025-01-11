@@ -22,7 +22,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Optional<ExpenseDTO> getRecentExpense(String groupName);
     CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>> getGroupExpenseAsDateMap(String name, Long lastId, LocalDate lastDate, int size, boolean desc);
     CursorPageResponse<Map<Category, List<ExpenseDTO>>> getGroupExpenseAsCategoryMap(String name, Long lastId, String lastCategory, int size, boolean desc);
-    List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter);
     ExpenseDTO createExpense(ExpenseCreateDTO createDTO);
     ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO);
     List<String> getPatternKeys();
