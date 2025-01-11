@@ -1,7 +1,6 @@
 package com.example.expenseapi.repository;
 
 import com.example.expenseapi.pojo.BaseGroup;
-import com.example.expenseapi.pojo.Group;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
