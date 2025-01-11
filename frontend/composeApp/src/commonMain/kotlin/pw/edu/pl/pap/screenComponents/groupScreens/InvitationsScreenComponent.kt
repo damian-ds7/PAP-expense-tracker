@@ -17,8 +17,7 @@ import pw.edu.pl.pap.ui.groupScreens.InvitationsScreen
 
 open class InvitationsScreenComponent(
     baseComponent: BaseComponent,
-    val onDismiss: () -> Unit,
-    private val group: UserGroup
+    val onDismiss: () -> Unit
 ) : BaseComponent by baseComponent {
 
     private val userRepository: UserRepository by inject()
@@ -77,13 +76,13 @@ open class InvitationsScreenComponent(
 
     fun search(){
         runBlocking{
-            val users: List<User> = userRepository.searchUsers(group, name.value, surname.value)
+            val users: List<User> = userRepository.searchUsers(currentUserGroup.value!!, name.value, surname.value)
             _availableNewInvitationsData.clear()
             _availableNewInvitationsData.addAll(
                 users.map { user ->
                     InvitationData.NewInvitationData(
                         receiver = user,
-                        group = group,
+                        group = currentUserGroup.value!!,
                         onConfirm = { coroutineScope.launch { invite(user) } }
                     )
                 }

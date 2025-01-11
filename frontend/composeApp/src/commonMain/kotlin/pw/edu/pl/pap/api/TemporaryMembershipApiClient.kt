@@ -1,7 +1,7 @@
 package pw.edu.pl.pap.api
 
-import io.ktor.client.statement.*
-import pw.edu.pl.pap.api.endpoints.TemporaryMembershipEndpoint
+//import io.ktor.client.statement.*
+//import pw.edu.pl.pap.api.endpoints.TemporaryMembershipEndpoint
 
 //class TemporaryMembershipApiClient(baseApiClient: BaseApiClient) :
 //    ApiClient by baseApiClient {

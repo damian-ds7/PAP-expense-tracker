@@ -105,7 +105,7 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
                             is RootComponent.Child.MemberScreen -> MemberScreen(instance.component)
                             is RootComponent.Child.NewGroupScreen -> NewGroupScreen(instance.component)
                             is RootComponent.Child.EditGroupScreen -> EditGroupScreen(instance.component)
-//                            is RootComponent.Child.InvitationsScreen -> InvitationsScreen(instance.component)
+                            is RootComponent.Child.InvitationsScreen -> InvitationsScreen(instance.component)
 
                             is RootComponent.Child.ServerAddressScreen -> ServerAddressScreen(instance.component)
                             is RootComponent.Child.UserPersonalDataScreen -> UserPersonalDataScreen(instance.component)
