@@ -1,36 +1,40 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
+import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
-import pw.edu.pl.pap.data.databaseAssociatedData.User
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class NewExpenseScreenComponent(
-    baseComponent: BaseScreenComponent,
-    onDismiss: () -> Unit,
-    onSave: () -> Unit
-) : BaseExpenseScreenComponent(baseComponent, onDismiss, onSave) {
+    baseComponent: BaseComponent,
+    onBack: () -> Unit,
+    private val currentUserGroup: UserGroup,
+) : BaseExpenseScreenComponent(baseComponent, onBack) {
 
-    override fun confirm() {
-        // find user
-        // save expense
-//        val id: Long = 5
-        val user = User(1, "Marcinek", "Marcinkowski", "Kaczka2137@gmail.com")
-        val date: LocalDate = Clock.System.todayIn(TimeZone.UTC)
-//        val category: Category = Category(5, "Test")
-//        val expense: Expense = Expense(id, price.value.toFloat(), user, date, category )
-        val newExpense = NewExpense(title.value, newPrice.value.toFloat(), date, user)
+    private val groupRepository: GroupRepository by inject(GroupRepository::class.java)
 
-        coroutineScope.launch{
-            apiService.expenseApiClient.postNewExpense(newExpense)
-            onSave()
-        }
-
-        println("confirmed " + newExpense.price)
+    init {
+        setupInputFields()
     }
 
+    override fun confirm() {
+        val newExpense = NewExpense(
+            title = title.value,
+            price = price.value.toFloat(),
+            user = users[userIndex.value],
+            groupName = currentUserGroup.name,
+            categoryName = categories[categoryIndex.value],
+            expenseDate = date.value,
+            methodOfPayment = methodsOfPayment[methodOfPaymentIndex.value],
+            currencyCode = currencies[currencyIndex.value]
+        )
+
+        coroutineScope.launch {
+            expenseRepository.addExpense(newExpense)
+            expenseRepository.getRecentExpense(groupRepository.currentUserGroup.value?.name!!)
+            onBack()
+        }
+    }
 }

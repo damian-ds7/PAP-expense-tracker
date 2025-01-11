@@ -7,6 +7,10 @@ import kotlinx.datetime.LocalDate
 data class NewExpense(
     val title: String,
     val price: Float,
-    val date: LocalDate,
-    val user: User
+    val user: User,
+    val groupName: String,
+    val categoryName: String,
+    val expenseDate: LocalDate,
+    val methodOfPayment: String,
+    val currencyCode: String,
 )

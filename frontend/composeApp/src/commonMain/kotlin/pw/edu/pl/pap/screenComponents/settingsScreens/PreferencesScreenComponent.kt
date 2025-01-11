@@ -1,27 +1,27 @@
 package pw.edu.pl.pap.screenComponents.settingsScreens
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
-import pw.edu.pl.pap.data.uiSetup.inputFields.DropdownListData
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.ConfigRepository
 
-class PreferencesScreenComponent (
+class PreferencesScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
-    private val currencies = listOf("PLN", "EUR", "USD")
-    //TODO fetch currencies
+    private val configRepository: ConfigRepository by inject()
+
+    private val currencies = configRepository.currencies.value.map { it.symbol }
+
     var currencyIndex: MutableState<Int> = mutableStateOf(0)
     //TODO fetch currency
 
-    private val methodsOfPayment = listOf("Cash", "Card", "W naturze")
-    //TODO fetch methods of payment
+    private val methodsOfPayment = configRepository.paymentMethods.value.map { it.name }
+
     var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
     //TODO fetch method of payment
 
@@ -52,27 +52,21 @@ class PreferencesScreenComponent (
         fetchUserPreferences()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.DropdownListData(
                     title = "Currency",
-                    isDropdownList = true,
-                    dropdownListData = DropdownListData(
-                        itemList = currencies,
-                        selectedIndex = currencyIndex,
-                        onItemClick = {
-                            currencyIndex.value = it
-                        }
-                    )
+                    itemList = currencies,
+                    selectedIndex = currencyIndex,
+                    onItemClick = {
+                        currencyIndex.value = it
+                    }
                 ),
-                InputFieldData(
+                InputFieldData.DropdownListData(
                     title = "Method of payment: ",
-                    isDropdownList = true,
-                    dropdownListData = DropdownListData(
-                        itemList = methodsOfPayment,
-                        selectedIndex = methodOfPaymentIndex,
-                        onItemClick = {
-                            coroutineScope.launch { methodOfPaymentIndex.value = it }
-                        }
-                    )
+                    itemList = methodsOfPayment,
+                    selectedIndex = methodOfPaymentIndex,
+                    onItemClick = {
+                        coroutineScope.launch { methodOfPaymentIndex.value = it }
+                    }
                 ),
             )
         )

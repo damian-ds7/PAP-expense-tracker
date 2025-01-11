@@ -8,8 +8,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.*
+import pw.edu.pl.pap.util.constants.padding
 
 @Composable
 fun PlusButton(onUpdate: () -> Unit) {
@@ -19,7 +19,7 @@ fun PlusButton(onUpdate: () -> Unit) {
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(20.dp),
+                .padding(padding),
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = { onUpdate() }

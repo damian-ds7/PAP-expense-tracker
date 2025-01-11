@@ -4,22 +4,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import pw.edu.pl.pap.screenComponents.loginSystem.BaseLoginScreenComponentImpl
+import pw.edu.pl.pap.util.constants.padding
 
 @Composable
 fun ConfirmOrBackButtonRow(
     text: String,
     onBack: () -> Unit,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
+    isConfirmEnabled: Boolean = true,
 ) {
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(padding)
     ) {
         TextButton(
             text = "BACK",
@@ -30,7 +28,8 @@ fun ConfirmOrBackButtonRow(
         TextButton(
             text = text,
             modifier = Modifier.align(Alignment.BottomEnd),
-            onUpdate = onConfirm
+            onUpdate = onConfirm,
+            isEnabled = isConfirmEnabled,
         )
     }
 }

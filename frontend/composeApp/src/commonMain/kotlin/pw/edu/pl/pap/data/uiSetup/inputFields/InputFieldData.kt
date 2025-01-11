@@ -1,14 +1,50 @@
 package pw.edu.pl.pap.data.uiSetup.inputFields
 
-data class InputFieldData(
-    val title: String,
-    val isDropdownList: Boolean = false,
-    val isDatePicker: Boolean = false,
-    val isPassword: Boolean = false,
-    val isButton: Boolean = false,
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.graphics.Color
+import kotlinx.datetime.LocalDate
 
-    val datePickerData: DatePickerData? = null,
-    val textFieldData: TextFieldData? = null,
-    val dropdownListData: DropdownListData? = null,
-    val buttonData: ButtonData? = null,
-)
+sealed class InputFieldData(open val title: String) {
+    data class DropdownListData (
+        override val title: String,
+        val itemList: List<String>,
+        val selectedIndex: MutableState<Int>,
+        val onItemClick: (Int) -> Unit,
+    ) : InputFieldData(title)
+
+    data class DatePickerData (
+        override val title: String,
+        val date: MutableState<LocalDate>,
+        val onDateConfirm: (Long) -> Unit
+    ) : InputFieldData(title)
+
+    data class TextFieldData (
+        override val title: String,
+        var parameter: MutableState<String>,
+        val onChange: (String) -> Unit,
+        val keyboardOptions: KeyboardOptions? = null,  // Optional keyboard options, used for number only keyboard
+        val password: Boolean = false,
+    ) : InputFieldData(title)
+
+    data class ButtonData (
+        override val title: String,
+        val isColored: Boolean = false,
+        val customColor: Color = Color.Red.copy(alpha = 0.2f),
+        val onClick: () -> Unit,
+    ) : InputFieldData(title)
+
+    data class CheckboxData (
+        override val title: String,
+        val itemList: List<String>,
+        val selectedIndices: SnapshotStateList<Int>? = null,
+        val onConfirm: (List<Int>?) -> Unit
+    ) : InputFieldData(title)
+
+    data class UserBalanceButtonData (
+        override val title: String,
+        val balance: Float,
+        val onClick: () -> Unit,
+    ) : InputFieldData(title)
+}

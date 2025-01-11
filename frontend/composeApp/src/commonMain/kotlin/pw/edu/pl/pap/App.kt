@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -17,7 +16,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import pw.edu.pl.pap.screenComponents.RootComponent
-import pw.edu.pl.pap.ui.dataScreen.DataScreen
 import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
@@ -27,15 +25,35 @@ import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
 import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
-import pw.edu.pl.pap.ui.settingsScreens.ChangePasswordScreen
-import pw.edu.pl.pap.ui.settingsScreens.PreferencesScreen
-import pw.edu.pl.pap.ui.settingsScreens.UserPersonalDataScreen
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import pw.edu.pl.pap.di.authModule
+import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
+import pw.edu.pl.pap.ui.chartsScreen.filterScreen.ChartsFilterScreen
+import pw.edu.pl.pap.ui.groupScreens.EditGroupScreen
+import pw.edu.pl.pap.ui.groupScreens.GroupScreen
+import pw.edu.pl.pap.ui.groupScreens.MemberScreen
+import pw.edu.pl.pap.ui.groupScreens.NewGroupScreen
+import pw.edu.pl.pap.ui.settingsScreens.*
 
 // Todo refactor function, tweak animations
 @Composable
-fun App(rootComponent: RootComponent) {
+fun App(rootComponent: RootComponent, baseUrl: String) {
+
+    remember {
+        startKoin {
+            properties(mapOf("baseUrl" to baseUrl))
+            modules(authModule)
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            stopKoin()
+        }
+    }
+
+
     val childStack = rootComponent.childStack.subscribeAsState()
     val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
 
@@ -47,7 +65,7 @@ fun App(rootComponent: RootComponent) {
                 ) {
                     BottomNavBar(
                         items = listOf(
-                            NavBarItem.Home, NavBarItem.Data, NavBarItem.Groups, NavBarItem.Settings
+                            NavBarItem.Home, NavBarItem.Charts, NavBarItem.Groups, NavBarItem.Settings
                         ),
                         selectedItem = activeNavBarItem,
                         onSelect = { rootComponent.navBarItemClicked(it) }
@@ -79,9 +97,19 @@ fun App(rootComponent: RootComponent) {
                             is RootComponent.Child.NewExpenseScreen -> NewExpenseScreen(instance.component)
                             is RootComponent.Child.ExpenseDetailsScreen -> ExpenseDetailsScreen(instance.component)
 
-                            is RootComponent.Child.DataScreen -> DataScreen(instance.component)
+                            is RootComponent.Child.ChartsScreen -> ChartsScreen(instance.component)
+
+                            is RootComponent.Child.ChartsFilterScreen -> ChartsFilterScreen(instance.component)
+
+                            is RootComponent.Child.GroupScreen -> GroupScreen(instance.component)
+
                             is RootComponent.Child.SettingsScreen -> SettingsScreen(instance.component)
 
+                            is RootComponent.Child.MemberScreen -> MemberScreen(instance.component)
+                            is RootComponent.Child.NewGroupScreen -> NewGroupScreen(instance.component)
+                            is RootComponent.Child.EditGroupScreen -> EditGroupScreen(instance.component)
+
+                            is RootComponent.Child.ServerAddressScreen -> ServerAddressScreen(instance.component)
                             is RootComponent.Child.UserPersonalDataScreen -> UserPersonalDataScreen(instance.component)
                             is RootComponent.Child.ChangePasswordScreen -> ChangePasswordScreen(instance.component)
                             is RootComponent.Child.PreferencesScreen -> PreferencesScreen(instance.component)
@@ -96,7 +124,8 @@ fun App(rootComponent: RootComponent) {
 fun showBottomBar(instance: RootComponent.Child): Boolean {
     return when (instance) {
         is RootComponent.Child.HomeScreen,
-        is RootComponent.Child.DataScreen -> true
+        is RootComponent.Child.ChartsScreen,
+        is RootComponent.Child.GroupScreen,
         is RootComponent.Child.SettingsScreen -> true
         else -> false
     }

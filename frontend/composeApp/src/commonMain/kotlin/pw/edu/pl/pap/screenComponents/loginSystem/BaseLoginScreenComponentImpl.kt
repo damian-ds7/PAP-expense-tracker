@@ -4,11 +4,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
-import pw.edu.pl.pap.data.uiSetup.inputFields.*
+import org.koin.core.component.inject
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.auth.LoginRepository
 
 open class BaseLoginScreenComponentImpl(
     baseLoginScreenComponent: BaseLoginScreenComponent
 ) : BaseLoginScreenComponent by baseLoginScreenComponent {
+
+    protected val loginRepository: LoginRepository by inject()
 
     protected open val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
@@ -26,24 +30,20 @@ open class BaseLoginScreenComponentImpl(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Email: ",
-                    textFieldData = TextFieldData(
-                        parameter = email,
-                        onChange = {
-                            coroutineScope.launch { email.value = it }
-                        }
-                    )
+                    parameter = email,
+                    onChange = {
+                        coroutineScope.launch { email.value = it }
+                    }
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Password",
-                    isPassword = true,
-                    textFieldData = TextFieldData(
-                        parameter = password,
-                        onChange = {
-                            coroutineScope.launch {password.value = it}
-                        }
-                    )
+                    parameter = password,
+                    onChange = {
+                        coroutineScope.launch { password.value = it }
+                    },
+                    password = true
                 )
             )
         )

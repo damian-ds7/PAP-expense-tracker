@@ -1,40 +1,38 @@
 package pw.edu.pl.pap.ui.common
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.window.Popup
-import kotlinx.datetime.LocalDate
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import pw.edu.pl.pap.data.uiSetup.inputFields.*
-import androidx.compose.runtime.*
+import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.util.constants.horizontalPadding
+import pw.edu.pl.pap.util.constants.verticalPadding
+import pw.edu.pl.pap.util.dateFunctions.dateToMillis
 
 
 @Composable
 fun InputFields(inputFieldsData: List<InputFieldData>) {
     Box(
         modifier = Modifier.offset(x = 0.dp, y = 100.dp)
-    ){
+    ) {
         LazyColumn {
-            items(inputFieldsData) {
-                data -> createField(data)
+            items(inputFieldsData) { data ->
+                createField(data)
             }
         }
     }
@@ -42,13 +40,16 @@ fun InputFields(inputFieldsData: List<InputFieldData>) {
 
 @Composable
 private fun createField(data: InputFieldData) {
-    if (data.isButton) { createClickableCard(data.buttonData!!) }
-    else {
+    if (data is InputFieldData.ButtonData) {
+        createClickableCard(data)
+    } else if (data is InputFieldData.UserBalanceButtonData) {
+        createClickableUserCard(data)
+    } else {
         Card(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = horizontalPadding, vertical = verticalPadding)
                 .height(50.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -60,14 +61,19 @@ private fun createField(data: InputFieldData) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = data.title)
-                if (data.isDropdownList) {
-                    createDropdownList(data.dropdownListData!!)
-                } else if (data.isDatePicker) {
-                    createDatePicker(data.datePickerData!!)
-                } else if (data.isPassword) {
-                    createPasswordField(data.textFieldData!!)
-                } else {
-                    createTextField(data.textFieldData!!)
+                when (data) {
+                    is InputFieldData.DropdownListData -> createDropdownList(data)
+                    is InputFieldData.DatePickerData -> createDatePicker(data)
+                    is InputFieldData.TextFieldData -> {
+                        if (data.password) {
+                            createPasswordField(data)
+                        } else {
+                            createTextField(data)
+                        }
+                    }
+
+                    is InputFieldData.CheckboxData -> createCheckBox(data)
+                    else -> return@Row
                 }
             }
         }
@@ -76,19 +82,19 @@ private fun createField(data: InputFieldData) {
 
 @Composable
 private fun createTextField(
-    data: TextFieldData
-){
+    data: InputFieldData.TextFieldData
+) {
     TextField(
         value = data.parameter.value,
-        onValueChange = {newParameter -> data.onChange(newParameter)},
+        onValueChange = { newParameter -> data.onChange(newParameter) },
         keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default
     )
 }
 
 @Composable
 private fun createDropdownList(
-    data: DropdownListData
-){
+    data: InputFieldData.DropdownListData
+) {
     var showDropdown by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
 
@@ -96,7 +102,8 @@ private fun createDropdownList(
         modifier = Modifier
             .width(250.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center
+    ) {
 
         // button
         Box(
@@ -107,43 +114,16 @@ private fun createDropdownList(
         )
         {
             Text(text = data.itemList[data.selectedIndex.value], modifier = Modifier.padding(3.dp))
-        }
 
-        // dropdown list
-        Box() {
-            if (showDropdown) {
-                Popup(
-                    alignment = Alignment.TopCenter,
-                    onDismissRequest = { showDropdown = false }
-                ) {
-
-                    Column(
-                        modifier = Modifier
-                            .heightIn(max = 200.dp)
-                            .width(250.dp)
-                            .background(Color.Gray)
-                            .verticalScroll(state = scrollState)
-                            .border(width = 1.dp, color = Color.Gray),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-
-                        data.itemList.onEachIndexed { index, item ->
-                            if (index != 0) {
-                                HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        data.onItemClick(index)
-                                        showDropdown = !showDropdown
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(text = item)
-                            }
-                        }
-
+            Row(modifier = Modifier.align(Alignment.Center)) {
+                // dropdown list
+                DropdownMenu(
+                    expanded = showDropdown, onDismissRequest = { showDropdown = false }) {
+                    data.itemList.forEachIndexed { idx, item ->
+                        DropdownMenuItem(text = { Text(item) }, onClick = {
+                            data.onItemClick(idx)
+                            showDropdown = false
+                        })
                     }
                 }
             }
@@ -154,11 +134,11 @@ private fun createDropdownList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun createDatePicker(
-    data: DatePickerData
-){
+    data: InputFieldData.DatePickerData
+) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<LocalDate>(data.date.value) }
-    val datePickerState = rememberDatePickerState()
+    val selectedDate by remember { mutableStateOf(data.date.value) }
+    val datePickerState = rememberDatePickerState(dateToMillis(selectedDate))
 
     Box(
         modifier = Modifier
@@ -167,12 +147,12 @@ private fun createDatePicker(
         contentAlignment = Alignment.Center
     )
     {
-        Text(text = data.date.value.toString(), modifier = Modifier.padding(3.dp))
+        Text(text = selectedDate.toString(), modifier = Modifier.padding(3.dp))
     }
 
     if (showDatePicker) {
         DatePickerDialog(
-            onDismissRequest = {showDatePicker = false},
+            onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     val millis = datePickerState.selectedDateMillis
@@ -202,13 +182,13 @@ private fun createDatePicker(
 
 @Composable
 private fun createPasswordField(
-    data: TextFieldData
-){
+    data: InputFieldData.TextFieldData
+) {
     var visibility by rememberSaveable { mutableStateOf(false) }
 
     TextField(
         value = data.parameter.value,
-        onValueChange = {newParameter -> data.onChange(newParameter)},
+        onValueChange = { newParameter -> data.onChange(newParameter) },
         visualTransformation = if (visibility) VisualTransformation.None else PasswordVisualTransformation(),
 //        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default,
@@ -221,12 +201,12 @@ private fun createPasswordField(
 }
 
 @Composable
-private fun createClickableCard(data: ButtonData) {
+private fun createClickableCard(data: InputFieldData.ButtonData) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .height(50.dp)
             .clickable { data.onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -235,7 +215,7 @@ private fun createClickableCard(data: ButtonData) {
         } else {
             CardDefaults.cardColors()
         }
-    ){
+    ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -246,6 +226,146 @@ private fun createClickableCard(data: ButtonData) {
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
             )
+        }
+    }
+}
+
+@Composable
+private fun createCheckBox(data: InputFieldData.CheckboxData) {
+    val checkedStates = remember {
+        mutableStateListOf<Boolean>().apply {
+            val result = List(data.itemList.size) { index ->
+                data.selectedIndices?.contains(index) ?: true
+            }
+            addAll(result)
+        }
+    }
+
+    val parentStateAndText by derivedStateOf {
+        when {
+            checkedStates.all { it } -> ToggleableState.On to "All"
+            checkedStates.none { it } -> ToggleableState.Off to "None"
+            else -> ToggleableState.Indeterminate to "Selected ${checkedStates.count { it }}"
+        }
+    }
+
+    val (parentState, text) = parentStateAndText
+
+//    val (parentState, text) by derivedStateOf {
+//        when {
+//            checkedStates.all { it } -> ToggleableState.On to "All"
+//            checkedStates.none { it } -> ToggleableState.Off to "None"
+//            else -> ToggleableState.Indeterminate to "Selected ${checkedStates.count { it }}"
+//        }
+//    }
+
+    var showDropdown by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .width(250.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showDropdown = true },
+            contentAlignment = Alignment.Center
+        )
+        {
+            Text(text = text, modifier = Modifier.padding(3.dp))
+
+            DropdownMenu(
+                expanded = showDropdown,
+                modifier = Modifier.padding(8.dp),
+                onDismissRequest = {
+                    val selectedIndices = when (parentState) {
+                        ToggleableState.On -> null
+                        ToggleableState.Off -> {
+                            checkedStates.fill(true)
+                            null
+                        }
+
+                        else -> checkedStates.mapIndexedNotNull { idx, value ->
+                            if (value) idx else null
+                        }
+                    }
+                    data.onConfirm(selectedIndices)
+                    showDropdown = false
+                }) {
+
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        TriStateCheckbox(
+                            state = parentState,
+                            onClick = {
+                                val newState = parentState != ToggleableState.On
+                                checkedStates.forEachIndexed { index, _ ->
+                                    checkedStates[index] = newState
+                                }
+                            }
+                        )
+                        Text("Select all")
+                    }
+                    checkedStates.forEachIndexed { index, checked ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                        ) {
+                            Checkbox(
+                                checked = checked,
+                                onCheckedChange = { isChecked ->
+                                    checkedStates[index] = isChecked
+                                }
+                            )
+                            Text(data.itemList[index])
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun createClickableUserCard(data: InputFieldData.UserBalanceButtonData) {
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+            .height(50.dp)
+            .clickable { data.onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 6.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = data.title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+
+                Text(
+                    text = if (data.balance >= 0) "+ ${data.balance} PLN" else "- ${-data.balance} PLN",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (data.balance >= 0) Color.Green else Color.Red
+                )
+            }
         }
     }
 }

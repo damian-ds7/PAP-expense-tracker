@@ -1,5 +1,6 @@
 package pw.edu.pl.pap.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -19,6 +20,25 @@ fun Header(text: String) {
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .align(Alignment.TopCenter)
+        )
+    }
+}
+
+@Composable
+fun ClickableHeader(
+    text: String,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = text,
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .clickable { onClick() },
         )
     }
 }

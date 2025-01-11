@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,8 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
-import pw.edu.pl.pap.util.sortingSystem.forEachList
 import pw.edu.pl.pap.screenComponents.mainScreens.HomeScreenComponent
+import pw.edu.pl.pap.util.constants.horizontalPadding
+import pw.edu.pl.pap.util.constants.verticalPadding
 import pw.edu.pl.pap.util.formatForDisplay
 
 
@@ -30,7 +30,7 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
             .height(50.dp)
             .clip(RoundedCornerShape(8.dp))
             .clickable { onClick(expense) },
@@ -39,19 +39,19 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = horizontalPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
                 Text(
-                    text = expense.category.name,
+                    text = expense.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = expense.user.name,
+                    text = "${expense.user.name} ${expense.user.surname}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Light,
                     color = Color.Gray
@@ -75,7 +75,7 @@ fun Header(key: String) {
         text = key,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(verticalPadding),
         fontSize = 16.sp,
         color = MaterialTheme.colorScheme.onBackground
     )
@@ -87,15 +87,12 @@ fun GroupedExpensesList(
     onExpenseClick: (Expense) -> Unit
 ) {
     val groupedExpenses by component.groupedExpenses.collectAsState()
-    val order by groupedExpenses.groupingOrder.collectAsState()
 
-    key(order) {
-        groupedExpenses.forEachList { (key, expenseList) ->
-            Header(key.asString())
+    groupedExpenses.forEach { (key, expenseList) ->
+        Header(key.asString())
 
-            expenseList.forEach { expense ->
-                ExpenseBlock(expense, onClick = onExpenseClick)
-            }
+        expenseList.forEach { expense ->
+            ExpenseBlock(expense, onClick = onExpenseClick)
         }
     }
 }

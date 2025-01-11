@@ -1,15 +1,12 @@
 package pw.edu.pl.pap.screenComponents.settingsScreens
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.data.uiSetup.inputFields.TextFieldData
-import pw.edu.pl.pap.screenComponents.mainScreens.BaseScreenComponent
 
-class ChangePasswordScreenComponent (
+class ChangePasswordScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
@@ -47,25 +44,21 @@ class ChangePasswordScreenComponent (
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "New password: ",
-                    isPassword = true,
-                    textFieldData = TextFieldData(
-                        parameter = password,
-                        onChange = {
-                            coroutineScope.launch { password.value = it }
-                        }
-                    )
+                    parameter = password,
+                    onChange = {
+                        coroutineScope.launch { password.value = it }
+                    },
+                    password = true
                 ),
-                InputFieldData(
+                InputFieldData.TextFieldData(
                     title = "Repeat new password: ",
-                    isPassword = true,
-                    textFieldData = TextFieldData(
-                        parameter = repeatedPassword,
-                        onChange = {
-                            coroutineScope.launch { repeatedPassword.value = it }
-                        },
-                    )
+                    parameter = repeatedPassword,
+                    onChange = {
+                        coroutineScope.launch { repeatedPassword.value = it }
+                    },
+                    password = true
                 )
             )
         )

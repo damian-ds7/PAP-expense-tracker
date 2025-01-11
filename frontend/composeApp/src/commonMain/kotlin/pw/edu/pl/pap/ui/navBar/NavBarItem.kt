@@ -19,10 +19,10 @@ sealed class NavBarItem(
     data object Groups : NavBarItem(
         unselectedImage = Icons.Outlined.Groups,
         selectedImage = Icons.Filled.Groups,
-        title = "Groups"
+        title = "Group"
     )
 
-    data object Data : NavBarItem(
+    data object Charts : NavBarItem(
         unselectedImage = Icons.Outlined.Leaderboard,
         selectedImage = Icons.Filled.Leaderboard,
         title = "Data"

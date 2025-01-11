@@ -3,7 +3,10 @@ package pw.edu.pl.pap.ui.expenseDetails
 import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.screenComponents.singleExpense.ExpenseDetailsScreenComponent
+import pw.edu.pl.pap.ui.common.BackDeleteAddButtonRow
 import pw.edu.pl.pap.ui.common.ConfirmationPopup
+import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogFactory
+import pw.edu.pl.pap.ui.common.DialogFactory.ConfirmationDialogState
 import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 
@@ -13,13 +16,15 @@ fun ExpenseDetailsScreen(
 ) {
     val scope = rememberCoroutineScope()
     var confirmDialogState by remember { mutableStateOf<ConfirmationDialogState>(ConfirmationDialogState.None) }
-    val dialogFactory = remember { ConfirmationDialogFactory(component) }
+    val dialogFactory = remember { ConfirmationDialogFactory(
+        onDismiss = component.onBack,
+        onDelete = { component.deleteExpense() }
+    ) }
 
     Header("Expense Details")
-    component.setupInputFields()
     InputFields(component.inputFieldsData)
 
-    ExpenseDetailsButtonRow(
+    BackDeleteAddButtonRow(
         onBack = {
             scope.launch {
                 handleBack(component) { confirmDialogState = ConfirmationDialogState.GoBack }
@@ -56,7 +61,7 @@ fun ExpenseDetailsScreen(
 
 fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
     if (component.noChange) {
-        component.onDismiss()
+        component.onBack()
     } else {
         showConfirmDialog(ConfirmationDialogState.GoBack)
     }
