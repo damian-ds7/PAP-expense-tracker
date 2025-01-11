@@ -14,7 +14,7 @@ public class CategoryServiceImpl extends GenericServiceImpl<Category, Long> impl
     }
 
     @Override
-    @Cacheable(value = "categoriesAll", key = "'all'")
+    @Cacheable(value = "categories", key = "'all'")
     public List<Category> getAll() {
         return super.getAll();
     }
