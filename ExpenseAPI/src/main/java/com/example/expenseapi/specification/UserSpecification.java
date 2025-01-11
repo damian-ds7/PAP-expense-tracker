@@ -32,7 +32,7 @@ public class UserSpecification {
 
     public static Specification<User> notInGroup(String groupName) {
         return ((root, query, criteriaBuilder) -> {
-            if (groupName == null) {
+            if (groupName == null || query == null) {
                 return criteriaBuilder.conjunction();
             }
             Subquery<Long> subquery = query.subquery(Long.class);
