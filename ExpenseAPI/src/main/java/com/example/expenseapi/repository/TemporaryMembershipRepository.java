@@ -8,4 +8,5 @@ import java.util.List;
 public interface TemporaryMembershipRepository extends JpaRepository<TemporaryMembership, Long> {
     List<TemporaryMembership> findByUserId(Long userId);
     List<TemporaryMembership> findBySenderId(Long senderId);
+    void deleteAllByUserId(Long userId);
 }

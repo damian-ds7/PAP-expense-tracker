@@ -11,4 +11,6 @@ public interface TemporaryMembershipService extends GenericService<TemporaryMemb
     TemporaryMembership save(MembershipCreateDTO temporaryMembershipCreateDTO);
 
     List<InvitationDTO> getBySenderId(Long senderId);
+
+    void deleteAllTemporaryMembershipsForUser(Long id);
 }

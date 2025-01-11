@@ -37,7 +37,7 @@ public class User {
 
     @NonNull
     @JoinColumn(name = "preferences_id", referencedColumnName = "id")
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.REMOVE)
     private Preference preference;
 
     @NonNull

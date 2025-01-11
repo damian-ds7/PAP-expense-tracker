@@ -30,4 +30,5 @@ public interface ExpenseService extends GenericService<Expense, Long> {
     Page<ExpenseDTO> searchExpensesPagesDTO(ExpenseFilter filter, int page, int size);
 
     ExpenseDTO getMapped(Long id);
+    void deleteAllExpensesForUserId(Long id);
 }

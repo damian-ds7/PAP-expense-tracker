@@ -4,9 +4,11 @@ import com.example.expenseapi.dto.ChangePasswordDTO;
 import com.example.expenseapi.dto.UserDTO;
 import com.example.expenseapi.dto.UserUpdateDTO;
 import com.example.expenseapi.filter.UserFilter;
+import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.UserService;
+import com.example.expenseapi.utils.AuthHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,9 +27,11 @@ import java.util.List;
 @Tag(name="User Controller", description = "Controller to manage user objects")
 public class UserController extends GenericController<User, Long>{
     private final MembershipService membershipService;
-    public UserController(UserService service, MembershipService membershipService) {
+    private final UserMapper userMapper;
+    public UserController(UserService service, MembershipService membershipService, UserMapper userMapper) {
         super(service);
         this.membershipService = membershipService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping("/search/{groupName}")
@@ -68,5 +72,12 @@ public class UserController extends GenericController<User, Long>{
     @ApiResponse(responseCode = "200", description = "Status of user")
     public ResponseEntity<Boolean> isAdmin(@PathVariable String groupName) {
         return new ResponseEntity<>(membershipService.isAdmin(groupName), HttpStatus.OK);
+    }
+
+    @GetMapping("/current")
+    @Operation(summary = "Retrieves currently logged in user")
+    @ApiResponse(responseCode = "200", description = "Logged-in user", content = @Content(schema = @Schema(implementation = UserDTO.class)))
+    public ResponseEntity<UserDTO> getCurrent() {
+        return new ResponseEntity<>(userMapper.userToUserDTO(AuthHelper.getUser()), HttpStatus.OK);
     }
 }

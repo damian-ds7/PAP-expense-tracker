@@ -1,7 +1,6 @@
 package com.example.expenseapi.repository;
 
 import com.example.expenseapi.pojo.BaseGroup;
-import com.example.expenseapi.pojo.Group;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +24,6 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     List<Membership> findByUserId(Long userId);
 
     Optional<Membership> findByUserIdAndGroupName(Long id, String groupName);
+
+    void deleteAllByUserId(Long userId);
 }

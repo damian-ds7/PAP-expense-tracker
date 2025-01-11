@@ -9,6 +9,7 @@ import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
 import com.example.expenseapi.utils.AuthHelper;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,13 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public void deleteAllData() {
         super.deleteAllData();
+    }
+
+    @Override
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @Transactional
+    public void deleteAllMembershipsForUserId(Long id) {
+        membershipRepository.deleteAllByUserId(id);
     }
 
     @Override

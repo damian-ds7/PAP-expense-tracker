@@ -9,6 +9,7 @@ import com.example.expenseapi.repository.GroupRepository;
 import com.example.expenseapi.repository.RoleRepository;
 import com.example.expenseapi.repository.TemporaryMembershipRepository;
 import com.example.expenseapi.utils.AuthHelper;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,12 @@ public class TemporaryMembershipServiceImpl extends GenericServiceImpl<Temporary
     @CacheEvict(value = "temporaryMembershipsByUserId", key = "T(com.example.expenseapi.utils.AuthHelper).getUser().getId()")
     public void delete(Long id) {
         super.delete(id);
+    }
+
+    @Override
+    @CacheEvict(value = "temporaryMembershipsByUserId", key = "T(com.example.expenseapi.utils.AuthHelper).getUser().getId()")
+    @Transactional
+    public void deleteAllTemporaryMembershipsForUser(Long id) {
+        temporaryMembershipRepository.deleteAllByUserId(id);
     }
 }

@@ -9,12 +9,10 @@ import com.example.expenseapi.filter.UserFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.Preference;
 import com.example.expenseapi.pojo.User;
-import com.example.expenseapi.repository.CurrencyRepository;
-import com.example.expenseapi.repository.MethodOfPaymentRepository;
-import com.example.expenseapi.repository.PreferenceRepository;
-import com.example.expenseapi.repository.UserRepository;
+import com.example.expenseapi.repository.*;
 import com.example.expenseapi.specification.UserSpecification;
 import com.example.expenseapi.utils.AuthHelper;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,8 +29,12 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
     private final CurrencyRepository currencyRepository;
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final PreferenceRepository preferenceRepository;
+    private final ExpenseService expenseService;
+    private final MembershipService membershipService;
+    private final TemporaryMembershipService temporaryMembershipService;
+    private final RefreshTokenService refreshTokenService;
 
-    public UserServiceImpl(UserRepository repository, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, CurrencyRepository currencyRepository, MethodOfPaymentRepository methodOfPaymentRepository, PreferenceRepository preferenceRepository) {
+    public UserServiceImpl(UserRepository repository, UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, CurrencyRepository currencyRepository, MethodOfPaymentRepository methodOfPaymentRepository, PreferenceRepository preferenceRepository, ExpenseService expenseService, MembershipService membershipService, TemporaryMembershipService temporaryMembershipService, RefreshTokenService refreshTokenService) {
         super(repository);
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -40,6 +42,10 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
         this.currencyRepository = currencyRepository;
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.preferenceRepository = preferenceRepository;
+        this.expenseService = expenseService;
+        this.membershipService = membershipService;
+        this.temporaryMembershipService = temporaryMembershipService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -105,6 +111,16 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
             )));
         }
         return super.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        expenseService.deleteAllExpensesForUserId(id);
+        membershipService.deleteAllMembershipsForUserId(id);
+        temporaryMembershipService.deleteAllTemporaryMembershipsForUser(id);
+        refreshTokenService.deleteByUserId(id);
+        super.delete(id);
     }
 }
 
