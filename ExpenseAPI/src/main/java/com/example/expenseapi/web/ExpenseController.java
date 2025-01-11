@@ -34,6 +34,11 @@ public class ExpenseController extends GenericController<Expense, Long> {
         super(service);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ExpenseDTO> getExpense(@PathVariable Long id) {
+        return new ResponseEntity<>(((ExpenseService) service).getMapped(id), HttpStatus.OK);
+    }
+
     @PostMapping("/create")
     @Operation(summary = "Create a new expense using DTO")
     @ApiResponse(responseCode = "201", description = "Expense successfully created.",
