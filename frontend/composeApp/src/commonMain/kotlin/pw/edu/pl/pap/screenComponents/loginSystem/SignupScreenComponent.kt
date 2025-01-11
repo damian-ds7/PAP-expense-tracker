@@ -2,6 +2,7 @@ package pw.edu.pl.pap.screenComponents.loginSystem
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.util.validateEmail
@@ -28,7 +29,8 @@ class SignupScreenComponent(
                     onChange = {
                         coroutineScope.launch { confirmedPassword.value = it }
                     },
-                    password = true
+                    password = true,
+                    textAlign = TextAlign.Left
                 ),
                 InputFieldData.TextFieldData(
                     title = "Name",
@@ -36,6 +38,7 @@ class SignupScreenComponent(
                     onChange = {
                         coroutineScope.launch { name.value = it }
                     },
+                    textAlign = TextAlign.Left
                 ),
                 InputFieldData.TextFieldData(
                     title = "Surname",
@@ -43,6 +46,7 @@ class SignupScreenComponent(
                     onChange = {
                         coroutineScope.launch { surname.value = it }
                     },
+                    textAlign = TextAlign.Left
                 )
             )
         )

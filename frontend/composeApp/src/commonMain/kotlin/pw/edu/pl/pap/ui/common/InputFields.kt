@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
@@ -60,7 +61,7 @@ private fun createField(data: InputFieldData) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = data.title)
+                Text(text = data.title, modifier = Modifier.fillMaxWidth(0.5f))
                 when (data) {
                     is InputFieldData.DropdownListData -> createDropdownList(data)
                     is InputFieldData.DatePickerData -> createDatePicker(data)
@@ -87,7 +88,10 @@ private fun createTextField(
     TextField(
         value = data.parameter.value,
         onValueChange = { newParameter -> data.onChange(newParameter) },
-        keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default
+        keyboardOptions = data.keyboardOptions ?: KeyboardOptions.Default,
+        singleLine = true,
+        textStyle = LocalTextStyle.current.copy(textAlign = data.textAlign),
+
     )
 }
 
@@ -100,7 +104,7 @@ private fun createDropdownList(
 
     Column(
         modifier = Modifier
-            .width(250.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -137,12 +141,12 @@ private fun createDatePicker(
     data: InputFieldData.DatePickerData
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    val selectedDate by remember { mutableStateOf(data.date.value) }
+    var selectedDate by remember { mutableStateOf(data.date.value) }
     val datePickerState = rememberDatePickerState(dateToMillis(selectedDate))
 
     Box(
         modifier = Modifier
-            .width(250.dp)
+            .fillMaxWidth()
             .clickable { showDatePicker = true },
         contentAlignment = Alignment.Center
     )
@@ -157,7 +161,9 @@ private fun createDatePicker(
                 TextButton(onClick = {
                     val millis = datePickerState.selectedDateMillis
                     if (millis != null) {
-                        data.onDateConfirm(millis)
+                        val newDate = LocalDate.fromEpochDays((millis / (24 * 60 * 60 * 1000)).toInt())
+                        selectedDate = newDate
+                        data.onDateConfirm(newDate)
                     }
                     showDatePicker = false
                 }) {
@@ -196,7 +202,9 @@ private fun createPasswordField(
             TextButton(onClick = { visibility = !visibility }) {
                 Text(if (visibility) "Hide" else "Show")
             }
-        }
+        },
+        singleLine = true,
+        textStyle = LocalTextStyle.current.copy(textAlign = data.textAlign)
     )
 }
 
@@ -251,19 +259,10 @@ private fun createCheckBox(data: InputFieldData.CheckboxData) {
 
     val (parentState, text) = parentStateAndText
 
-//    val (parentState, text) by derivedStateOf {
-//        when {
-//            checkedStates.all { it } -> ToggleableState.On to "All"
-//            checkedStates.none { it } -> ToggleableState.Off to "None"
-//            else -> ToggleableState.Indeterminate to "Selected ${checkedStates.count { it }}"
-//        }
-//    }
-
     var showDropdown by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .width(250.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

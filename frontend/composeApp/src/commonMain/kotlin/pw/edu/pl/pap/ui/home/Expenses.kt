@@ -59,7 +59,7 @@ fun ExpenseBlock(expense: Expense, onClick: (Expense) -> Unit) {
             }
 
             Text(
-                text = "${formatForDisplay(expense.price)} zł",
+                text = "${formatForDisplay(expense.price)} ${expense.currency.symbol}",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Light,
                 color = Color.Gray,

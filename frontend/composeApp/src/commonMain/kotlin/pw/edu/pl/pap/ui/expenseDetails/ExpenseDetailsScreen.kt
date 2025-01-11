@@ -16,12 +16,17 @@ fun ExpenseDetailsScreen(
 ) {
     val scope = rememberCoroutineScope()
     var confirmDialogState by remember { mutableStateOf<ConfirmationDialogState>(ConfirmationDialogState.None) }
-    val dialogFactory = remember { ConfirmationDialogFactory(
-        onDismiss = component.onBack,
-        onDelete = { component.deleteExpense() }
-    ) }
+    val dialogFactory = remember {
+        ConfirmationDialogFactory(
+            onDismiss = component.onBack,
+            onDelete = { component.deleteExpense() }
+        )
+    }
 
     Header("Expense Details")
+
+    LaunchedEffect(Unit) { component.setupInputFields() }
+
     InputFields(component.inputFieldsData)
 
     BackDeleteAddButtonRow(
@@ -60,7 +65,7 @@ fun ExpenseDetailsScreen(
 }
 
 fun handleBack(component: ExpenseDetailsScreenComponent, showConfirmDialog: (ConfirmationDialogState) -> Unit) {
-    if (component.noChange) {
+    if (!component.hasChanges) {
         component.onBack()
     } else {
         showConfirmDialog(ConfirmationDialogState.GoBack)

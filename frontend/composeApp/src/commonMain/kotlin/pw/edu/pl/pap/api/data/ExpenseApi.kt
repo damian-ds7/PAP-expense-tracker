@@ -6,7 +6,7 @@ import pw.edu.pl.pap.data.databaseAssociatedData.*
 
 interface ExpenseApi {
 
-    @GET("expense/{id}")
+    @GET("expense/get/{id}")
     suspend fun getExpense(@Path("id") id: Long): Expense
 
     @GET("expense/recent/{group}")

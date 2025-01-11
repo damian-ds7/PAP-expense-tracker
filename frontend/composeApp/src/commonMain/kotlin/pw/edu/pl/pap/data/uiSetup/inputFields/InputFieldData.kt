@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.datetime.LocalDate
 
 sealed class InputFieldData(open val title: String) {
@@ -17,7 +18,7 @@ sealed class InputFieldData(open val title: String) {
     data class DatePickerData (
         override val title: String,
         val date: MutableState<LocalDate>,
-        val onDateConfirm: (Long) -> Unit
+        val onDateConfirm: (LocalDate) -> Unit
     ) : InputFieldData(title)
 
     data class TextFieldData (
@@ -26,6 +27,7 @@ sealed class InputFieldData(open val title: String) {
         val onChange: (String) -> Unit,
         val keyboardOptions: KeyboardOptions? = null,  // Optional keyboard options, used for number only keyboard
         val password: Boolean = false,
+        val textAlign: TextAlign = TextAlign.Center
     ) : InputFieldData(title)
 
     data class ButtonData (

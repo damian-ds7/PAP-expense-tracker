@@ -1,10 +1,8 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.NewExpense
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
-import pw.edu.pl.pap.repositories.data.GroupRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class NewExpenseScreenComponent(
@@ -13,11 +11,6 @@ class NewExpenseScreenComponent(
     private val currentUserGroup: UserGroup,
 ) : BaseExpenseScreenComponent(baseComponent, onBack) {
 
-    private val groupRepository: GroupRepository by inject(GroupRepository::class.java)
-
-    init {
-        setupInputFields()
-    }
 
     override fun confirm() {
         val newExpense = NewExpense(
@@ -25,10 +18,10 @@ class NewExpenseScreenComponent(
             price = price.value.toFloat(),
             user = users[userIndex.value],
             groupName = currentUserGroup.name,
-            categoryName = categories[categoryIndex.value],
+            categoryName = categories[categoryIndex.value].name,
             expenseDate = date.value,
-            methodOfPayment = methodsOfPayment[methodOfPaymentIndex.value],
-            currencyCode = currencies[currencyIndex.value]
+            methodOfPayment = methodsOfPayment[methodOfPaymentIndex.value].name,
+            currencyCode = currencies[currencyIndex.value].symbol
         )
 
         coroutineScope.launch {

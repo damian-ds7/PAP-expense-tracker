@@ -1,6 +1,9 @@
 package pw.edu.pl.pap.screenComponents.singleExpense
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import pw.edu.pl.pap.data.databaseAssociatedData.Expense
@@ -15,31 +18,38 @@ class ExpenseDetailsScreenComponent(
 
     override var title: MutableState<String> = mutableStateOf(expense.title)
 
-    override var categoryIndex: MutableState<Int> = mutableStateOf(expense.category.id.toInt() - 1)
+    override var categoryIndex: MutableState<Int> = mutableStateOf(categories.indexOf(expense.category))
 
     override var date: MutableState<LocalDate> = mutableStateOf(expense.expenseDate)
 
     override var price: MutableState<String> = mutableStateOf(formatForTextField(expense.price))
 
-    override var currencyIndex: MutableState<Int> = mutableStateOf(expense.currency.id.toInt() - 1)
+    override var currencyIndex: MutableState<Int> = mutableStateOf(currencies.indexOf(expense.currency))
 
-    //TODO when no given currency in list there's an out of bounds error for index -1
     override var methodOfPaymentIndex: MutableState<Int> =
-        mutableStateOf(methodsOfPayment.indexOf(expense.methodOfPayment.name))
+        mutableStateOf(methodsOfPayment.indexOf(expense.methodOfPayment))
 
-    override var userIndex: MutableState<Int> = mutableStateOf(expense.user.id.toInt())
+    override var userIndex: MutableState<Int> = mutableStateOf(users.indexOf(expense.user))
 
-    val noChange by derivedStateOf { canConfirm && price.value == formatForTextField(expense.price) }
-
-    init {
-        setupInputFields()
+    val hasChanges by derivedStateOf {
+        title.value != expense.title ||
+                categoryIndex.value != categories.indexOf(expense.category) ||
+                date.value != expense.expenseDate ||
+                price.value != formatForTextField(expense.price) ||
+                currencyIndex.value != currencies.indexOf(expense.currency) ||
+                methodOfPaymentIndex.value != methodsOfPayment.indexOf(expense.methodOfPayment) ||
+                userIndex.value != users.indexOf(expense.user)
     }
 
     override fun confirm() {
         val newExpense = expense.copy(
             title = title.value,
             price = price.value.toFloat(),
+            user = users[userIndex.value],
             expenseDate = date.value,
+            category = categories[categoryIndex.value],
+            currency = currencies[currencyIndex.value],
+            methodOfPayment = methodsOfPayment[methodOfPaymentIndex.value],
         )
 
         if (newExpense == expense) {
@@ -48,11 +58,9 @@ class ExpenseDetailsScreenComponent(
         }
 
         coroutineScope.launch {
-            expenseRepository.updateExpense(newExpense)
+            expenseRepository.updateExpense(newExpense, expense)
             onBack()
         }
-
-        println("Updated Expense ${newExpense.id} from ${expense.price} to ${newExpense.price}")
     }
 
     fun deleteExpense() {
