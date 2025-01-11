@@ -1,9 +1,7 @@
 package com.example.expenseapi.service;
 
-import com.example.expenseapi.pojo.BaseGroup;
-import com.example.expenseapi.pojo.Group;
-import com.example.expenseapi.pojo.Membership;
-import com.example.expenseapi.pojo.User;
+import com.example.expenseapi.exception.BadRequestException;
+import com.example.expenseapi.pojo.*;
 import com.example.expenseapi.repository.GroupRepository;
 import com.example.expenseapi.repository.RoleRepository;
 import com.example.expenseapi.utils.AuthHelper;
@@ -12,7 +10,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -32,7 +29,9 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
     @Cacheable(value = "baseGroups", keyGenerator = "userBasedKeyGenerator")
     public List<BaseGroup> getBaseGroups() {
         String email = AuthHelper.getUserEmail();
-        return membershipService.getBaseGroupsByUserId(userService.findByEmail(email).get().getId());
+        User userEntity = userService.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found for email: " + email));
+        return membershipService.getBaseGroupsByUserId(userEntity.getId());
     }
 
     @Override
@@ -50,10 +49,14 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
     @CacheEvict(value = {"baseGroups", "activeGroups"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public Group save(Group entity) {
         String email = AuthHelper.getUserEmail();
-        Optional<User> user = userService.findByEmail(email);
+        User userEntity = userService.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found for email: " + email));
+        Role role = roleRepository.findById(1L)
+                .orElseThrow(() -> new BadRequestException("Role not found with ID=1"));
         Group newGroup = super.save(entity);
-        membershipService.save(new Membership(user.get(), newGroup, roleRepository.findById(1L).get()));
+        membershipService.save(new Membership(userEntity, newGroup, role));
         return newGroup;
+
     }
 
     @Override
