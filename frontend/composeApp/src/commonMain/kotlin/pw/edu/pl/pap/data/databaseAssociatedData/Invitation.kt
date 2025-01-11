@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Invitation(
     val id: Long,
-    val user: User,
+    val sender: User,
+    val receiver: User,
     val group: UserGroup
 )
