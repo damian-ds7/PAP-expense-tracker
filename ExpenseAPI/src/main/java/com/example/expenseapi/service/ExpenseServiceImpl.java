@@ -17,6 +17,8 @@ import com.example.expenseapi.utils.CursorPaginationUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +55,19 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         this.preferenceRepository = preferenceRepository;
     }
 
+    @CacheEvict(value = {
+            "expenses",
+            "expensesPage",
+            "expInfoGroup",
+            "expInfoAllGroups",
+            "expensesMap",
+            "recentExpense",
+            "groupExpenseDateMap",
+            "groupExpenseCategoryMap",
+            "searchExpensesDTO",
+            "searchExpensesPagesDTO",
+            "expensesUserPage"
+    }, allEntries = true)
     public ExpenseDTO save(ExpenseCreateDTO expenseDTO) {
         Expense entity = expenseMapper.expenseCreateDTOToExpense(expenseDTO);
         if (entity.getCategory() == null) {
@@ -75,6 +90,19 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @CacheEvict(value = {
+            "expenses",
+            "expensesPage",
+            "expInfoGroup",
+            "expInfoAllGroups",
+            "expensesMap",
+            "recentExpense",
+            "groupExpenseDateMap",
+            "groupExpenseCategoryMap",
+            "searchExpensesDTO",
+            "searchExpensesPagesDTO",
+            "expensesUserPage"
+    }, allEntries = true)
     public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
         User user = AuthHelper.getUser();
         if (areNeededFieldsProvided(createDTO)) {
@@ -109,6 +137,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "expensesPage", key = "#name + '_' + #page + '_' + #size")
     public Page<ExpenseDTO> getExpensesForGroup(String name, int page, int size) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setGroupName(name);
@@ -122,6 +151,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "expInfoGroup", key = "#group")
     public ExpInfo getExpInfo(String group) {
         List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
         List<ExpenseDTO> userExpenses = groupExpenses.stream()
@@ -131,6 +161,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "expInfoAllGroups")
     public ExpInfo getExpInfo() {
         List<BaseGroup> groups = AuthHelper.getAllGroups();
         Set<ExpenseDTO> groupExpenses = groups.stream()
@@ -162,6 +193,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "expensesMap", key = "#filter.toString() + '_' + #keyType")
     public Map<String, Double> getMapResult(ExpenseFilter filter,  String keyType) {
         List<ExpenseDTO> result = searchExpensesDTO(filter);
         Currency currency = currencyRepository.findBySymbol(AuthHelper.getUser().getPreference().getCurrency().getSymbol()).get(); //TODO check if currency exists
@@ -171,6 +203,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "recentExpense", key = "#groupName")
     public Optional<ExpenseDTO> getRecentExpense(String groupName) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setGroupName(groupName);
@@ -179,6 +212,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "groupExpenseDateMap", key = "#name + '_' + #lastId + '_' + #lastDate + '_' + #size + '_' + #desc")
     public CursorPageResponse<Map<LocalDate, List<ExpenseDTO>>> getGroupExpenseAsDateMap(String name, Long lastId, LocalDate lastDate, int size, boolean desc) {
         List<ExpenseDTO> expenses = getExpensesForGroupCursorBased(name, lastId, lastDate, size, desc);
         Map<LocalDate, List<ExpenseDTO>> grouped = expenses.stream()
@@ -211,6 +245,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "groupExpenseCategoryMap", key = "#name + '_' + #lastId + '_' + #lastCategory + '_' + #size + '_' + #desc")
     public CursorPageResponse<Map<Category, List<ExpenseDTO>>> getGroupExpenseAsCategoryMap(
             String name,
             Long lastId,
@@ -256,6 +291,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "searchExpensesDTO", key = "#filter.toString()")
     public List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
         if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
             filter.setGroupName(AuthHelper.getGroupName());
@@ -270,6 +306,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "searchExpensesPagesDTO", key = "#filter.toString() + '_' + #page + '_' + #size")
     public Page<ExpenseDTO> searchExpensesPagesDTO(ExpenseFilter filter, int page, int size) {
         if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
             filter.setGroupName(AuthHelper.getGroupName());
@@ -341,6 +378,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @CacheEvict(value = {"expensesPage", "expInfoGroup", "expInfoAllGroups", "expensesMap", "recentExpense", "groupExpenseDateMap", "groupExpenseCategoryMap", "searchExpensesDTO", "searchExpensesPagesDTO", "expensesUserPage"}, allEntries = true)
     public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
         Expense expense = expenseRepository.findById(id).orElse(null);
         Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
@@ -358,9 +396,46 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
+    @Cacheable(value = "expensesUserPage", key = "#page + '_' + #size + '_' + T(com.example.expenseapi.utils.AuthHelper).getUserEmail()")
     public Page<ExpenseDTO> getExpensesForUser(int page, int size) {
         ExpenseFilter filter = new ExpenseFilter();
         filter.setEmail(AuthHelper.getUserEmail());
         return searchExpensesPagesDTO(filter, page, size);
+    }
+
+    @Override
+    @CacheEvict(value = {
+            "expenses",
+            "expensesPage",
+            "expInfoGroup",
+            "expInfoAllGroups",
+            "expensesMap",
+            "recentExpense",
+            "groupExpenseDateMap",
+            "groupExpenseCategoryMap",
+            "searchExpensesDTO",
+            "searchExpensesPagesDTO",
+            "expensesUserPage"
+    }, allEntries = true)
+    public void delete(Long aLong) {
+        super.delete(aLong);
+    }
+
+    @Override
+    @CacheEvict(value = {
+            "expenses",
+            "expensesPage",
+            "expInfoGroup",
+            "expInfoAllGroups",
+            "expensesMap",
+            "recentExpense",
+            "groupExpenseDateMap",
+            "groupExpenseCategoryMap",
+            "searchExpensesDTO",
+            "searchExpensesPagesDTO",
+            "expensesUserPage"
+    }, allEntries = true)
+    public void deleteAllData() {
+        super.deleteAllData();
     }
 }

@@ -33,6 +33,10 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2/**").permitAll()
+                        .requestMatchers("/chart/keys").permitAll()
+                        .requestMatchers("/category/all").permitAll()
+                        .requestMatchers("/method/all").permitAll()
+                        .requestMatchers("/currency/all").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
