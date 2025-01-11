@@ -1,35 +1,48 @@
 package pw.edu.pl.pap.screenComponents.mainScreens
 
 import androidx.compose.runtime.mutableStateListOf
+import kotlinx.coroutines.launch
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
-import pw.edu.pl.pap.screenComponents.BaseScreenComponent
+import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class GroupScreenComponent(
     private val onUserClicked: (UserGroup, User) -> Unit,
-    val onEditGroupClicked: (UserGroup) -> Unit,
+    val onEditGroupClicked: () -> Unit,
     val onNewGroupClicked: () -> Unit,
-    val onInvitationsClicked: (UserGroup) -> Unit,
-    val currentUserGroup: UserGroup,
-    baseComponent: BaseScreenComponent,
-) : BaseScreenComponent by baseComponent {
+    val onInvitationsClicked: () -> Unit,
+    baseComponent: BaseComponent,
+) : BaseComponent by baseComponent {
+
+    private val groupRepository: GroupRepository by inject()
+    val currentUserGroup = groupRepository.currentUserGroup
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    //temp
-    private val users = listOf(
-        User(1, "Herkules", "1", "Kaczka2137@gmail.com"),
-        User(2, "Zeus", "2", "Kaczka2137@gmail.com"),
-        User(3, "Posejdon", "3", "Kaczka2137@gmail.com"),
-    )
-    private val userNames = users.map { "${it.name} ${it.surname}" }
-    //TODO fetch available users
+    private lateinit var users: List<User>
+    private lateinit var userNames: List<String>
+
+    private val currentGroup = groupRepository.currentUserGroup
 
     //temp
     private val balances = listOf(70.0, 45.0, -115.0)
     //TODO fetch balances
+
+    init {
+        coroutineScope.launch {
+            getUsers()
+            userNames = users.map { "${it.name} ${it.surname}" }
+            setupInputFields()
+        }
+    }
+
+    private suspend fun getUsers() {
+        users = groupRepository.getUsersInCurrentGroup()
+    }
 
 
     fun setupInputFields() {
@@ -40,7 +53,7 @@ class GroupScreenComponent(
                 InputFieldData.UserBalanceButtonData(
                     title = username,
                     balance = balance.toFloat(),
-                    onClick = { onUserClicked(currentUserGroup, user) }
+                    onClick = { onUserClicked(currentGroup.value!!, user) }
                 )
             }
         )
