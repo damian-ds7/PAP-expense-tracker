@@ -15,7 +15,7 @@ class ExpenseRepository(val api: ExpenseApi) {
     private val _groupedExpenses = MutableStateFlow(ExpenseMap())
     val groupedExpenses: StateFlow<ExpenseMap> get() = _groupedExpenses
 
-    private val _moreToLoad = MutableStateFlow(true)
+    private val _moreToLoad = MutableStateFlow(false)
     val moreToLoad: StateFlow<Boolean> get() = _moreToLoad
 
     private val _currentGroupingKey = MutableStateFlow(GroupKey.DATE)

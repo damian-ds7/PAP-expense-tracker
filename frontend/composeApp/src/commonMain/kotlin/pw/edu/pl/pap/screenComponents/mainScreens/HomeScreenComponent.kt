@@ -43,7 +43,7 @@ class HomeScreenComponent(
     fun getDataBasedOnState() {
         when (_navigationState.value) {
             is NavigationState.InitialLoad -> {
-                fetchAllExpenses()
+                fetchInitialPageExpenses()
             }
 
             is NavigationState.FromNewExpenseScreen -> {
@@ -72,6 +72,7 @@ class HomeScreenComponent(
 
     val homeInfo = expenseRepository.homeInfo
     val groupedExpenses = expenseRepository.groupedExpenses
+    val moreToLoad = expenseRepository.moreToLoad
 
     val currentGroupingKey = expenseRepository.currentGroupingKey
     val currentGroupingOrder = expenseRepository.currentGroupingOrder
@@ -86,9 +87,15 @@ class HomeScreenComponent(
         }
     }
 
-    private fun fetchAllExpenses() {
+    private fun fetchInitialPageExpenses() {
         coroutineScope.launch {
             expenseRepository.loadInitialPage(groupRepository.getCurrentGroupName())
+        }
+    }
+
+    fun fetchNextPage() {
+        coroutineScope.launch {
+            expenseRepository.loadNextPage(groupRepository.getCurrentGroupName())
         }
     }
 
