@@ -1,10 +1,12 @@
 package com.example.expenseapi.web;
 
+import com.example.expenseapi.dto.InvitationDTO;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.TemporaryMembership;
 import com.example.expenseapi.service.MembershipService;
 import com.example.expenseapi.service.TemporaryMembershipService;
 import com.example.expenseapi.service.UserService;
+import com.example.expenseapi.utils.AuthHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -79,9 +81,19 @@ public class TemporaryMembershipController extends GenericController<TemporaryMe
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of invitations.",
             content = @Content(mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = TemporaryMembership.class))))
-    public ResponseEntity<List<TemporaryMembership>> getInvitations(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<InvitationDTO>> getInvitations(@AuthenticationPrincipal User user) {
         com.example.expenseapi.pojo.User mUser = userService.findByEmail(user.getUsername()).get();
         return new ResponseEntity<>(temporaryMembershipService.getByUserId(mUser.getId()), HttpStatus.OK);
     }
+
+    @GetMapping("/sentInvitations")
+    @Operation(summary = "Retrieves invitations sent by logged user")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved list of invitations.",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = TemporaryMembership.class))))
+    public ResponseEntity<List<InvitationDTO>> getSentInvitations(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(temporaryMembershipService.getBySenderId(AuthHelper.getUser().getId()), HttpStatus.OK);
+    }
+
 
 }

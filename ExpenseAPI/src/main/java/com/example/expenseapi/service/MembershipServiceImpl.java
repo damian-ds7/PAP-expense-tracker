@@ -93,4 +93,12 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     public void deleteAllData() {
         super.deleteAllData();
     }
+
+    @Override
+    public Boolean isAdmin(String groupName) {
+        User user = AuthHelper.getUser();
+        return findAdmins(groupName).stream()
+                .map(UserDTO::getId)
+                .anyMatch(memberId -> memberId.equals(user.getId()));
+    }
 }

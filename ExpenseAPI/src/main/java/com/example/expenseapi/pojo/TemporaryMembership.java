@@ -1,9 +1,9 @@
 package com.example.expenseapi.pojo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
@@ -12,11 +12,18 @@ import lombok.Setter;
 @Entity
 @Table(name = "temporary_memberships")
 public class TemporaryMembership extends BaseMembership<Group> {
-    public TemporaryMembership(User user, Group group, Role role) {
+    @NonNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "sender_id", referencedColumnName = "id")
+    private User sender;
+
+    public TemporaryMembership(User user, Group group, Role role, User sender) {
         super(user, group, role);
+        this.sender = sender;
     }
 
-    public TemporaryMembership(BaseMembership<Group> entity) {
+    public TemporaryMembership(BaseMembership<Group> entity, User sender) {
         super(entity.user, entity.group, entity.role);
+        this.sender = sender;
     }
 }

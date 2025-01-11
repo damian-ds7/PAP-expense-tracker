@@ -38,7 +38,8 @@ public class CacheConfig {
                 "admins",
                 "users",
                 "roles",
-                "temporaryMembershipsByUserId"
+                "temporaryMembershipsByUserId",
+                "temporaryMembershipsBySenderId"
         );
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
