@@ -16,4 +16,6 @@ public interface MembershipService extends GenericService<Membership, Long> {
     String getRole(User user, Group group);
 
     Boolean isAdmin(String groupName);
+
+    void deleteAllMembershipsForUserId(Long id);
 }
