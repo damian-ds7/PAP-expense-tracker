@@ -102,7 +102,8 @@ class ExpenseRepository(val api: ExpenseApi) {
         try {
             api.updateExpense(expense.id, expense)
             val newMap = _groupedExpenses.value
-            newMap.updateExpense(getKeyFromExpense(expense), expense)
+            val updatedExpense = api.getExpense(expense.id)
+            newMap.updateExpense(getKeyFromExpense(updatedExpense), updatedExpense, getKeyFromExpense(expense))
             _groupedExpenses.value = newMap
         } catch (e: Exception) {
             e.printStackTrace()

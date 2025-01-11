@@ -24,7 +24,17 @@ class ExpenseMap(
         }
     }
 
-    fun updateExpense(key: GroupMapKey, updatedExpense: Expense) {
+    fun updateExpense(key: GroupMapKey, updatedExpense: Expense, oldKey: GroupMapKey) {
+        if (key != oldKey) {
+            val oldExpenseList = this[oldKey]?.toMutableList() ?: return
+            oldExpenseList.removeIf { it.id == updatedExpense.id }
+            if (oldExpenseList.isEmpty()) {
+                this.remove(oldKey)
+            } else {
+                this[oldKey] = oldExpenseList
+            }
+        }
+
         val expenseList = this[key] ?: return
         val updatedList = expenseList.map {
             if (it.id == updatedExpense.id) updatedExpense else it
