@@ -1,6 +1,8 @@
 package com.example.expenseapi.service;
 
+import com.example.expenseapi.dto.InvitationDTO;
 import com.example.expenseapi.dto.MembershipCreateDTO;
+import com.example.expenseapi.mapper.InvitationMapper;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.TemporaryMembership;
 import com.example.expenseapi.repository.GroupRepository;
@@ -19,19 +21,33 @@ public class TemporaryMembershipServiceImpl extends GenericServiceImpl<Temporary
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final GroupRepository groupRepository;
+    private final InvitationMapper invitationMapper;
 
-    public TemporaryMembershipServiceImpl(TemporaryMembershipRepository repository, UserMapper userMapper, RoleRepository roleRepository, GroupRepository groupRepository) {
+    public TemporaryMembershipServiceImpl(TemporaryMembershipRepository repository, UserMapper userMapper, RoleRepository roleRepository, GroupRepository groupRepository, InvitationMapper invitationMapper) {
         super(repository);
         this.temporaryMembershipRepository = repository;
         this.userMapper = userMapper;
         this.roleRepository = roleRepository;
         this.groupRepository = groupRepository;
+        this.invitationMapper = invitationMapper;
     }
 
     @Override
     @Cacheable(value = "temporaryMembershipsByUserId", key = "#userId")
-    public List<TemporaryMembership> getByUserId(Long userId) {
-        return temporaryMembershipRepository.findByUserId(userId);
+    public List<InvitationDTO> getByUserId(Long userId) {
+        return temporaryMembershipRepository.findByUserId(userId)
+                .stream()
+                .map(invitationMapper::tempMembershipToInvitation)
+                .toList();
+    }
+
+    @Override
+    @Cacheable(value = "temporaryMembershipsBySenderId", key = "#senderId")
+    public List<InvitationDTO> getBySenderId(Long senderId) {
+        return temporaryMembershipRepository.findBySenderId(senderId)
+                .stream()
+                .map(invitationMapper::tempMembershipToInvitation)
+                .toList();
     }
 
     @Override
