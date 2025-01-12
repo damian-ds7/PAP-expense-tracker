@@ -35,13 +35,8 @@ public class MembershipController extends GenericController<Membership, Long> {
             @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
                     content = @Content)
     })
-    public ResponseEntity<HttpStatus> save(@RequestBody MembershipCreateDTO entity) {
-        User user = AuthHelper.getUser();
-        if (((MembershipService) service).getRole(user, entity.getGroup()).equals("admin")) {
-            temporaryMembershipService.save(entity);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    public ResponseEntity<TemporaryMembership> save(@RequestBody MembershipCreateDTO entity) {
+        return new ResponseEntity<>(temporaryMembershipService.save(entity), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}/{groupName}")
