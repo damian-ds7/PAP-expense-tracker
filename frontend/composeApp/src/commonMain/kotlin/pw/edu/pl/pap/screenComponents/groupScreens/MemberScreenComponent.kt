@@ -46,6 +46,7 @@ class MemberScreenComponent(
 
     var showChangeRoleConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
     var showKickConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
+    var showLeaveConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
 
     val changeRoleConfirmationData = ConfirmationDialogConfig(
         mainText = "Change Role",
@@ -60,11 +61,24 @@ class MemberScreenComponent(
 
     val kickConfirmationData = ConfirmationDialogConfig(
         mainText = "Kick",
-        subText = "Are you sure you want to kick \"${user.name} ${user.surname}\" from ${groupRepository.getCurrentGroupName()}?",
-        onNo = { showChangeRoleConfirmationDialog.value = false },
+        subText = "Are you sure you want to kick \"${user.name} ${user.surname}\" from ${groupRepository.getCurrentGroupName()}?\n" +
+                  "All expenses paid by this user in ${groupRepository.getCurrentGroupName()} will be gone!",
+        onNo = { showKickConfirmationDialog.value = false },
         onYes = {
-            showChangeRoleConfirmationDialog.value = false
+            showKickConfirmationDialog.value = false
             coroutineScope.launch { kickMember() }
+            onBack()
+        }
+    )
+
+    val leaveConfirmationData = ConfirmationDialogConfig(
+        mainText = "Leave",
+        subText = "Are you sure you want to leave from ${groupRepository.getCurrentGroupName()}?\n" +
+                "All expenses paid by you in ${groupRepository.getCurrentGroupName()} will be gone!",
+        onNo = { showLeaveConfirmationDialog.value = false },
+        onYes = {
+            showLeaveConfirmationDialog.value = false
+            coroutineScope.launch { leave() }
             onBack()
         }
     )
@@ -85,12 +99,22 @@ class MemberScreenComponent(
                         {}
                     }
                 )
-            ) + if (isAdmin.value) {
+            ) + if (isAdmin.value && user != userRepository.currentUserInfo.value) {
                 listOf(
                     InputFieldData.ButtonData(
                         title = "KICK",
                         onClick = {
                             coroutineScope.launch { showKickConfirmationDialog.value = true }
+                        },
+                        isColored = true,
+                    )
+                )
+            } else if (isAdmin.value && user == userRepository.currentUserInfo.value) {
+                listOf(
+                    InputFieldData.ButtonData(
+                        title = "LEAVE",
+                        onClick = {
+                            coroutineScope.launch { showLeaveConfirmationDialog.value = true }
                         },
                         isColored = true,
                     )
@@ -109,5 +133,9 @@ class MemberScreenComponent(
         runBlocking { membershipRepository.kickMember(user, currentUserGroup.value!!) }
         groupRepository.getUsersInCurrentGroup()
         //TODO test it
+    }
+
+    private suspend fun leave(){
+
     }
 }

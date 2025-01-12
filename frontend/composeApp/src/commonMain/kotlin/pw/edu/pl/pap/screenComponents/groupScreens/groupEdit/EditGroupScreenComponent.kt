@@ -19,6 +19,8 @@ class EditGroupScreenComponent(
 
     val noChange by derivedStateOf { canConfirm && name.value == name.value }
 
+    //TODO add confirmation popup to delete
+
     override fun confirm() {
         val newGroup = group?.copy(name = name.value)!!
 

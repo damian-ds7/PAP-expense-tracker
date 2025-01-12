@@ -24,8 +24,6 @@ class GroupRepository(val api: GroupApi) {
     private val _usersInCurrentGroup = MutableStateFlow<List<User>>(listOf())
     val usersInCurrentGroup : StateFlow<List<User>> get() = _usersInCurrentGroup
 
-//    private lateinit var users: Pair<UserGroup, List<User>>
-
     fun updateCurrentGroup(key: UserGroup) {
         _currentUserGroup.value = key
         runBlocking { getUsersInCurrentGroup() }
@@ -59,9 +57,6 @@ class GroupRepository(val api: GroupApi) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        _allGroups.value = _allGroups.value.map { existingGroup ->
-//            if (existingGroup.id == group.id) group else existingGroup
-//        }
     }
 
     suspend fun deleteGroup(group: UserGroup) {
@@ -75,6 +70,7 @@ class GroupRepository(val api: GroupApi) {
 //        _allGroups.value = _allGroups.value.filter { existingGroup ->
 //            existingGroup.id != group.id
 //        }
+        //TODO test and remove this comment if working
     }
 
     suspend fun addGroup(group: NewGroup) {
