@@ -30,4 +30,6 @@ public interface ExpenseService extends GenericService<Expense, Long> {
 
     ExpenseDTO getMapped(Long id);
     void deleteAllExpensesForUserId(Long id);
+
+    void deleteAllExpensesForUserIdAndGroupName(Long userId, String groupName);
 }

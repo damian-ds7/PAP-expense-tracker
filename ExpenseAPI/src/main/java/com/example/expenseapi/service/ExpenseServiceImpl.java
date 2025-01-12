@@ -44,9 +44,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final ExpenseMapper expenseMapper;
     private final UserMapper userMapper;
-    private final PreferenceRepository preferenceRepository;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper, UserMapper userMapper, PreferenceRepository preferenceRepository) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper, UserMapper userMapper) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
@@ -55,7 +54,6 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.expenseMapper = expenseMapper;
         this.userMapper = userMapper;
-        this.preferenceRepository = preferenceRepository;
     }
 
     @CacheEvict(value = {
@@ -496,4 +494,24 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public void deleteAllExpensesForUserId(Long id) {
         expenseRepository.deleteAllByMembershipUserId(id);
     }
+
+    @Override
+    @CacheEvict(value = {
+            "expensesPage",
+            "expInfoGroup",
+            "expInfoAllGroups",
+            "expensesMap",
+            "recentExpense",
+            "groupExpenseDateMap",
+            "groupExpenseCategoryMap",
+            "searchExpensesDTO",
+            "searchExpensesPagesDTO",
+            "expensesUserPage",
+            "ExpenseID"
+    }, allEntries = true)
+    @Transactional
+    public void deleteAllExpensesForUserIdAndGroupName(Long userId, String groupName) {
+        expenseRepository.deleteAllByMembership_User_IdAndMembership_Group_Name(userId, groupName);
+    }
 }
+
