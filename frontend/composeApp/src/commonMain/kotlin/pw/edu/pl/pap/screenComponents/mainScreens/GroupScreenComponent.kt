@@ -36,10 +36,15 @@ class GroupScreenComponent(
 
     init {
         coroutineScope.launch {
-            runBlocking{ getUsers() }
-            setupInputFields()
-            println(users)
+            updateUsers()
         }
+    }
+
+    suspend fun updateUsers() {
+        runBlocking{ getUsers() }
+        users = groupRepository.usersInCurrentGroup.value
+        userNames = users.map { "${it.name} ${it.surname}" }
+        setupInputFields()
     }
 
     private suspend fun getUsers() {

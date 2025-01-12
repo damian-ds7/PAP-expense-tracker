@@ -2,11 +2,13 @@ package pw.edu.pl.pap.ui.groupScreens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.screenComponents.mainScreens.GroupScreenComponent
 import pw.edu.pl.pap.ui.common.ClickableHeader
 import pw.edu.pl.pap.ui.common.InputFields
@@ -18,6 +20,10 @@ fun GroupScreen(component: GroupScreenComponent) {
     val currentUserGroup by component.currentUserGroup.collectAsState()
 
     ClickableHeader(currentUserGroup?.name!!) { component.onEditGroupClicked() }
+
+    LaunchedEffect(component.currentUserGroup.value) {
+        runBlocking { component.updateUsers() }
+    }
 
     InputFields(component.inputFieldsData)
     //TODO add text if group is empty
