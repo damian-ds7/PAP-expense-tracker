@@ -37,10 +37,7 @@ fun PaginatedLazyColumn(
     val groupedExpenses by component.groupedExpenses.collectAsState()
 
     LaunchedEffect(listState) {
-        snapshotFlow { shouldLoadMore.value }
-            .distinctUntilChanged()
-            .filter { it }
-            .collect {
+        snapshotFlow { shouldLoadMore.value }.distinctUntilChanged().filter { it }.collect {
                 component.fetchNextPage()
             }
     }
@@ -57,20 +54,19 @@ fun PaginatedLazyColumn(
             items(items = expenseList, key = { expense -> expense.id }) { expense ->
                 ExpenseBlock(expense, onClick = component.onExpenseClick)
             }
+        }
 
-            if (isLoading) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+        if (isLoading) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
                 }
             }
         }
+
+
     }
 }
 
