@@ -31,7 +31,7 @@ class GroupScreenComponent(
 
     //temp
     private val balances = listOf(70.0, 45.0, -115.0)
-    //TODO fetch balances
+    //TODO remove balances
 
     init {
         coroutineScope.launch {

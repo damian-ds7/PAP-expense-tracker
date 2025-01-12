@@ -19,4 +19,7 @@ interface ConfigApi {
 
     @GET("chart/keys")
     suspend fun getChartKeys(): List<String>
+
+    @GET("role/all")
+    suspend fun getRoles(): List<String>
 }
