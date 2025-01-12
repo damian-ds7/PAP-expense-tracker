@@ -54,7 +54,7 @@ class GroupRepository(val api: GroupApi) {
     suspend fun updateGroup(group: UserGroup) {
         try {
             api.updateGroup(group.id, group)
-            getGroups()
+            getGroups(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -63,7 +63,7 @@ class GroupRepository(val api: GroupApi) {
     suspend fun deleteGroup(group: UserGroup) {
         try {
             api.deleteGroup(group.id)
-            getGroups()
+            getGroups(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -72,7 +72,7 @@ class GroupRepository(val api: GroupApi) {
     suspend fun addGroup(group: NewGroup) {
         try {
             api.postNewGroup(group)
-            getGroups()
+            getGroups(true)
         } catch (e: Exception) {
             e.printStackTrace()
         }

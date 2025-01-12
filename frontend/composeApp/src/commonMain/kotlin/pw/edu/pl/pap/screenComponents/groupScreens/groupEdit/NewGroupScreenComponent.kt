@@ -15,7 +15,7 @@ class NewGroupScreenComponent(
 
         coroutineScope.launch {
             groupRepository.addGroup(newGroup)
-            onSave()
+            onDismiss()
         }
     }
 }
