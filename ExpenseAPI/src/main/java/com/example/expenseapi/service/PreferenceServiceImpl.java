@@ -9,10 +9,7 @@ import com.example.expenseapi.repository.CurrencyRepository;
 import com.example.expenseapi.repository.MethodOfPaymentRepository;
 import com.example.expenseapi.repository.PreferenceRepository;
 import com.example.expenseapi.utils.AuthHelper;
-import com.example.expenseapi.utils.CurrencyRatesFetcher;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PreferenceServiceImpl extends GenericServiceImpl<Preference, Long> implements PreferenceService {
@@ -35,22 +32,12 @@ public class PreferenceServiceImpl extends GenericServiceImpl<Preference, Long> 
     @Override
     public Preference updateUserPreferences(PreferenceUpdateDTO preferenceUpdateDTO) {
         Preference pref = getUserPreferences();
-        Optional<Currency> currency = currencyRepository.findBySymbol(preferenceUpdateDTO.getCurrencySymbol());
-        if (currency.isEmpty() && preferenceUpdateDTO.getCurrencySymbol() != null) {
-            String symbol = preferenceUpdateDTO.getCurrencySymbol();
-            double rate = CurrencyRatesFetcher.getCurrencyRates(symbol);
-            if (rate == -1) throw new BadRequestException("Invalid currency symbol");
-            Currency newCurrency = new Currency(symbol, rate);
-            currencyRepository.save(newCurrency);
-            pref.setCurrency(newCurrency);
-        } else currency.ifPresent(pref::setCurrency);
-        Optional<MethodOfPayment> method = methodOfPaymentRepository.findByName(preferenceUpdateDTO.getMethodOfPayment());
-        if (method.isEmpty() && preferenceUpdateDTO.getMethodOfPayment() != null) {
-            MethodOfPayment newMethod = new MethodOfPayment(preferenceUpdateDTO.getMethodOfPayment());
-            methodOfPaymentRepository.save(newMethod);
-            pref.setMethod(newMethod);
-        }
-        else method.ifPresent(pref::setMethod);
+        Currency currency = currencyRepository.findBySymbol(preferenceUpdateDTO.getCurrencySymbol())
+                .orElseThrow(() -> new BadRequestException("Currency not found " + preferenceUpdateDTO.getCurrencySymbol()));
+        pref.setCurrency(currency);
+        MethodOfPayment method = methodOfPaymentRepository.findByName(preferenceUpdateDTO.getMethodOfPayment())
+                .orElseThrow(() -> new BadRequestException(("Method of payment not found ")));
+        pref.setMethod(method);
         if (preferenceUpdateDTO.getLanguage() != null)
             pref.setLanguage(preferenceUpdateDTO.getLanguage());
         return preferenceRepository.save(pref);
