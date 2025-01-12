@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.api.data.UserApi
+import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 
@@ -36,9 +37,11 @@ class UserRepository(val api: UserApi) {
         }
     }
 
-    suspend fun updateUser(user: User){
+    suspend fun updateUser(user: UpdatedUserData){
         try {
-            api.updateUser(user.id, user)
+            println(api.updateUserResponse(user))
+            _currentUserInfo.value = api.updateUser(user)
+            //TODO remove print when debugged
         } catch (e: Exception) {
             e.printStackTrace()
         }

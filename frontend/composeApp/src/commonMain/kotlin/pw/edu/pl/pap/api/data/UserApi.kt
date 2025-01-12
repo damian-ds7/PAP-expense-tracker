@@ -4,6 +4,8 @@ import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
+import io.ktor.client.statement.*
+import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 
 interface UserApi {
@@ -17,6 +19,10 @@ interface UserApi {
     @GET("user/isAdmin/{group}")
     suspend fun isAdmin(@Path("group") group: String): Boolean
 
-    @PUT("user/update/{id}")
-    suspend fun updateUser(@Path("id") id: Long, @Body user: User)
+    @PUT("user/update")
+    suspend fun updateUser(@Body user: UpdatedUserData): User
+
+    @PUT("user/update")
+    suspend fun updateUserResponse(@Body user: UpdatedUserData): HttpResponse
+    //TODO remove this function when debugged
 }

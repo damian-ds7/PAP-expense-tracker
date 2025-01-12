@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.inject
+import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
@@ -34,10 +35,8 @@ class UserPersonalDataScreenComponent(
     )
 
     override suspend fun postChanges() {
-        val id = userRepository.currentUserInfo.value!!.id
-        val updatedUser = User(id, name.value, surname.value ,email.value)
-        runBlocking { userRepository.updateUser(updatedUser) }
-        userRepository.getCurrentUserInfo()
+        val updatedUser = UpdatedUserData(name.value, surname.value ,email.value)
+        userRepository.updateUser(updatedUser)
     }
 
     override fun setupInputFields() {
