@@ -91,7 +91,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     @Transactional
     public void deleteMembership(Long userId, String groupName) {
-        if(!isAdmin(groupName)) {
+        if(!isAdmin(groupName) && !userId.equals(AuthHelper.getUser().getId())) {
             throw new BadRequestException("User does not have admin privileges");
         }
         expenseService.deleteAllExpensesForUserIdAndGroupName(userId, groupName);
@@ -123,7 +123,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public void changeRole(String groupName, String role, Long userId) {
         if (!isAdmin(groupName)) {
-            throw new ForbiddenRequestException("You do not have permission to change role");
+            throw new BadRequestException("You do not have permission to change role");
         }
         Membership membership = membershipRepository.findByUserIdAndGroupName(userId, groupName)
                 .orElseThrow(() -> new BadRequestException("User not in this group"));
