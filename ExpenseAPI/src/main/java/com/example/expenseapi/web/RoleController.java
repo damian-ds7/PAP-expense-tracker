@@ -2,6 +2,8 @@ package com.example.expenseapi.web;
 
 import com.example.expenseapi.pojo.Role;
 import com.example.expenseapi.service.RoleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,8 @@ public class RoleController {
         this.roleService = roleService;
     }
     @RequestMapping("/all")
+    @Operation(summary = "Fetches all available user roles")
+    @ApiResponse(responseCode = "200")
     public List<String> getAllRoles() {
         return roleService.getAll().stream()
                 .map(Role::getName)
