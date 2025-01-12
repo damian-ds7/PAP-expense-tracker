@@ -38,20 +38,17 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
 
     @Override
     public boolean isTokenExpired(String token) {
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByToken(token);
-        if (refreshToken.isPresent()) {
-            return refreshToken.get().getExpiryDate().isBefore(Instant.now());
-        }
-        else throw new BadRequestException("Token does not exist");
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new BadRequestException(("Token does not exist")));
+        return refreshToken.getExpiryDate().isBefore(Instant.now());
     }
 
     private RefreshToken createAndSave(String email) {
         RefreshToken refreshToken = new RefreshToken();
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty())
-            throw new BadRequestException("Invalid email");
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Invalid email " + email));
         refreshToken.setToken(jwtUtil.generateRefreshToken(email));
-        refreshToken.setUser(user.get());
+        refreshToken.setUser(user);
         refreshToken.setExpiryDate(jwtUtil.getExpiration(refreshToken.getToken()).toInstant());
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
