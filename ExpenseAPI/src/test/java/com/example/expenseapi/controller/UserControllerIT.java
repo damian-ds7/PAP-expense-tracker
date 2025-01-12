@@ -277,7 +277,7 @@ public class UserControllerIT {
                 .header("Authorization", "Bearer " + gen.getToken(activeUser))
                 .contentType("application/json")
                 .content(jsonBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isConflict());
     }
 
     @Transactional
@@ -316,4 +316,107 @@ public class UserControllerIT {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("newSurname"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("herkules5@gmail.com"));
     }
+
+    @Test
+    void testIsAdmin_NotLoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/isAdmin"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testIsAdmin_Admin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/isAdmin/family")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("true"));
+    }
+
+    @Test
+    void testIsAdmin_NotAdmin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/isAdmin/workers")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("false"));
+    }
+
+    @Test
+    void testIsAdmin_UnknownGroup() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/isAdmin/unknown")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testCurrent_NotLoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/current"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testCurrent_LoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/current")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(activeUser))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Herkules1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.surname").value("Herkules1"));
+    }
+
+    @Test
+    void testChangeRole_NotLoggedIn() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/family/USER/1"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testChangeRole_NotAdminToAdmin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/workers/3/admin")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testChangeRole_NotAdminToMember() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/workers/2/member")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Transactional
+    @Test
+    void testChangeRole_AdminToAdmin() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/family/2/admin")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Transactional
+    @Test
+    void testChangeRole_AdminToMember() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/family/2/member")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void testChangeRole_UnknownGroup() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/unknown/2/member")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testChangeRole_UnknownUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/family/0/member")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    void testChangeRole_UnknownRole() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/user/changeRole/family/2/unknown")
+                        .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }
+
