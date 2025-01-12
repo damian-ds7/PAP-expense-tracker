@@ -3,12 +3,17 @@ package pw.edu.pl.pap.screenComponents.settingsScreens
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import pw.edu.pl.pap.data.databaseAssociatedData.NewPassword
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.data.UserRepository
 
 class ChangePasswordScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
+
+    private val userRepository: UserRepository by inject()
 
     private var password: MutableState<String> = mutableStateOf("")
     private var repeatedPassword: MutableState<String> = mutableStateOf("")
@@ -37,7 +42,7 @@ class ChangePasswordScreenComponent(
     }
 
     override suspend fun postChanges() {
-        //TODO
+        userRepository.changePassword(NewPassword(password.value))
     }
 
     override fun setupInputFields() {
