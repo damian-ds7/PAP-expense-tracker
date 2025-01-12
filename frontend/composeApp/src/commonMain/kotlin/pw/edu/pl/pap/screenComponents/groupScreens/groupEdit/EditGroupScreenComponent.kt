@@ -12,9 +12,7 @@ import pw.edu.pl.pap.screenComponents.BaseComponent
 class EditGroupScreenComponent(
     baseComponent: BaseComponent,
     onDismiss: () -> Unit,
-    onSave: () -> Unit,
-    private val onDelete: () -> Unit,
-) : BaseGroupEditScreenComponent(baseComponent, onDismiss, onSave) {
+) : BaseGroupEditScreenComponent(baseComponent, onDismiss) {
 
     override var name: MutableState<String> = mutableStateOf(groupRepository.getCurrentGroupName())
 

@@ -284,39 +284,14 @@ class RootComponent(
             is Configuration.EditGroupScreen -> Child.EditGroupScreen(
                 component = EditGroupScreenComponent(
                     baseComponent = createMainScreenComponent(componentContext),
-                    onDismiss = { navigation.pop() },
-//                    onSave = {
-//                        navigation.pop()
-//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
-//                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenEdit(configuration.expense)
-//                        )
-//                    },
-//                    onDelete = {
-//                        navigation.pop()
-//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
-//                            HomeScreenComponent.NavigationState.FromExpenseDetailsScreenDelete(configuration.expense)
-//                        )
-//                    },
-                    onSave = {},
-                    onDelete = {},
-                    //TODO
+                    onDismiss = { navigation.pop() }
                 )
             )
 
             is Configuration.NewGroupScreen -> Child.NewGroupScreen(
                 component = NewGroupScreenComponent(
-                    baseComponent = createMainScreenComponent(
-                        componentContext
-                    ),
-                    onDismiss = { navigation.pop() },
-                    onSave = {}
-//                            onSave = {
-//                        navigation.pop()
-//                        (childStack.value.active.instance as Child.HomeScreen).component.updateNavigationState(
-//                            HomeScreenComponent.NavigationState.FromNewExpenseScreen
-//                        )
-//                    },
-                    //TODO
+                    baseComponent = createMainScreenComponent(componentContext),
+                    onDismiss = { navigation.pop() }
                 ))
 
             is Configuration.InvitationsScreen -> Child.InvitationsScreen(

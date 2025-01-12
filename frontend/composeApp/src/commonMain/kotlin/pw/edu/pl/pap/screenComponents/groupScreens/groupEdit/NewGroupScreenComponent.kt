@@ -7,8 +7,7 @@ import pw.edu.pl.pap.screenComponents.BaseComponent
 class NewGroupScreenComponent(
     baseComponent: BaseComponent,
     onDismiss: () -> Unit,
-    onSave: () -> Unit,
-) : BaseGroupEditScreenComponent(baseComponent, onDismiss, onSave) {
+) : BaseGroupEditScreenComponent(baseComponent, onDismiss) {
 
     override fun confirm() {
         val newGroup = NewGroup(name.value)

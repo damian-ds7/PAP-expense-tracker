@@ -10,7 +10,6 @@ import pw.edu.pl.pap.screenComponents.BaseComponent
 open class BaseGroupEditScreenComponent(
     baseComponent: BaseComponent,
     val onDismiss: () -> Unit,
-    val onSave: () -> Unit
 ) : BaseComponent by baseComponent {
 
     protected val groupRepository: GroupRepository by inject()
