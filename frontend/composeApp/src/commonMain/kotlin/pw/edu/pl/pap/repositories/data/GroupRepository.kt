@@ -15,6 +15,9 @@ class GroupRepository(val api: GroupApi) {
     private val _currentUserGroup = MutableStateFlow<UserGroup?>(null)
     val currentUserGroup: StateFlow<UserGroup?> get() = _currentUserGroup
 
+    private val _usersInCurrentGroup = MutableStateFlow<List<User>>(listOf())
+    val usersInCurrentGroup : StateFlow<List<User>> get() = _usersInCurrentGroup
+
     private lateinit var users: Pair<UserGroup, List<User>>
 
     fun updateCurrentGroup(key: UserGroup) {

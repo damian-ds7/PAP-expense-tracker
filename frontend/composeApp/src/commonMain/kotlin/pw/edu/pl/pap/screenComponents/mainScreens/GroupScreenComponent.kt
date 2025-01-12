@@ -24,8 +24,8 @@ class GroupScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    private lateinit var users: List<User>
-    private lateinit var userNames: List<String>
+    private var users = groupRepository.usersInCurrentGroup
+    private var userNames = users.value.map { "${it.name} ${it.surname}" }
 
     private val currentGroup = groupRepository.currentUserGroup
 
@@ -36,13 +36,12 @@ class GroupScreenComponent(
     init {
         coroutineScope.launch {
             getUsers()
-            userNames = users.map { "${it.name} ${it.surname}" }
             setupInputFields()
         }
     }
 
     private suspend fun getUsers() {
-        users = groupRepository.getUsersInCurrentGroup()
+        groupRepository.getUsersInCurrentGroup()
     }
 
 
@@ -50,7 +49,7 @@ class GroupScreenComponent(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             userNames.zip(balances).mapIndexed { index, (username, balance) ->
-                val user = users[index]
+                val user = users.value[index]
                 InputFieldData.UserBalanceButtonData(
                     title = username,
                     balance = balance.toFloat(),

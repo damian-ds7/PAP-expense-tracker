@@ -7,7 +7,9 @@ import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.data.ConfigRepository
 import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.repositories.data.MembershipRepository
 import pw.edu.pl.pap.repositories.data.UserRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 
@@ -17,6 +19,8 @@ class MemberScreenComponent(
     val onBack: () -> Unit
 ) : BaseComponent by baseComponent {
     private val userRepository: UserRepository by inject()
+    private val configRepository: ConfigRepository by inject()
+    private val membershipRepository: MembershipRepository by inject()
 
     private val groupRepository: GroupRepository by inject()
     private val currentUserGroup = groupRepository.currentUserGroup
@@ -32,9 +36,9 @@ class MemberScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    private val roles = listOf("admin", "viewer")
+    private val roles = configRepository.roles
 
-    //TODO fetch list of roles
+    //TODO fetch roles
     private var initialIndex: MutableState<Int> = mutableStateOf(0)
     private var roleIndex: MutableState<Int> = mutableStateOf(0)
 
@@ -73,7 +77,7 @@ class MemberScreenComponent(
             listOf(
                 InputFieldData.DropdownListData(
                     title = "Role: ",
-                    itemList = roles,
+                    itemList = roles.value,
                     selectedIndex = roleIndex,
                     onItemClick = if (isAdmin.value) {
                         { coroutineScope.launch { roleIndex.value = it } }
