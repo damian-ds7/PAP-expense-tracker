@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PreferenceUpdateDTO {
+public class PreferenceDTO {
     private String currencySymbol;
     private String methodOfPayment;
     private String language;
