@@ -113,7 +113,8 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
         }
         Membership membership = membershipRepository.findByUserIdAndGroupName(userId, groupName)
                 .orElseThrow(() -> new UserNotInGroupException(groupName, userId));
-        membership.setRole(roleRepository.findByName(role));
+        membership.setRole(roleRepository.findByName(role)
+                .orElseThrow(() -> new RoleNotFoundException(role)));
         membershipRepository.save(membership);
     }
 
