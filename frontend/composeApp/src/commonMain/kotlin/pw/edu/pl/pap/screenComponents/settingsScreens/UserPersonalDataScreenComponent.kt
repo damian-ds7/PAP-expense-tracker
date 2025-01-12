@@ -4,17 +4,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.core.component.inject
 import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
+import pw.edu.pl.pap.repositories.data.ConfigRepository
 
 class UserPersonalDataScreenComponent(
     baseSettingsScreenComponent: BaseSettingsScreenComponent
 ) : BaseSettingsScreenComponentImpl(baseSettingsScreenComponent) {
 
+    private val configRepository: ConfigRepository by inject()
 
-    private var email: MutableState<String> = mutableStateOf("")
-    private var name: MutableState<String> = mutableStateOf("")
-    private var surname: MutableState<String> = mutableStateOf("")
+    private var email: MutableState<String> = mutableStateOf(configRepository.currentUserInfo.value!!.email)
+    private var name: MutableState<String> = mutableStateOf(configRepository.currentUserInfo.value!!.name)
+    private var surname: MutableState<String> = mutableStateOf(configRepository.currentUserInfo.value!!.surname)
 
     override var confirmationData = ConfirmationDialogConfig(
         mainText = "Change Personal Data",
@@ -31,15 +34,8 @@ class UserPersonalDataScreenComponent(
         //TODO
     }
 
-    private fun fetchUserData() {
-        runBlocking {
-            //TODO
-        }
-    }
-
     override fun setupInputFields() {
         _inputFieldsData.clear()
-        fetchUserData()
         _inputFieldsData.addAll(
             listOf(
                 InputFieldData.TextFieldData(
