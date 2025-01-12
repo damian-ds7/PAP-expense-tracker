@@ -3,8 +3,7 @@ package com.example.expenseapi.service;
 import com.example.expenseapi.dto.CursorPageResponse;
 import com.example.expenseapi.dto.ExpenseCreateDTO;
 import com.example.expenseapi.dto.ExpenseDTO;
-import com.example.expenseapi.exception.BadRequestException;
-import com.example.expenseapi.exception.ForbiddenRequestException;
+import com.example.expenseapi.exception.*;
 import com.example.expenseapi.filter.ExpenseFilter;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.*;
@@ -98,25 +97,25 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     public ExpenseDTO createExpense(ExpenseCreateDTO createDTO) {
         User user = AuthHelper.getUser();
         if (!hasAllRequiredFields(createDTO)) {
-            throw new BadRequestException("Title, price, category name and group name are required");
+            throw new RequiredFieldsMissingException();
         }
         fillDefaultsFromUserPreferences(createDTO, user);
         Expense expense = expenseMapper.expenseCreateDTOToExpense(createDTO);
         Membership membership = membershipRepository
                 .findByUserIdAndGroupName(createDTO.getUser().getId(), createDTO.getGroupName())
-                .orElseThrow(() -> new ForbiddenRequestException("User is not a member of the group"));
+                .orElseThrow(() -> new UserNotInGroupException(createDTO.getGroupName(), createDTO.getUser().getId()));
         expense.setMembership(membership);
         if (createDTO.getCategoryName() != null) {
             expense.setCategory(categoryRepository.findByName(createDTO.getCategoryName())
-                    .orElseThrow(() -> new BadRequestException("Category not found " + createDTO.getCategoryName())));
+                    .orElseThrow(() -> new CategoryNotFoundException(createDTO.getCategoryName())));
         }
         if (createDTO.getExpenseDate() != null) {
             expense.setDate(createDTO.getExpenseDate());
         }
         expense.setMethod(methodOfPaymentRepository.findByName(createDTO.getMethodOfPayment())
-                .orElseThrow(() -> new BadRequestException("Method of payment not found: " + createDTO.getMethodOfPayment())));
+                .orElseThrow(() -> new MethodNotFoundException(createDTO.getMethodOfPayment())));
         expense.setCurrency(currencyRepository.findBySymbol(createDTO.getCurrencyCode())
-                .orElseThrow(() -> new BadRequestException("Currency not found: " + createDTO.getCurrencyCode())));
+                .orElseThrow(() -> new CurrencyNotFoundException(createDTO.getCurrencyCode())));
         Expense savedExpense = expenseRepository.save(expense);
         return expenseMapper.expenseToExpenseDTO(savedExpense);
     }
@@ -188,7 +187,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         List<ExpenseDTO> result = searchExpensesDTO(filter);
         Currency currency = AuthHelper.getUser().getPreference().getCurrency();
         Function<ExpenseDTO, String> keyExtractor = findKeyExtractor(keyType);
-        if (keyExtractor == null) throw new BadRequestException("Invalid key type");
+        if (keyExtractor == null) throw new InvalidKeyTypeException(keyType);
         return totalExpensesMap(result, keyExtractor, currency);
     }
 
@@ -254,7 +253,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             boolean desc
     ) {
         if (AuthHelper.isGroupNameInvalid(name))
-            throw new ForbiddenRequestException("User is not a member of the group");
+            throw new UserNotInGroupException(name, AuthHelper.getUser().getId());
         return getExpensesForGroupCursorBased(
                 name,
                 lastId,
@@ -298,7 +297,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             boolean desc
     ) {
         if (AuthHelper.isGroupNameInvalid(name))
-            throw new ForbiddenRequestException("User is not a member of the group");
+            throw new UserNotInGroupException(name, AuthHelper.getUser().getId());
         return getExpensesForGroupCursorBased(
                 name,
                 lastId,
@@ -311,12 +310,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     private List<ExpenseDTO> searchExpensesDTO(ExpenseFilter filter) {
-        if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
-            filter.setGroupName(AuthHelper.getGroupName());
-        }
-        if (AuthHelper.isGroupNameInvalid(filter.getGroupName())) {
-            throw new ForbiddenRequestException("User is not a member or the group");
-        }
+        handleGroupFilter(filter);
         Specification<Expense> spec = prepareSpecification(filter);
         return expenseRepository.findAll(spec).stream()
                 .map(expenseMapper::expenseToExpenseDTO)
@@ -326,16 +320,20 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     @Override
     @Cacheable(value = "searchExpensesPagesDTO", key = "#filter.toString() + '_' + #page + '_' + #size")
     public Page<ExpenseDTO> searchExpensesPagesDTO(ExpenseFilter filter, int page, int size) {
-        if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
-            filter.setGroupName(AuthHelper.getGroupName());
-        }
-        if (AuthHelper.isGroupNameInvalid(filter.getGroupName())) {
-            throw new ForbiddenRequestException("User is not a member of the group");
-        }
+        handleGroupFilter(filter);
         Specification<Expense> spec = prepareSpecification(filter);
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
         return expenseRepository.findAll(spec, pageable)
                 .map(expenseMapper::expenseToExpenseDTO);
+    }
+
+    private void handleGroupFilter(ExpenseFilter filter) {
+        if (filter.getGroupName() == null || filter.getGroupName().isEmpty()) {
+            filter.setGroupName(AuthHelper.getGroupName());
+        }
+        if (AuthHelper.isGroupNameInvalid(filter.getGroupName())) {
+            throw new UserNotInGroupException(filter.getGroupName(), AuthHelper.getUser().getId());
+        }
     }
 
     private Specification<Expense> prepareSpecification(ExpenseFilter filter) {
@@ -412,11 +410,11 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     })
     public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException("Expense not found"));
+                .orElseThrow(() -> new ExpenseNotFoundException(id));
         Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
         BeanUtils.copyProperties(updatedExpense, expense, getNullPropertyNames(updatedExpense));
         expense.setMethod(methodOfPaymentRepository.findByName(updatedExpense.getMethod().getName())
-                .orElseThrow(()->new BadRequestException("Method does not exist")));
+                .orElseThrow(() -> new MethodNotFoundException(updatedExpense.getMethod().getName())));
         return expenseMapper.expenseToExpenseDTO(expenseRepository.save(expense));
     }
 

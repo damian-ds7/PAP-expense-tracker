@@ -2,7 +2,9 @@ package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.InvitationDTO;
 import com.example.expenseapi.dto.MembershipCreateDTO;
-import com.example.expenseapi.exception.BadRequestException;
+import com.example.expenseapi.exception.GroupNotFound;
+import com.example.expenseapi.exception.InvitationAlreadySentException;
+import com.example.expenseapi.exception.RoleNotFoundException;
 import com.example.expenseapi.mapper.InvitationMapper;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.TemporaryMembership;
@@ -58,14 +60,14 @@ public class TemporaryMembershipServiceImpl extends GenericServiceImpl<Temporary
         if (temporaryMembershipRepository.findByUserId(temporaryMembershipCreateDTO.getUser().getId())
                 .stream()
                 .anyMatch(temporaryMembership -> temporaryMembership.getGroup().getId().equals(temporaryMembershipCreateDTO.getGroup().getId()))) {
-            throw new BadRequestException("User already got an invitation");
+            throw new InvitationAlreadySentException(temporaryMembershipCreateDTO.getUser().getId(), temporaryMembershipCreateDTO.getGroup().getName());
         }
         TemporaryMembership temporaryMembership = new TemporaryMembership();
         temporaryMembership.setUser(userMapper.UserDTOToUser(temporaryMembershipCreateDTO.getUser()));
         temporaryMembership.setGroup(groupRepository.findById(temporaryMembershipCreateDTO.getGroup().getId())
-                .orElseThrow(() -> new BadRequestException("Group with id " + temporaryMembershipCreateDTO.getGroup().getId() + " was not found")));
+                .orElseThrow(() -> new GroupNotFound(temporaryMembershipCreateDTO.getGroup().getId())));
         temporaryMembership.setRole(roleRepository.findById(2L)
-                .orElseThrow(() -> new BadRequestException("Role with id = 2 does not exist")));
+                .orElseThrow(() -> new RoleNotFoundException(2L)));
         temporaryMembership.setSender(AuthHelper.getUser());
         return temporaryMembershipRepository.save(temporaryMembership);
     }

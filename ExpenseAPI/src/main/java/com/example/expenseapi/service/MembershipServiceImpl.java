@@ -1,8 +1,7 @@
 package com.example.expenseapi.service;
 
 import com.example.expenseapi.dto.UserDTO;
-import com.example.expenseapi.exception.BadRequestException;
-import com.example.expenseapi.exception.ForbiddenRequestException;
+import com.example.expenseapi.exception.*;
 import com.example.expenseapi.mapper.UserMapper;
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.Group;
@@ -64,7 +63,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
                 .stream()
                 .filter(membership -> membership.getGroup().getId().equals(group.getId()))
                 .findFirst()
-                .orElseThrow(()->new BadRequestException("Membership not found for userId=" + user.getId() + " and groupId=" + group.getId()))
+                .orElseThrow(()->new MembershipNotFoundException(user.getId(), group.getId()))
                 .getRole()
                 .getName();
     }
@@ -123,17 +122,18 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public void changeRole(String groupName, String role, Long userId) {
         if (!isAdmin(groupName)) {
-            throw new BadRequestException("You do not have permission to change role");
+            throw new PermissionNeededException(groupName);
         }
         Membership membership = membershipRepository.findByUserIdAndGroupName(userId, groupName)
-                .orElseThrow(() -> new BadRequestException("User not in this group"));
-        membership.setRole(roleRepository.findByName(role));
+                .orElseThrow(() -> new UserNotInGroupException(groupName, userId));
+        membership.setRole(roleRepository.findByName(role)
+                .orElseThrow(() -> new RoleNotFoundException(role)));
         membershipRepository.save(membership);
     }
 
     private List<UserDTO> findUsersForGroup(String group, Function<String, List<User>> repoMethod) {
         if (AuthHelper.isGroupNameInvalid(group)) {
-            throw new ForbiddenRequestException("User is not a member of the group");
+            throw new UserNotInGroupException(group, AuthHelper.getUser().getId());
         }
         return repoMethod.apply(group)
                 .stream()

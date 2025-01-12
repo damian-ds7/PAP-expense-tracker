@@ -7,6 +7,7 @@ INSERT INTO currencies (symbol, exchange_rate) VALUES ('EUR', 5.0);
 
 INSERT INTO groups (name) VALUES ('family');
 INSERT INTO groups (name) VALUES ('workers');
+INSERT INTO groups (name) VALUES ('members-only');
 
 INSERT INTO archived_groups (name) VALUES ('family2');
 INSERT INTO archived_groups (name) VALUES ('workers2');
@@ -25,10 +26,11 @@ INSERT INTO roles (name) VALUES ('admin');
 INSERT INTO roles (name) VALUES ('member');
 
 INSERT INTO memberships (user_id, group_id, role_id) VALUES (1, 1, 1);
-INSERT INTO memberships (user_id, group_id, role_id) VALUES (2, 1, 1);
+INSERT INTO memberships (user_id, group_id, role_id) VALUES (2, 1, 2);
 INSERT INTO memberships (user_id, group_id, role_id) VALUES (3, 2, 2);
 INSERT INTO memberships (user_id, group_id, role_id) VALUES (1, 2, 2);
-INSERT INTO memberships (user_id, group_id, role_id) VALUES (2, 2, 2);
+INSERT INTO memberships (user_id, group_id, role_id) VALUES (2, 2, 1);
+INSERT INTO memberships (user_id, group_id, role_id) VALUES (1, 3, 2);
 
 INSERT INTO categories (name) VALUES ('food');
 INSERT INTO categories (name) VALUES ('transport');

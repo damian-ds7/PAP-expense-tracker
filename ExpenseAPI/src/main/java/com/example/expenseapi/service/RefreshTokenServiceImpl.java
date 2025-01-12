@@ -1,6 +1,7 @@
 package com.example.expenseapi.service;
 
-import com.example.expenseapi.exception.BadRequestException;
+import com.example.expenseapi.exception.EmailNotFound;
+import com.example.expenseapi.exception.RefreshTokenNotFoundException;
 import com.example.expenseapi.pojo.RefreshToken;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.RefreshTokenRepository;
@@ -39,14 +40,14 @@ public class RefreshTokenServiceImpl extends GenericServiceImpl<RefreshToken, Lo
     @Override
     public boolean isTokenExpired(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new BadRequestException(("Token does not exist")));
+                .orElseThrow(() -> new RefreshTokenNotFoundException(token));
         return refreshToken.getExpiryDate().isBefore(Instant.now());
     }
 
     private RefreshToken createAndSave(String email) {
         RefreshToken refreshToken = new RefreshToken();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new BadRequestException("Invalid email " + email));
+                .orElseThrow(() -> new EmailNotFound(email));
         refreshToken.setToken(jwtUtil.generateRefreshToken(email));
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(jwtUtil.getExpiration(refreshToken.getToken()).toInstant());

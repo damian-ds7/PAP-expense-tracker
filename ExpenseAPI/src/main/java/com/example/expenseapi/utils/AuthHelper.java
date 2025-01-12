@@ -1,6 +1,6 @@
 package com.example.expenseapi.utils;
 
-import com.example.expenseapi.exception.BadRequestException;
+import com.example.expenseapi.exception.UserNotFoundException;
 import com.example.expenseapi.pojo.BaseGroup;
 import com.example.expenseapi.pojo.User;
 import com.example.expenseapi.repository.MembershipRepository;
@@ -29,7 +29,7 @@ public class AuthHelper {
 
     public static User getUser() {
         return userRepository.findByEmail(getUserEmail())
-                .orElseThrow(()->new BadRequestException("User with email " + getUserEmail() + " not found"));
+                .orElseThrow(() -> new UserNotFoundException(getUserEmail()));
     }
 
     public static String getGroupName() {
