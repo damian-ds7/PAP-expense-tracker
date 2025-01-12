@@ -86,4 +86,16 @@ class UserRepository(val api: UserApi) {
             e.printStackTrace()
         }
     }
+
+    suspend fun getUserRole(group: UserGroup, user: User) : String {
+        var role = ""
+        try {
+            println(api.getRole(group.name, user.id))
+            //TODO remove print when tested
+            role = api.getRole(group.name, user.id)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return role
+    }
 }

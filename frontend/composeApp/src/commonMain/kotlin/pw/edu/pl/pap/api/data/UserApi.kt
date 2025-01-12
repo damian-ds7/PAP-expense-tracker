@@ -33,6 +33,9 @@ interface UserApi {
     @DELETE("user/delete/{id}")
     suspend fun deleteUser(@Path id: Long): HttpResponse
 
+    @GET("user/getRole/{groupName}/{userId}")
+    suspend fun getRole(@Path("groupName") groupName: String, @Path("userId") userId: Long): String
+
     @PUT("user/changeRole/{groupName}/{userId}/{role}")
     suspend fun changeRole(@Path("groupName") groupName: String, @Path("userId") userId: Long, @Path("role") role: String) :HttpResponse
 }
