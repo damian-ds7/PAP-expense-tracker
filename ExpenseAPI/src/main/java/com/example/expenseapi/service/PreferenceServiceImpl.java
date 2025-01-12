@@ -37,7 +37,8 @@ public class PreferenceServiceImpl extends GenericServiceImpl<Preference, Long> 
     @Override
     @CacheEvict(value = {
             "expInfoGroup",
-            "expInfoAllGroups"
+            "expInfoAllGroups",
+            "expensesMap"
     }, allEntries = true)
     public PreferenceDTO updateUserPreferences(PreferenceDTO preferenceDTO) {
         Preference pref = preferenceRepository.getPreferenceById(AuthHelper.getUser().getId());
