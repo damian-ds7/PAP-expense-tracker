@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.screenComponents.mainScreens.GroupScreenComponent
 import pw.edu.pl.pap.ui.common.ClickableHeader
+import pw.edu.pl.pap.ui.common.Header
 import pw.edu.pl.pap.ui.common.InputFields
 import pw.edu.pl.pap.ui.common.TextButton
 import pw.edu.pl.pap.util.constants.padding
@@ -19,14 +20,18 @@ import pw.edu.pl.pap.util.constants.padding
 fun GroupScreen(component: GroupScreenComponent) {
     val currentUserGroup by component.currentUserGroup.collectAsState()
 
-    ClickableHeader(currentUserGroup?.name!!) { component.onEditGroupClicked() }
+    if (currentUserGroup != null) {
+        ClickableHeader(currentUserGroup?.name!!) { component.onEditGroupClicked() }
 
-    LaunchedEffect(component.currentUserGroup.value) {
-        runBlocking { component.updateUsers() }
+        LaunchedEffect(component.currentUserGroup.value) {
+            runBlocking { component.updateUsers() }
+        }
+
+        InputFields(component.inputFieldsData)
+        //TODO add text if group is empty
+    } else {
+        Header("None")
     }
-
-    InputFields(component.inputFieldsData)
-    //TODO add text if group is empty
 
     Box(
         modifier = Modifier
