@@ -10,7 +10,13 @@ import lombok.*;
 @MappedSuperclass
 public class BaseMembership<T> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base_membership_gen")
+    @SequenceGenerator(
+            name = "base_membership_gen",
+            sequenceName = "base_membership_seq",
+            allocationSize = 1
+    )
+
     protected Long id;
 
     @NonNull

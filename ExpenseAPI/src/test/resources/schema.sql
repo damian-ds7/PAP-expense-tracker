@@ -1,3 +1,5 @@
+CREATE SEQUENCE base_membership_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE methods_of_payment (
     id LONG AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR2(255) NOT NULL
