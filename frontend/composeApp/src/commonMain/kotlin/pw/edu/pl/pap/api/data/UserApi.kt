@@ -6,6 +6,7 @@ import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.*
 import pw.edu.pl.pap.data.databaseAssociatedData.NewPassword
+import pw.edu.pl.pap.data.databaseAssociatedData.Preferences
 import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 
@@ -25,4 +26,10 @@ interface UserApi {
 
     @PUT("user/changePass")
     suspend fun changePassword(@Body newPass: NewPassword): HttpResponse
+
+    @GET("preferences/current")
+    suspend fun getCurrentPreferences(): Preferences
+
+    @PUT("preferences/update")
+    suspend fun updatePreferences(@Body newPreferences: Preferences): Preferences
 }
