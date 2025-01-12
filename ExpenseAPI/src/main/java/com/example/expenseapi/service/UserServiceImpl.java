@@ -87,7 +87,8 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
         if (user.isPresent()) {
             User temp = user.get();
             if (userUpdateDTO.getEmail() != null) {
-                if (userRepository.findByEmail(userUpdateDTO.getEmail()).isPresent())
+                if (userRepository.findByEmail(userUpdateDTO.getEmail()).isPresent() &&
+                    !temp.getEmail().equals(userUpdateDTO.getEmail()))
                     throw new BadRequestException("Email already exists");
                 temp.setEmail(userUpdateDTO.getEmail());
             }
