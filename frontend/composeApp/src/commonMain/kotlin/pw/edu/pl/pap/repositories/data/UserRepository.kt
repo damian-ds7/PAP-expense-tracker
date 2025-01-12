@@ -65,7 +65,6 @@ class UserRepository(val api: UserApi) {
     suspend fun updatePreferences(newPreferences: Preferences){
         try {
             _currentPreferences.value = api.updatePreferences(newPreferences)
-            //TODO test it
         } catch (e: Exception) {
             e.printStackTrace()
         }

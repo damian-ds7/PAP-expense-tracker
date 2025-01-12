@@ -48,8 +48,7 @@ class RootComponent(
         coroutineScope.launch {
             configRepository.loadConfig()
             userRepository.getCurrentUserInfo()
-//            userRepository.getCurrentPreferences()
-            //TODO uncomment when api ready
+            userRepository.getCurrentPreferences()
         }
     }
 

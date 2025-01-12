@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Preferences (
     val currencySymbol: String,
-    val methodOFPayment: String,
+    val methodOfPayment: String,
     val language: String
 )

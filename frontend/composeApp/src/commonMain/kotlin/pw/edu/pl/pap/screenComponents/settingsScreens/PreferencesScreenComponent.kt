@@ -20,17 +20,10 @@ class PreferencesScreenComponent(
     private val userRepository: UserRepository by inject()
 
     private val currencies = configRepository.currencies.value.map { it.symbol }
-
-    var currencyIndex: MutableState<Int> = mutableStateOf(0)
-//    var currenctIndex: MutableState<Int> = mutableStateOf(configRepository.currencies.value.map { it.symbol }.indexOf(userRepository.currentPreferences.value!!.currencySymbol))
-    //TODO uncomment when api is ready
+    private var currencyIndex: MutableState<Int> = mutableStateOf(configRepository.currencies.value.map { it.symbol }.indexOf(userRepository.currentPreferences.value!!.currencySymbol))
 
     private val methodsOfPayment = configRepository.paymentMethods.value.map { it.name }
-
-
-    var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
-//    var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(configRepository.paymentMethods.value.map { it.name }.indexOf(userRepository.currentPreferences.value!!.methodOFPayment))
-    //TODO uncomment when api is ready
+    private var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(configRepository.paymentMethods.value.map { it.name }.indexOf(userRepository.currentPreferences.value!!.methodOfPayment))
 
     override var confirmationData = ConfirmationDialogConfig(
         mainText = "Change Preferences",
@@ -50,7 +43,6 @@ class PreferencesScreenComponent(
             userRepository.currentPreferences.value!!.language
         )
         userRepository.updatePreferences(updatedPreferences)
-        //TODO test it
     }
 
 
