@@ -21,8 +21,6 @@ class ExpenseRepository(val api: ExpenseApi) {
     private val _currentGroupingKey = MutableStateFlow(GroupKey.DATE)
     val currentGroupingKey: StateFlow<GroupKey> get() = _currentGroupingKey
 
-    private val _loadingData = MutableStateFlow(true)
-    val loadingData: StateFlow<Boolean> get() = _loadingData
 
     fun updateGroupingKey(key: GroupKey) {
         _currentGroupingKey.value = key
@@ -55,7 +53,7 @@ class ExpenseRepository(val api: ExpenseApi) {
     }
 
     private suspend fun loadPage(group: String): ExpenseMap {
-        _loadingData.value = true
+//        _loadingData.value = true
         val page = when (_currentGroupingKey.value) {
             GroupKey.DATE -> getExpenseDateMap(group)
             GroupKey.CATEGORY -> getExpenseCatMap(group)
@@ -69,7 +67,7 @@ class ExpenseRepository(val api: ExpenseApi) {
         nextPageInfo = nextPageInfo.copy(lastId = page.nextLastId, lastKey = page.nextLastKey)
         _moreToLoad.value = page.hasMore
         val newMap = page.data.toMap(ExpenseMap(comparator = comparator))
-        _loadingData.value = false
+//        _loadingData.value = false
         return newMap
     }
 
@@ -80,7 +78,7 @@ class ExpenseRepository(val api: ExpenseApi) {
             _groupedExpenses.value = newMap
         } catch (e: Exception) {
             e.printStackTrace()
-            _loadingData.value = false
+//            _loadingData.value = false
         }
     }
 
@@ -91,7 +89,7 @@ class ExpenseRepository(val api: ExpenseApi) {
             _groupedExpenses.value = nextMap
         } catch (e: Exception) {
             e.printStackTrace()
-            _loadingData.value = false
+//            _loadingData.value = false
         }
     }
 

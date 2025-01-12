@@ -25,13 +25,14 @@ import pw.edu.pl.pap.ui.home.ExpenseBlock
 fun PaginatedLazyColumn(
     component: HomeScreenComponent,
     listState: LazyListState,
-    buffer: Int = 2,
+    buffer: Int,
 ) {
     val isLoading by component.loadingData.collectAsState()
+    val moreToLoad by component.moreToLoad.collectAsState()
 
     val shouldLoadMore = remember {
         derivedStateOf {
-            listState.reachedBottom(buffer) && !isLoading && component.moreToLoad.value
+            listState.reachedBottom(buffer) && !isLoading && moreToLoad
         }
     }
     val groupedExpenses by component.groupedExpenses.collectAsState()
@@ -70,7 +71,7 @@ fun PaginatedLazyColumn(
     }
 }
 
-internal fun LazyListState.reachedBottom(buffer: Int = 1): Boolean {
+internal fun LazyListState.reachedBottom(buffer: Int): Boolean {
     val lastVisibleItem = this.layoutInfo.visibleItemsInfo.lastOrNull()
     return lastVisibleItem?.index != null && lastVisibleItem.index >= this.layoutInfo.totalItemsCount - buffer
 }

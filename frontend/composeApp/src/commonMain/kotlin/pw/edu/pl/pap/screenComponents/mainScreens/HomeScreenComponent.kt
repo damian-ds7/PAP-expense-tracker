@@ -30,7 +30,8 @@ class HomeScreenComponent(
     private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.InitialLoad)
     val navigationState: StateFlow<NavigationState> get() = _navigationState
 
-    val loadingData = expenseRepository.loadingData
+    private val _loadingData = MutableStateFlow(true)
+    val loadingData: StateFlow<Boolean> get() = _loadingData
 
     init {
         if (groupRepository.currentUserGroup.value == null) {
@@ -90,26 +91,31 @@ class HomeScreenComponent(
     }
 
     private fun fetchInitialPageExpenses() {
+        _loadingData.value = true
         coroutineScope.launch {
             expenseRepository.loadInitialPage(groupRepository.getCurrentGroupName())
-        }
+        }.invokeOnCompletion { _loadingData.value = false }
     }
 
-    suspend fun fetchNextPage() {
-        println("next page")
-        expenseRepository.loadNextPage(groupRepository.getCurrentGroupName())
+    fun fetchNextPage() {
+        _loadingData.value = true
+        coroutineScope.launch {
+            println("next page")
+            expenseRepository.loadNextPage(groupRepository.getCurrentGroupName())
+        }.invokeOnCompletion { _loadingData.value = false }
     }
 
     private fun getRecentExpense() {
         coroutineScope.launch {
             expenseRepository.getRecentExpense(groupRepository.getCurrentGroupName())
-        }
+        }.invokeOnCompletion { _loadingData.value = false }
     }
 
     fun sortGroups() {
         expenseRepository.switchGroupingOrder()
+        _loadingData.value = false
         coroutineScope.launch {
             expenseRepository.loadInitialPage(groupRepository.getCurrentGroupName())
-        }
+        }.invokeOnCompletion { _loadingData.value = false }
     }
 }
