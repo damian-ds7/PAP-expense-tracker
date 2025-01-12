@@ -92,7 +92,7 @@ public class PreferencesControllerIT {
                         }
                         """)
                 .contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Transactional
@@ -123,7 +123,7 @@ public class PreferencesControllerIT {
                         }
                         """)
                         .contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Transactional
@@ -137,7 +137,7 @@ public class PreferencesControllerIT {
                         }
                         """)
                 .contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
 

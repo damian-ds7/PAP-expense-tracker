@@ -134,7 +134,7 @@ public class ExpanseControllerIT {
                 .header("Authorization", "Bearer " + gen.getToken(activeUser))
                 .contentType("application/json")
                 .content(jsonBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -152,7 +152,7 @@ public class ExpanseControllerIT {
                 .header("Authorization", "Bearer " + gen.getToken(activeUser))
                 .contentType("application/json")
                 .content(jsonBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -170,7 +170,7 @@ public class ExpanseControllerIT {
                 .header("Authorization", "Bearer " + gen.getToken(activeUser))
                 .contentType("application/json")
                 .content(jsonBody))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
