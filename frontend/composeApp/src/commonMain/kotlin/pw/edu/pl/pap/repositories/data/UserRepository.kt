@@ -27,8 +27,6 @@ class UserRepository(val api: UserApi) {
     suspend fun checkIsAdmin(group: UserGroup){
         try {
            _isAdmin.value = api.isAdmin(group.name)
-            println(group.name)
-            println(api.isAdmin(group.name))
         } catch (e: Exception) {
             e.printStackTrace()
         }
