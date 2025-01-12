@@ -11,11 +11,23 @@ class UserRepository(val api: UserApi) {
     private val _usersFound = MutableStateFlow<List<User>>(listOf())
     val usersFound: StateFlow<List<User>> get() = _usersFound
 
+
+
     suspend fun searchUsers(group: UserGroup, name: String, surname:String){
         try {
             _usersFound.value = api.searchUsers(group.name, listOf(name, surname))
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    suspend fun isAdmin(group: UserGroup): Boolean{
+        var result: Boolean? = null
+        try {
+           result = api.isAdmin(group.name)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return result!!
     }
 }

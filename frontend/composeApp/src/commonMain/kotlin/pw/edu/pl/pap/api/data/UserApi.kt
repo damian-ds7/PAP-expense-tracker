@@ -9,4 +9,7 @@ interface UserApi {
 
     @GET("user/search/{group}")
     suspend fun searchUsers(@Path("group") group: String, @Body user: List<String>): List<User>
+
+    @GET("user/isAdmin/{group}")
+    suspend fun isAdmin(@Path("group") group: String): Boolean
 }
