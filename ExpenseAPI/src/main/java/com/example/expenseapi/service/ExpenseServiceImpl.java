@@ -248,7 +248,15 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
 
-    public List<ExpenseDTO> getExpensesForGroupDateCursorBased(String name, Long lastId, LocalDate lastDate, int size, boolean desc) {
+    public List<ExpenseDTO> getExpensesForGroupDateCursorBased(
+            String name,
+            Long lastId,
+            LocalDate lastDate,
+            int size,
+            boolean desc
+    ) {
+        if (AuthHelper.isGroupNameInvalid(name))
+            throw new ForbiddenRequestException("User is not a member of the group");
         return getExpensesForGroupCursorBased(
                 name,
                 lastId,
@@ -291,6 +299,8 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             int size,
             boolean desc
     ) {
+        if (AuthHelper.isGroupNameInvalid(name))
+            throw new ForbiddenRequestException("User is not a member of the group");
         return getExpensesForGroupCursorBased(
                 name,
                 lastId,
@@ -307,7 +317,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             filter.setGroupName(AuthHelper.getGroupName());
         }
         if (AuthHelper.isGroupNameInvalid(filter.getGroupName())) {
-            return Collections.emptyList();
+            throw new ForbiddenRequestException("User is not a member or the group");
         }
         Specification<Expense> spec = prepareSpecification(filter);
         return expenseRepository.findAll(spec).stream()
@@ -322,7 +332,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             filter.setGroupName(AuthHelper.getGroupName());
         }
         if (AuthHelper.isGroupNameInvalid(filter.getGroupName())) {
-            return Page.empty();
+            throw new ForbiddenRequestException("User is not a member of the group");
         }
         Specification<Expense> spec = prepareSpecification(filter);
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
