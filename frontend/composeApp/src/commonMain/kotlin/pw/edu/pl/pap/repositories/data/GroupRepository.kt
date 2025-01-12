@@ -89,4 +89,9 @@ class GroupRepository(val api: GroupApi) {
             e.printStackTrace()
         }
     }
+
+    suspend fun updateAfterLeaving() {
+        _currentUserGroup.value = null
+        getGroups()
+    }
 }

@@ -136,6 +136,8 @@ class MemberScreenComponent(
     }
 
     private suspend fun leave(){
-
+        membershipRepository.kickMember(user, currentUserGroup.value!!)
+        groupRepository.updateAfterLeaving()
+        //TODO test it
     }
 }
