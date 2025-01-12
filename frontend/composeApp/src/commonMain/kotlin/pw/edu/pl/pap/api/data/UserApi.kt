@@ -5,6 +5,7 @@ import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.PUT
 import de.jensklingenberg.ktorfit.http.Path
 import io.ktor.client.statement.*
+import pw.edu.pl.pap.data.databaseAssociatedData.NewPassword
 import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 
@@ -25,4 +26,7 @@ interface UserApi {
     @PUT("user/update")
     suspend fun updateUserResponse(@Body user: UpdatedUserData): HttpResponse
     //TODO remove this function when debugged
+
+    @PUT("user/changePass")
+    suspend fun changePassword(@Body newPass: NewPassword): HttpResponse
 }

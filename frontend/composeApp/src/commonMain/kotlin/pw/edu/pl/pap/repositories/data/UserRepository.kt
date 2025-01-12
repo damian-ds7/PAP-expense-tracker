@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.api.data.UserApi
+import pw.edu.pl.pap.data.databaseAssociatedData.NewPassword
 import pw.edu.pl.pap.data.databaseAssociatedData.UpdatedUserData
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
@@ -49,5 +50,14 @@ class UserRepository(val api: UserApi) {
 
     suspend fun getCurrentUserInfo() {
         _currentUserInfo.value = api.getCurrentUserInfo()
+    }
+
+    suspend fun changePassword(newPassword: NewPassword){
+        try {
+            println(api.changePassword(newPassword))
+            //TODO remove print when debugged
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
