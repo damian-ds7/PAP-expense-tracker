@@ -131,12 +131,12 @@ public class GroupControllerIT {
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].email", Matchers.containsInAnyOrder("herkules1@gmail.com", "herkules2@gmail.com")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].email", Matchers.containsInAnyOrder("herkules1@gmail.com")));
     }
 
     @Test
     void testGroupAdmins_NoAdminsPresent() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/group/admins/workers")
+        mockMvc.perform(MockMvcRequestBuilders.get("/group/admins/members-only")
                         .header("Authorization", "Bearer " + gen.getToken(user1)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
