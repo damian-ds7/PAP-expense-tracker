@@ -10,6 +10,7 @@ import com.example.expenseapi.repository.CurrencyRepository;
 import com.example.expenseapi.repository.MethodOfPaymentRepository;
 import com.example.expenseapi.repository.PreferenceRepository;
 import com.example.expenseapi.utils.AuthHelper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,6 +34,10 @@ public class PreferenceServiceImpl extends GenericServiceImpl<Preference, Long> 
     }
 
     @Override
+    @CacheEvict(value = {
+            "expInfoGroup",
+            "expInfoAllGroups"
+    }, allEntries = true)
     public PreferenceDTO updateUserPreferences(PreferenceDTO preferenceDTO) {
         Preference pref = preferenceRepository.getPreferenceById(AuthHelper.getUser().getId());
         if (preferenceDTO.getCurrencySymbol() != null) {
