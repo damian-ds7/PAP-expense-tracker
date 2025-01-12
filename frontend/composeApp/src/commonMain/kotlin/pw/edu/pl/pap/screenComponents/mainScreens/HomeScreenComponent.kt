@@ -35,6 +35,7 @@ class HomeScreenComponent(
     init {
         if (groupRepository.currentUserGroup.value == null) {
             runBlocking { populateGroupList() }
+            runBlocking { groupRepository.getUsersInCurrentGroup() }
         }
     }
 

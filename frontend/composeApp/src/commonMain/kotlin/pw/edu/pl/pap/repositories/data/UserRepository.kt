@@ -20,6 +20,9 @@ class UserRepository(val api: UserApi) {
     private val _currentPreferences = MutableStateFlow<Preferences?>(null)
     val currentPreferences : StateFlow<Preferences?> get() = _currentPreferences
 
+    private val _currentRole = MutableStateFlow<String>("")
+    val currentRole: StateFlow<String> get() = _currentRole
+
 
 
     suspend fun searchUsers(group: UserGroup, name: String, surname:String){
@@ -87,15 +90,13 @@ class UserRepository(val api: UserApi) {
         }
     }
 
-    suspend fun getUserRole(group: UserGroup, user: User) : String {
-        var role = ""
+    suspend fun getUserRole(group: UserGroup, user: User) {
         try {
             println(api.getRole(group.name, user.id))
             //TODO remove print when tested
-            role = api.getRole(group.name, user.id)
+            _currentRole.value = api.getRole(group.name, user.id)
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return role
     }
 }

@@ -20,6 +20,7 @@ fun GroupScreen(component: GroupScreenComponent) {
     ClickableHeader(currentUserGroup?.name!!) { component.onEditGroupClicked() }
 
     InputFields(component.inputFieldsData)
+    //TODO add text if group is empty
 
     Box(
         modifier = Modifier

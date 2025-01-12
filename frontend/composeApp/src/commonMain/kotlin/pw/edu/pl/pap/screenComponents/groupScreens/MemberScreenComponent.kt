@@ -26,10 +26,12 @@ class MemberScreenComponent(
     private val currentUserGroup = groupRepository.currentUserGroup
 
     private val isAdmin = userRepository.isAdmin
+    private val currentRole = userRepository.currentRole
 
     init{
         runBlocking {
             userRepository.checkIsAdmin(currentUserGroup.value!!)
+            userRepository.getUserRole(currentUserGroup.value!!, user)
         }
     }
 
@@ -38,10 +40,8 @@ class MemberScreenComponent(
 
     private val roles = configRepository.roles
 
-    //TODO fetch roles
-    private var initialIndex: MutableState<Int> = mutableStateOf(0)
-    private var roleIndex: MutableState<Int> = mutableStateOf(0)
-
+    private val initialIndex: Int = configRepository.roles.value.indexOf(userRepository.currentRole.value)
+    private var roleIndex: MutableState<Int> = mutableStateOf(configRepository.roles.value.indexOf(userRepository.currentRole.value))
 
 
     var showChangeRoleConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
@@ -69,7 +69,7 @@ class MemberScreenComponent(
         }
     )
 
-    val canConfirm by derivedStateOf { initialIndex.value != roleIndex.value }
+    val canConfirm by derivedStateOf { initialIndex != roleIndex.value }
 
     fun setupInputFields() {
         _inputFieldsData.clear()

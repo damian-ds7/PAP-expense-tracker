@@ -15,6 +15,7 @@ import pw.edu.pl.pap.data.uiSetup.inputFields.InputFieldData
 import pw.edu.pl.pap.repositories.data.ChartsRepository
 import pw.edu.pl.pap.repositories.data.ConfigRepository
 import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.repositories.data.UserRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.listFunctions.getIndicesFromItems
 import pw.edu.pl.pap.util.listFunctions.getItemsFromIndices
@@ -36,7 +37,7 @@ class ChartsFilterScreenComponent(
     private var selectedMethods: SnapshotStateList<Int>? = null
     private lateinit var selectedKeyPattern: MutableState<Int>
 
-    private lateinit var users: List<User>
+    private val users: List<User> = groupRepository.usersInCurrentGroup.value
     private val methods: List<PaymentMethod> = configRepository.paymentMethods.value
     private val categories: List<Category> = configRepository.categories.value
     private val patternKeys: List<String> = configRepository.keyPatterns.value
@@ -47,7 +48,6 @@ class ChartsFilterScreenComponent(
 
     init {
         coroutineScope.launch {
-            users = groupRepository.getUsersInCurrentGroup()
             initializeSelected()
             initializeInputFieldsData()
 

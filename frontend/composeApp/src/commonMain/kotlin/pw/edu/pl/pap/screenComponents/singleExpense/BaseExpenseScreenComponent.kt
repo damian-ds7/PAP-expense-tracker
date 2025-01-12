@@ -45,16 +45,9 @@ open class BaseExpenseScreenComponent(
     protected val methodsOfPayment = configRepository.paymentMethods.value
     protected open var methodOfPaymentIndex: MutableState<Int> = mutableStateOf(0)
 
-    protected var users: List<User>
-    private var userNames: List<String>
+    protected var users = groupRepository.usersInCurrentGroup.value
+    private var userNames = users.map { "${it.name} ${it.surname}" }
     protected open var userIndex: MutableState<Int> = mutableStateOf(0)
-
-    init {
-        runBlocking {
-            users = groupRepository.getUsersInCurrentGroup()
-            userNames = users.map { "${it.name} ${it.surname}" }
-        }
-    }
 
     val canConfirm by derivedStateOf { price.value.isNotEmpty() }
 

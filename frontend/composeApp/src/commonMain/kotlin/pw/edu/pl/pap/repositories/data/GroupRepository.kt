@@ -1,7 +1,11 @@
 package pw.edu.pl.pap.repositories.data
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import pw.edu.pl.pap.api.data.GroupApi
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
 import pw.edu.pl.pap.data.databaseAssociatedData.User
@@ -18,7 +22,7 @@ class GroupRepository(val api: GroupApi) {
     private val _usersInCurrentGroup = MutableStateFlow<List<User>>(listOf())
     val usersInCurrentGroup : StateFlow<List<User>> get() = _usersInCurrentGroup
 
-    private lateinit var users: Pair<UserGroup, List<User>>
+//    private lateinit var users: Pair<UserGroup, List<User>>
 
     fun updateCurrentGroup(key: UserGroup) {
         _currentUserGroup.value = key
@@ -69,17 +73,11 @@ class GroupRepository(val api: GroupApi) {
         }
     }
 
-    suspend fun getUsersInCurrentGroup(): List<User> {
-        val groupName = _currentUserGroup.value?.name ?: ""
-        if (!this::users.isInitialized || groupName != users.first.name) {
-            var newUsers = listOf<User>()
-            try {
-                newUsers = api.getUsersInGroup(groupName)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return newUsers
+    suspend fun getUsersInCurrentGroup() {
+        try {
+            _usersInCurrentGroup.value = api.getUsersInGroup(currentUserGroup.value!!.name)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return users.second
     }
 }

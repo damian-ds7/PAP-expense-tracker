@@ -2,6 +2,7 @@ package pw.edu.pl.pap.screenComponents.mainScreens
 
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.User
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
@@ -24,8 +25,8 @@ class GroupScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    private var users = groupRepository.usersInCurrentGroup
-    private var userNames = users.value.map { "${it.name} ${it.surname}" }
+    private var users = groupRepository.usersInCurrentGroup.value
+    private var userNames = users.map { "${it.name} ${it.surname}" }
 
     private val currentGroup = groupRepository.currentUserGroup
 
@@ -35,8 +36,9 @@ class GroupScreenComponent(
 
     init {
         coroutineScope.launch {
-            getUsers()
+            runBlocking{ getUsers() }
             setupInputFields()
+            println(users)
         }
     }
 
@@ -49,7 +51,7 @@ class GroupScreenComponent(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             userNames.zip(balances).mapIndexed { index, (username, balance) ->
-                val user = users.value[index]
+                val user = users[index]
                 InputFieldData.UserBalanceButtonData(
                     title = username,
                     balance = balance.toFloat(),
