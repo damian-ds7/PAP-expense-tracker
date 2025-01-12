@@ -140,4 +140,11 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
                 .map(userMapper::userToUserDTO)
                 .toList();
     }
+
+    @Override
+    public String getCurrentRole(String groupName) {
+        return membershipRepository.findByUserIdAndGroupName(AuthHelper.getUser().getId(), groupName)
+                .map(membership -> membership.getRole().getName())
+                .orElseThrow(() -> new BadRequestException("No role for this user in this group"));
+    }
 }

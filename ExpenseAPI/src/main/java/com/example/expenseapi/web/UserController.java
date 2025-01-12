@@ -92,4 +92,10 @@ public class UserController extends GenericController<User, Long>{
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/getRole/{groupName}")
+    @Operation(summary = "Current userRole")
+    public ResponseEntity<String> getRole(@PathVariable String groupName) {
+        return new ResponseEntity<>(membershipService.getCurrentRole(groupName), HttpStatus.OK);
+    }
+
 }
