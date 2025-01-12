@@ -44,7 +44,7 @@ public class MembershipController extends GenericController<Membership, Long> {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{userId}/{groupName}")
     @Operation(summary = "Delete user from a group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Membership successfully deleted.",
@@ -52,13 +52,9 @@ public class MembershipController extends GenericController<Membership, Long> {
             @ApiResponse(responseCode = "403", description = "Forbidden. User does not have admin privileges.",
                     content = @Content)
     })
-    public ResponseEntity<HttpStatus> delete(@RequestBody Membership entity) {
-        User user = AuthHelper.getUser();
-        if (((MembershipService) service).getRole(user, entity.getGroup()).equals("admin")) {
-            membershipService.delete(entity.getId());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    public ResponseEntity<HttpStatus> delete(@PathVariable String groupName, @PathVariable Long userId) {
+        membershipService.deleteMembership(userId, groupName);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/update")
