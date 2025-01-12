@@ -77,4 +77,13 @@ class UserRepository(val api: UserApi) {
             e.printStackTrace()
         }
     }
+
+    suspend fun changeRole(group: UserGroup, user: User, role: String){
+        try {
+            println(api.changeRole(group.name, user.id, role))
+            //TODO remove print when tested
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
