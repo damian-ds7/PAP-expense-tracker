@@ -23,6 +23,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserAlreadyInGroupException.class)
+    public ResponseEntity<String> handleUserAlreadyInGroupException(UserAlreadyInGroupException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyInUseException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
