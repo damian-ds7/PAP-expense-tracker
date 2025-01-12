@@ -19,7 +19,7 @@ import pw.edu.pl.pap.util.formatForDisplay
 
 
 @Composable
-fun PlotDataList(colors: List<Color>, plotData: ChartData) {
+fun PlotDataList(colors: List<Color>, plotData: ChartData, currencySymbol: String) {
     val entryStyle = MaterialTheme.typography.titleLarge.copy(
         fontWeight = FontWeight.Medium
     )
@@ -46,7 +46,7 @@ fun PlotDataList(colors: List<Color>, plotData: ChartData) {
                     )
                 }
                 Text(
-                    text = formatForDisplay(entry.value),
+                    text = "${formatForDisplay(entry.value)} $currencySymbol",
                     style = entryStyle
                 )
             }

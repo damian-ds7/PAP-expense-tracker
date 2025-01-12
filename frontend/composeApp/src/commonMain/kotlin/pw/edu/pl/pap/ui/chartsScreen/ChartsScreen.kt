@@ -21,6 +21,7 @@ import pw.edu.pl.pap.util.formatForDisplay
 fun ChartsScreen(component: ChartsScreenComponent) {
     val plotData by component.plotData.collectAsState()
     val colors = remember(plotData.size) { generateHueColorPalette(plotData.size) }
+    val preferences by component.preferences.collectAsState()
 
     LaunchedEffect(component.navigationState.collectAsState().value) {
         component.getDataBasedOnState()
@@ -60,13 +61,13 @@ fun ChartsScreen(component: ChartsScreenComponent) {
                         GroupSelection(component)
                     }
                     Text(
-                        text = "Total: ${formatForDisplay(component.getTotal().toFloat())} zł",
+                        text = "Total: ${formatForDisplay(component.getTotal().toFloat())} ${preferences?.currencySymbol ?: ""}",
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
 
-                PlotDataList(colors, plotData)
+                PlotDataList(colors, plotData, preferences?.currencySymbol ?: "")
             }
         }
     }

@@ -8,6 +8,7 @@ import org.koin.core.component.inject
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.repositories.data.ChartsRepository
 import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.repositories.data.UserRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.charts.FilterTimeFrames
 
@@ -18,6 +19,9 @@ class ChartsScreenComponent(
 
     private val chartsRepository: ChartsRepository by inject()
     private val groupRepository: GroupRepository by inject()
+    private val userRepository: UserRepository by inject()
+
+    val preferences = userRepository.currentPreferences
 
     sealed class NavigationState {
         data object LoadData : NavigationState()
@@ -46,10 +50,6 @@ class ChartsScreenComponent(
         }
         _navigationState.value = NavigationState.Empty
     }
-
-    val chartFilters = chartsRepository.chartFilters
-
-    private val keyPattern = chartsRepository.keyPattern
 
     val plotData = chartsRepository.plotData
 
