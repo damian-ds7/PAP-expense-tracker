@@ -20,6 +20,7 @@ fun EditGroupScreen(
         onDismiss = component.onDismiss,
         onDelete = { component.deleteGroup() }
     ) }
+    //TODO check confirmation dialogs
 
     Header("Edit Group")
 

@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import pw.edu.pl.pap.data.uiSetup.ConfirmationDialogConfig
 import pw.edu.pl.pap.screenComponents.BaseComponent
 
 class EditGroupScreenComponent(
@@ -20,6 +21,18 @@ class EditGroupScreenComponent(
     val noChange by derivedStateOf { canConfirm && name.value == name.value }
 
     //TODO add confirmation popup to delete
+    var showDeleteGroupConfirmationDialog: MutableState<Boolean> = mutableStateOf(false)
+
+    val changeRoleConfirmationData = ConfirmationDialogConfig(
+        mainText = "Delete group",
+        subText = "Are you sure you want to delete group ${groupRepository.getCurrentGroupName()}?\n" +
+                  "All expenses in ${groupRepository.getCurrentGroupName()} will be gone!",
+        onNo = { showDeleteGroupConfirmationDialog.value = false },
+        onYes = {
+            showDeleteGroupConfirmationDialog.value = false
+            coroutineScope.launch { deleteGroup() }
+        }
+    )
 
     override fun confirm() {
         val newGroup = group?.copy(name = name.value)!!
@@ -39,9 +52,7 @@ class EditGroupScreenComponent(
 
     fun deleteGroup() {
         println("Deleting group $group")
-        coroutineScope.launch {
-            runBlocking { groupRepository.deleteGroup(group!!) }
-            onDismiss()
-        }
+        runBlocking { groupRepository.deleteGroup(group!!) }
+        onDismiss()
     }
 }

@@ -14,7 +14,7 @@ import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 
 interface GroupApi {
 
-    @GET("group/all")
+    @GET("group/all/active")
     suspend fun getUserGroups(): List<UserGroup>
 
     @GET("group/members/{group}")
