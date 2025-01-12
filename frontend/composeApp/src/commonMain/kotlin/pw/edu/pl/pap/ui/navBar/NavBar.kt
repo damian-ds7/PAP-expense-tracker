@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,17 +15,20 @@ import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
     items: List<NavBarItem>,
     onSelect: (NavBarItem) -> Unit,
-    selectedItem: NavBarItem
+    selectedItem: NavBarItem,
+    scrollBehavior: BottomAppBarScrollBehavior
 ) {
 //    var selectedItem: NavBarItem? by remember { mutableStateOf(NavBarItem.Home) }
 
-    NavigationBar(
+    BottomAppBar(
         modifier = modifier.fillMaxWidth(),
+        scrollBehavior = scrollBehavior
     ) {
         items.forEach { item ->
             Box(

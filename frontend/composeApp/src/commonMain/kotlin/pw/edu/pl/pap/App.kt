@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
@@ -34,6 +33,7 @@ import pw.edu.pl.pap.ui.groupScreens.*
 import pw.edu.pl.pap.ui.settingsScreens.*
 
 // Todo refactor function, tweak animations
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(rootComponent: RootComponent, baseUrl: String) {
 
@@ -50,12 +50,13 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
         }
     }
 
-
     val childStack = rootComponent.childStack.subscribeAsState()
     val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
+    val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             bottomBar = {
                 AnimatedVisibility(
                     visible = showBottomBar(childStack.value.active.instance), enter = fadeIn(), exit = fadeOut()
@@ -65,7 +66,8 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
                             NavBarItem.Home, NavBarItem.Charts, NavBarItem.Groups, NavBarItem.Settings
                         ),
                         selectedItem = activeNavBarItem,
-                        onSelect = { rootComponent.navBarItemClicked(it) }
+                        onSelect = { rootComponent.navBarItemClicked(it) },
+                        scrollBehavior = scrollBehavior
                     )
                 }
             },
