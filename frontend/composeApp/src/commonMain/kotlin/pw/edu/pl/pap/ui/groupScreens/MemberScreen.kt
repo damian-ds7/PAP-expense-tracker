@@ -31,4 +31,8 @@ fun MemberScreen (component: MemberScreenComponent) {
     if (component.showKickConfirmationDialog.value) {
         showConfirmationPopup(component.kickConfirmationData)
     }
+
+    if (component.showLeaveConfirmationDialog.value) {
+        showConfirmationPopup(component.leaveConfirmationData)
+    }
 }

@@ -78,7 +78,7 @@ class MemberScreenComponent(
         onNo = { showLeaveConfirmationDialog.value = false },
         onYes = {
             showLeaveConfirmationDialog.value = false
-            coroutineScope.launch { leave() }
+            runBlocking { leave() }
             onBack()
         }
     )
@@ -138,6 +138,6 @@ class MemberScreenComponent(
     private suspend fun leave(){
         membershipRepository.kickMember(user, currentUserGroup.value!!)
         groupRepository.updateAfterLeaving()
-        //TODO test it
+        //TODO test it when api is fixed
     }
 }
