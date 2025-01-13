@@ -13,7 +13,7 @@ interface UserApi {
     suspend fun getCurrentUserInfo(): User
 
     @GET("user/search/{group}")
-    suspend fun searchUsers(@Path("group") group: String, @QueryMap user: Map<String, String>): List<User>
+    suspend fun searchUsers(@Path("group") group: String, @QueryMap user: Map<String, String?>): List<User>
 
     @GET("user/isAdmin/{group}")
     suspend fun isAdmin(@Path("group") group: String): Boolean

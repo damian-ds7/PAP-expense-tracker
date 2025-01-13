@@ -23,6 +23,11 @@ data class NextExpensePageInfo(
     var order: String
 ) : FilterParams()
 
+@Serializable
+data class UserSearch(
+    val name: String? = null,
+    val surname: String? = null,
+) : FilterParams()
 
 fun FilterParams.toMap(): Map<String, String?> {
     val result = mutableMapOf<String, String?>()
