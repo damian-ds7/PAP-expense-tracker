@@ -18,6 +18,7 @@ import pw.edu.pl.pap.util.formatForDisplay
 @Composable
 fun TopSection(component: HomeScreenComponent, onGroupKeyClick: () -> Unit, onUserGroupClick: () -> Unit) {
     val homeInfo by component.homeInfo.collectAsState()
+    val preferences by component.preferences.collectAsState()
 
     Column {
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
@@ -26,7 +27,7 @@ fun TopSection(component: HomeScreenComponent, onGroupKeyClick: () -> Unit, onUs
                     text = "My Expenses", fontSize = 20.sp, fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "${formatForDisplay(homeInfo.userExpenses)} zł",
+                    text = "${formatForDisplay(homeInfo.userExpenses)} ${preferences?.currencySymbol ?: ""}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -37,7 +38,7 @@ fun TopSection(component: HomeScreenComponent, onGroupKeyClick: () -> Unit, onUs
                     text = "Total Expenses", fontSize = 20.sp, fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "${formatForDisplay(homeInfo.groupExpenses)} zł",
+                    text = "${formatForDisplay(homeInfo.groupExpenses)} ${preferences?.currencySymbol ?: ""}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
                 )

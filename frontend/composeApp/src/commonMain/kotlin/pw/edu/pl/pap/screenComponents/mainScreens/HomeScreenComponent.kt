@@ -9,6 +9,7 @@ import pw.edu.pl.pap.data.databaseAssociatedData.Expense
 import pw.edu.pl.pap.data.databaseAssociatedData.UserGroup
 import pw.edu.pl.pap.repositories.data.ExpenseRepository
 import pw.edu.pl.pap.repositories.data.GroupRepository
+import pw.edu.pl.pap.repositories.data.UserRepository
 import pw.edu.pl.pap.screenComponents.BaseComponent
 import pw.edu.pl.pap.util.sortingSystem.GroupKey
 
@@ -26,6 +27,9 @@ class HomeScreenComponent(
 
     private val expenseRepository: ExpenseRepository by inject()
     private val groupRepository: GroupRepository by inject()
+    private val userRepository: UserRepository by inject()
+
+    val preferences = userRepository.currentPreferences
 
     private val _navigationState = MutableStateFlow<NavigationState>(NavigationState.InitialLoad)
     val navigationState: StateFlow<NavigationState> get() = _navigationState
