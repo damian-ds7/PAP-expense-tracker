@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Profile;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableCaching
 @Profile("!test")
 public class CacheConfig {
 
