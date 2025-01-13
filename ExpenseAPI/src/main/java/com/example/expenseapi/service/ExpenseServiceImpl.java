@@ -506,7 +506,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
             "searchExpensesDTO",
             "searchExpensesPagesDTO",
             "expensesUserPage",
-            "ExpenseID"
+            "ExpenseID",
+            "baseGroups",
+            "activeGroups"
     }, allEntries = true)
     @Transactional
     public void deleteAllExpensesForUserIdAndGroupName(Long userId, String groupName) {

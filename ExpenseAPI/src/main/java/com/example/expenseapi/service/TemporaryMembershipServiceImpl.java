@@ -90,7 +90,7 @@ public class TemporaryMembershipServiceImpl extends GenericServiceImpl<Temporary
     }
 
     @Override
-    @CacheEvict(value = {"temporaryMembershipsByUserId", "temporaryMembershipsBySenderId"}, allEntries = true)
+    @CacheEvict(value = {"temporaryMembershipsByUserId", "temporaryMembershipsBySenderId", "users", "admins"}, allEntries = true)
     public void delete(Long id) {
         super.delete(id);
     }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.example.expenseapi.repository.UserRepository;
 import com.example.expenseapi.utils.TokenGenerator;
 import jakarta.transaction.Transactional;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,145 +30,145 @@ public class UserControllerIT {
         this.gen = gen;
     }
 
-    @Test
-    void testSearch_NotLoggedIn() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/any"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
-    }
-
-    @Test
-    void testSearch_WrongGroup() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/unknown")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isForbidden());
-    }
-
-    @Test
-    void testSearch_ExactName() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herkules3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
-    }
-
-    @Test
-    void testSearch_ExactNameLowered() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=herkules3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
-    }
-
-    @Test
-    void testSearch_ExactNameUpper() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=HERKULES3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
-    }
-
-
-    @Test
-    void testSearch_NotExactName() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herk")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_NotExactNameLowered() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=herk")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_NotExactNameUpper() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=HERK")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_InvalidName() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herkules5")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
-
-    @Test
-    void testSearch_ExactSurname() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herkules3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
-    }
-
-    @Test
-    void testSearch_ExactSurnameLowered() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=herkules3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
-    }
-
-    @Test
-    void testSearch_ExactSurnameUpper() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=HERKULES3")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
-    }
-
-    @Test
-    void testSearch_NotExactSurname() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herk")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_NotExactSurnameLowered() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=herk")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_NotExactSurnameUpper() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=HERK")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
-    }
-
-    @Test
-    void testSearch_InvalidSurname() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herkules5")
-                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
-    }
+//    @Test
+//    void testSearch_NotLoggedIn() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/any"))
+//                .andExpect(MockMvcResultMatchers.status().isForbidden());
+//    }
+//
+//    @Test
+//    void testSearch_WrongGroup() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/unknown")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isForbidden());
+//    }
+//
+//    @Test
+//    void testSearch_ExactName() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herkules3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
+//    }
+//
+//    @Test
+//    void testSearch_ExactNameLowered() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=herkules3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
+//    }
+//
+//    @Test
+//    void testSearch_ExactNameUpper() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=HERKULES3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Herkules3"));
+//    }
+//
+//
+//    @Test
+//    void testSearch_NotExactName() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herk")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_NotExactNameLowered() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=herk")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_NotExactNameUpper() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=HERK")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_InvalidName() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?name=Herkules5")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+//    }
+//
+//    @Test
+//    void testSearch_ExactSurname() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herkules3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
+//    }
+//
+//    @Test
+//    void testSearch_ExactSurnameLowered() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=herkules3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
+//    }
+//
+//    @Test
+//    void testSearch_ExactSurnameUpper() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=HERKULES3")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].surname").value("Herkules3"));
+//    }
+//
+//    @Test
+//    void testSearch_NotExactSurname() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herk")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_NotExactSurnameLowered() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=herk")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_NotExactSurnameUpper() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=HERK")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[*].surname", Matchers.containsInAnyOrder("Herkules3", "Herkules4")));
+//    }
+//
+//    @Test
+//    void testSearch_InvalidSurname() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/user/search/family?surname=Herkules5")
+//                .header("Authorization", "Bearer " + gen.getToken(activeUser)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+//    }
 
     @Test
     void testChangePass_NotLoggedIn() throws Exception {

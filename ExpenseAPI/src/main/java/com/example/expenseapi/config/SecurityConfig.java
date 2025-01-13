@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/category/all").permitAll()
                         .requestMatchers("/method/all").permitAll()
                         .requestMatchers("/currency/all").permitAll()
+                        .requestMatchers("/role/all").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -91,7 +91,9 @@ public class AuthControllerIT {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/register")
                 .content(jsonRequestBody)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.refreshToken").exists());
     }
     @Test
     void testRegisterEmailConflict() throws Exception {
