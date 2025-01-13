@@ -6,7 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,20 +16,17 @@ import androidx.compose.ui.unit.dp
 import pw.edu.pl.pap.util.constants.horizontalPadding
 import pw.edu.pl.pap.util.constants.verticalPadding
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavBar(
     modifier: Modifier = Modifier,
     items: List<NavBarItem>,
     onSelect: (NavBarItem) -> Unit,
     selectedItem: NavBarItem,
-    scrollBehavior: BottomAppBarScrollBehavior
 ) {
-//    var selectedItem: NavBarItem? by remember { mutableStateOf(NavBarItem.Home) }
 
-    BottomAppBar(
-        modifier = modifier.fillMaxWidth(),
-        scrollBehavior = scrollBehavior
+    NavigationBar(
+        modifier = modifier
+            .fillMaxWidth()
     ) {
         items.forEach { item ->
             Box(

@@ -6,10 +6,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -27,7 +24,7 @@ fun HomeScreen(component: HomeScreenComponent) {
     var showGroupingKeyMenu by remember { mutableStateOf(false) }
     var showUserGroupMenu by remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(component.navigationState.collectAsState().value) {
         listState.animateScrollToItem(0)
@@ -35,19 +32,20 @@ fun HomeScreen(component: HomeScreenComponent) {
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(
+            scrollBehavior.nestedScrollConnection
+        ),
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
                     TopSection(
                         component,
                         onGroupKeyClick = { showGroupingKeyMenu = true },
-                        onUserGroupClick = { showUserGroupMenu = true }
-                    )
+                        onUserGroupClick = { showUserGroupMenu = true })
 
                 },
                 scrollBehavior = scrollBehavior,
-                expandedHeight = 100.dp
+                expandedHeight = 100.dp,
             )
         }, floatingActionButton = {
             PlusButton(onUpdate = {
@@ -59,8 +57,7 @@ fun HomeScreen(component: HomeScreenComponent) {
             })
         }) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
+            modifier = Modifier.padding(paddingValues)
         ) {
             PaginatedLazyColumn(
                 component = component,

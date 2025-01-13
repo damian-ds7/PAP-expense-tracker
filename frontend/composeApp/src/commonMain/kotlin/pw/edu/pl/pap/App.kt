@@ -1,33 +1,37 @@
 package pw.edu.pl.pap
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import pw.edu.pl.pap.di.authModule
 import pw.edu.pl.pap.screenComponents.RootComponent
-import pw.edu.pl.pap.ui.settingsScreens.SettingsScreen
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
+import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
+import pw.edu.pl.pap.ui.chartsScreen.filterScreen.ChartsFilterScreen
 import pw.edu.pl.pap.ui.expenseDetails.ExpenseDetailsScreen
+import pw.edu.pl.pap.ui.groupScreens.*
 import pw.edu.pl.pap.ui.home.HomeScreen
 import pw.edu.pl.pap.ui.loginSystem.LogInScreen
 import pw.edu.pl.pap.ui.loginSystem.LogInSignUpSelectionScreen
 import pw.edu.pl.pap.ui.loginSystem.SignUpScreen
 import pw.edu.pl.pap.ui.navBar.BottomNavBar
 import pw.edu.pl.pap.ui.navBar.NavBarItem
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import pw.edu.pl.pap.di.authModule
-import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
-import pw.edu.pl.pap.ui.chartsScreen.filterScreen.ChartsFilterScreen
-import pw.edu.pl.pap.ui.groupScreens.*
 import pw.edu.pl.pap.ui.settingsScreens.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,12 +56,11 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
 
     val childStack = rootComponent.childStack.subscribeAsState()
     val activeNavBarItem by rootComponent.activeNavBarItem.collectAsState()
-    val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection).systemBarsPadding(),
+            modifier = Modifier.systemBarsPadding(),
             bottomBar = {
                 AnimatedVisibility(
                     visible = showBottomBar(childStack.value.active.instance), enter = fadeIn(), exit = fadeOut()
@@ -68,7 +71,6 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
                         ),
                         selectedItem = activeNavBarItem,
                         onSelect = { rootComponent.navBarItemClicked(it) },
-                        scrollBehavior = scrollBehavior
                     )
                 }
             },
@@ -129,6 +131,7 @@ fun showBottomBar(instance: RootComponent.Child): Boolean {
         is RootComponent.Child.ChartsScreen,
         is RootComponent.Child.GroupScreen,
         is RootComponent.Child.SettingsScreen -> true
+
         else -> false
     }
 }
