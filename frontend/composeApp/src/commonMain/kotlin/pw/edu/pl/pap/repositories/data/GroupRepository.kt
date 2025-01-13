@@ -32,6 +32,7 @@ class GroupRepository(val api: GroupApi) {
             try {
                 val allGroups = api.getUserGroups()
                 _allGroups.value = allGroups
+                print("From getgroup: " + allGroups)
                 if (_currentUserGroup.value == null) {
                     _currentUserGroup.value = _allGroups.value.first()
                 }
@@ -83,13 +84,12 @@ class GroupRepository(val api: GroupApi) {
     }
 
     suspend fun refreshGroups() {
-        getGroups()
+        getGroups(true)
         println(_allGroups.value)
         println(_currentUserGroup.value)
         if (_allGroups.value.isEmpty()) {
             _currentUserGroup.value = null
-        }
-        if (_currentUserGroup.value !in _allGroups.value) {
+        } else if (_currentUserGroup.value !in _allGroups.value) {
             _currentUserGroup.value = _allGroups.value.first()
         }
         println(_allGroups.value)

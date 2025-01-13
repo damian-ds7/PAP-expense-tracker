@@ -20,7 +20,7 @@ class GroupScreenComponent(
 ) : BaseComponent by baseComponent {
 
     private val groupRepository: GroupRepository by inject()
-    val currentUserGroup = groupRepository.currentUserGroup
+    var currentUserGroup = groupRepository.currentUserGroup
 
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
@@ -28,15 +28,13 @@ class GroupScreenComponent(
     private var users = groupRepository.usersInCurrentGroup.value
     private var userNames = users.map { "${it.name} ${it.surname}" }
 
-    private val currentGroup = groupRepository.currentUserGroup
-
     init {
         coroutineScope.launch {
             updateUsers()
         }
     }
 
-    suspend fun updateUsers() {
+    fun updateUsers() {
         runBlocking{ getUsers() }
         users = groupRepository.usersInCurrentGroup.value
         userNames = users.map { "${it.name} ${it.surname}" }
@@ -55,7 +53,7 @@ class GroupScreenComponent(
                 val user = users[index]
                 InputFieldData.UserButtonData(
                     title = username,
-                    onClick = { onUserClicked(currentGroup.value!!, user) }
+                    onClick = { onUserClicked(currentUserGroup.value!!, user) }
                 )
             }
         )
@@ -63,6 +61,11 @@ class GroupScreenComponent(
 
     fun refreshGroup() {
         runBlocking { groupRepository.refreshGroups() }
-        setupInputFields()
+        users = groupRepository.usersInCurrentGroup.value
+        userNames = users.map { "${it.name} ${it.surname}" }
+        currentUserGroup = groupRepository.currentUserGroup
+        if (currentUserGroup.value != null){
+            setupInputFields()
+        }
     }
 }
