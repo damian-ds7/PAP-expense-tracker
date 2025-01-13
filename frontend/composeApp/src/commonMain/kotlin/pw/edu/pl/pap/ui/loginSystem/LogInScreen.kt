@@ -10,7 +10,6 @@ import pw.edu.pl.pap.ui.common.*
 fun LogInScreen (
     component: LoginScreenComponent
 ) {
-    val scope = rememberCoroutineScope()
 
     Header("Log In")
     component.setupInputFields()

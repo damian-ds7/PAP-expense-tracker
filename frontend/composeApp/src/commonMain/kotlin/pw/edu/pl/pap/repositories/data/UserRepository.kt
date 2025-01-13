@@ -83,8 +83,7 @@ class UserRepository(val api: UserApi) {
 
     suspend fun changeRole(group: UserGroup, user: User, role: String){
         try {
-            println(api.changeRole(group.name, user.id, role))
-            //TODO remove print when tested
+            api.changeRole(group.name, user.id, role)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -92,8 +91,6 @@ class UserRepository(val api: UserApi) {
 
     suspend fun getUserRole(group: UserGroup, user: User) {
         try {
-            println(api.getRole(group.name, user.id))
-            //TODO remove print when tested
             _currentRole.value = api.getRole(group.name, user.id)
         } catch (e: Exception) {
             e.printStackTrace()

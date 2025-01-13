@@ -64,11 +64,6 @@ class SettingsScreenComponent(
         _inputFieldsData.clear()
         _inputFieldsData.addAll(
             listOf(
-//                InputFieldData.ButtonData(
-//                title = "Change server address", onClick = {
-//                    coroutineScope.launch { onChangeServerAddressClicked() }
-//                }),
-                //TODO move to log in screen
             InputFieldData.ButtonData(
                 title = "Edit personal user data",
                 onClick = {

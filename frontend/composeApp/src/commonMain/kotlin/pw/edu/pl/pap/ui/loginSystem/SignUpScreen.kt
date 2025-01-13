@@ -11,7 +11,6 @@ import pw.edu.pl.pap.ui.common.*
 fun SignUpScreen (
     component: SignupScreenComponent
 ) {
-    val scope = rememberCoroutineScope()
 
     Header("Sign Up")
     component.setupInputFields()

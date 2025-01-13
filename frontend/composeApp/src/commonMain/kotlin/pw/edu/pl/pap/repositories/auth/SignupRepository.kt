@@ -13,14 +13,6 @@ class SignupRepository(private val signUpApi: SignUpApi, private val tokenReposi
     suspend fun signup(userSignUpData: UserSignUpData): Boolean {
         val response = signUpApi.signUp(userSignUpData)
 
-        println(response)
-        println("HTTP Status: ${response.status}")
-        println("Headers: ${response.headers}")
-        println("Body: ${response.bodyAsText()}")
-        println("here")
-        //TODO remove when debugged
-
-        //TODO add different return based on error
         if (!response.status.isSuccess()) {
             return false
         }

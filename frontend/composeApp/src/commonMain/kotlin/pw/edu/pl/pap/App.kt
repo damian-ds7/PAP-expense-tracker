@@ -30,7 +30,6 @@ import pw.edu.pl.pap.ui.chartsScreen.filterScreen.ChartsFilterScreen
 import pw.edu.pl.pap.ui.groupScreens.*
 import pw.edu.pl.pap.ui.settingsScreens.*
 
-// Todo refactor function, tweak animations
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(rootComponent: RootComponent, baseUrl: String) {

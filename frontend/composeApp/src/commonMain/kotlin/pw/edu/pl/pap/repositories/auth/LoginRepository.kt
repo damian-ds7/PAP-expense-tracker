@@ -11,7 +11,6 @@ class LoginRepository(private val loginApi: LoginApi, private val tokenRepositor
     suspend fun login(userLoginData: UserLoginData): Boolean {
         val response = loginApi.login(userLoginData)
 
-        //TODO add different return based on error
         if (!response.status.isSuccess()) {
             return false
         }

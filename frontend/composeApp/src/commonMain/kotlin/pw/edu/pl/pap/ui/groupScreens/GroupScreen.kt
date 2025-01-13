@@ -26,7 +26,6 @@ fun GroupScreen(component: GroupScreenComponent) {
         }
 
         InputFields(component.inputFieldsData)
-        //TODO add text if group is empty
     } else {
         Header("None")
     }

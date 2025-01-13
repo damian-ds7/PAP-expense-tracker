@@ -28,8 +28,6 @@ class LoginScreenComponent(
                 onConfirm()
             } else {
                 showFailedLoginWarning.value = true
-                //TODO set failedLoginMessage
-                //temp
                 failedLoginMessage.value = "Something went wrong"
             }
         }

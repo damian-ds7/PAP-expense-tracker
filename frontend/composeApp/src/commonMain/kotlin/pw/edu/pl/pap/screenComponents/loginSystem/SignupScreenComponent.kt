@@ -78,8 +78,6 @@ class SignupScreenComponent(
                 onConfirm()
             } else {
                 showFailedLoginWarning.value = true
-                //TODO set failedLoginMessage
-                //temp
                 failedLoginMessage.value = "Something went wrong"
             }
         }

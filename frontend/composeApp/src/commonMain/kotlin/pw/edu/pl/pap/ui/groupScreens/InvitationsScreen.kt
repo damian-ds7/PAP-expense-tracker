@@ -21,8 +21,6 @@ fun InvitationsScreen (component: InvitationsScreenComponent) {
 
     component.fetchCurrentInvites()
 
-    //TODO test for empty groups list
-
     if (component.isAdmin.value && component.currentUserGroup.value != null){
         TwoChoiceClickableHeader(
             text = "  NEW  ",
@@ -136,6 +134,8 @@ fun InvitationsScreen (component: InvitationsScreenComponent) {
             )
             offset += (component.receivedInvitationData.size * 58)
         }
+        
+        offset += 40
 
         Box(
             modifier = Modifier.fillMaxWidth()

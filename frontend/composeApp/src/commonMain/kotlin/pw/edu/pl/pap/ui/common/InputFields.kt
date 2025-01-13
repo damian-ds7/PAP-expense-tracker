@@ -100,7 +100,6 @@ private fun createDropdownList(
     data: InputFieldData.DropdownListData
 ) {
     var showDropdown by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
