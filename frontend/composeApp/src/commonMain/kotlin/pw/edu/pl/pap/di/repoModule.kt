@@ -7,7 +7,6 @@ val repoModule = module {
     single { ExpenseRepository(get()) }
     single { GroupRepository(get()) }
     single { ChartsRepository(get()) }
-    single { ConfigRepository(get()) }
     single { UserRepository(get()) }
     single { MembershipRepository(get()) }
     single { TemporaryMembershipRepository(get()) }
