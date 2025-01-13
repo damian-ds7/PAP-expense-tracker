@@ -21,7 +21,8 @@ fun BackDeleteAddButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete: 
         TextButton(
             text = "BACK",
             modifier = Modifier.align(Alignment.BottomStart),
-            onUpdate = onBack
+            onUpdate = onBack,
+            width = 0.25f
         )
 
         TextButton(
@@ -30,14 +31,16 @@ fun BackDeleteAddButtonRow(onBack: () -> Unit, onConfirm: () -> Unit, onDelete: 
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error, contentColor = MaterialTheme.colorScheme.onError
             ),
-            onUpdate = onDelete
+            onUpdate = onDelete,
+            width = 0.25f
         )
 
         TextButton(
             text = "SAVE",
             isEnabled = isConfirmEnabled,
             modifier = Modifier.align(Alignment.BottomEnd),
-            onUpdate = onConfirm
+            onUpdate = onConfirm,
+            width = 0.25f
         )
     }
 }

@@ -46,17 +46,13 @@ fun GroupScreen(component: GroupScreenComponent) {
             TextButton(
                 text = "NEW GROUP",
                 onUpdate = { component.onNewGroupClicked() },
-                changeSize = true,
-                modifier = Modifier
-                    .width(180.dp).height(60.dp)
+                width = 0.4f
             )
 
             TextButton(
                 text = "INVITATIONS",
                 onUpdate = { component.onInvitationsClicked() },
-                changeSize = true,
-                modifier = Modifier
-                    .width(180.dp).height(60.dp)
+                width = 0.4f
             )
         }
     }
