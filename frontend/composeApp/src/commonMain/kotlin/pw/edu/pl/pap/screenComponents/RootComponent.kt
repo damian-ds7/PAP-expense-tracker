@@ -313,7 +313,10 @@ class RootComponent(
 
             is Configuration.SettingsScreen -> Child.SettingsScreen(
                 SettingsScreenComponent(
-                    onLogOut = { navigation.replaceAll(Configuration.LogInSignUpSelectionScreen) },
+                    onLogOut = {
+                        navigation.replaceAll(Configuration.LogInSignUpSelectionScreen)
+                        _activeNavBarItem.value = NavBarItem.Home
+                    },
                     onChangeServerAddressClicked = { navigation.pushNew(Configuration.ServerAddressScreen) },
                     onUserPersonalsClicked = { navigation.pushNew(Configuration.UserPersonalDataScreen) },
                     onChangePasswordClicked = { navigation.pushNew(Configuration.ChangePasswordScreen) },
