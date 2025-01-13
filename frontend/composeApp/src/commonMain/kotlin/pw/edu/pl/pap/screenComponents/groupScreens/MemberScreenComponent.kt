@@ -137,7 +137,7 @@ class MemberScreenComponent(
 
     private suspend fun leave(){
         membershipRepository.kickMember(user, currentUserGroup.value!!)
-        groupRepository.updateAfterLeaving()
+        groupRepository.refreshGroups()
         //TODO test it when api is fixed
     }
 }

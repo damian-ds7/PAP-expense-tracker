@@ -60,4 +60,8 @@ class GroupScreenComponent(
             }
         )
     }
+
+    fun refreshGroup() {
+        runBlocking { groupRepository.refreshGroups() }
+    }
 }

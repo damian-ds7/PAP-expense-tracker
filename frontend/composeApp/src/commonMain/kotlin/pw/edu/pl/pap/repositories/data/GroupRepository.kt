@@ -1,12 +1,7 @@
 package pw.edu.pl.pap.repositories.data
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import pw.edu.pl.pap.api.data.GroupApi
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
@@ -86,8 +81,9 @@ class GroupRepository(val api: GroupApi) {
         }
     }
 
-    suspend fun updateAfterLeaving() {
+    suspend fun refreshGroups() {
         _currentUserGroup.value = null
         getGroups()
+        getUsersInCurrentGroup()
     }
 }

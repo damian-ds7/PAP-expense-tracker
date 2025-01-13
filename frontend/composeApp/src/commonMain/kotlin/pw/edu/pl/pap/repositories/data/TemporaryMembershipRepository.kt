@@ -31,7 +31,7 @@ class TemporaryMembershipRepository(val api: TemporaryMembershipApi) {
 
     suspend fun accept(id: Long){
         try {
-            api.accept(id)
+            println(api.accept(id))
             getPendingInvitations()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -40,7 +40,7 @@ class TemporaryMembershipRepository(val api: TemporaryMembershipApi) {
 
     suspend fun decline(id: Long){
         try {
-            api.decline(id)
+            println(api.decline(id))
             getPendingInvitations()
         } catch (e: Exception) {
             e.printStackTrace()

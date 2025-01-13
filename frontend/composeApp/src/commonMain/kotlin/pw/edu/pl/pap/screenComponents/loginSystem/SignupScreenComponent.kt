@@ -70,7 +70,7 @@ class SignupScreenComponent(
 //        }
 //        val userSignUpData = UserSignUpData(name.value, surname.value, email.value, password.value)
 
-        val userSignUpData = UserSignUpData("Jarek", "Pieczarek", "JarekPieczarek11@gmail.com", "123")
+        val userSignUpData = UserSignUpData("Maciek", "ZPasiek", "MaciekZPasiek2@gmail.com", "123")
 
         coroutineScope.launch {
             val response = signupRepository.signup(userSignUpData)

@@ -35,8 +35,11 @@ import pw.edu.pl.pap.ui.settingsScreens.*
 @Composable
 fun App(rootComponent: RootComponent, baseUrl: String) {
 
+//    val newUrl = "http://192.168.0.102:8080/"
+
     remember {
         startKoin {
+//            properties(mapOf("baseUrl" to newUrl))
             properties(mapOf("baseUrl" to baseUrl))
             modules(authModule)
         }

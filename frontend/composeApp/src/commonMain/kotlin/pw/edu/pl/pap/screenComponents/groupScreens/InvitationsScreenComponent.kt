@@ -152,7 +152,10 @@ class InvitationsScreenComponent(
     }
 
     private fun acceptInvite(id: Long){
-        coroutineScope.launch {temporaryMembershipRepository.accept(id)}
+        coroutineScope.launch {
+            temporaryMembershipRepository.accept(id)
+            groupRepository.refreshGroups()
+        }
 
         _sentInvitationData.removeAll{ invitation ->
             invitation is InvitationData.ReceivedInvitationData && invitation.id == id
