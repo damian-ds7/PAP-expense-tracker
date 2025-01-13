@@ -412,6 +412,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ExpenseNotFoundException(id));
         Expense updatedExpense = expenseMapper.expenseDTOToExpense(expenseDTO);
+        updatedExpense.setMembership(membershipRepository.findByUserIdAndGroupName(expenseDTO.getUser().getId(), expenseDTO.getGroupName()).orElseThrow(()->new MembershipNotFoundException(expenseDTO.getUser().getId(), expenseDTO.getGroupName())));
         BeanUtils.copyProperties(updatedExpense, expense, getNullPropertyNames(updatedExpense));
         expense.setMethod(methodOfPaymentRepository.findByName(updatedExpense.getMethod().getName())
                 .orElseThrow(() -> new MethodNotFoundException(updatedExpense.getMethod().getName())));
