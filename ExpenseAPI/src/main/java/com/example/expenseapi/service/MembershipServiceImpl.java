@@ -69,25 +69,25 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId", "admins", "users"}, allEntries = true)
     public Membership save(Membership entity) {
         return super.save(entity);
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, allEntries = true)
     public Membership update(Long id, Membership entity) {
         return super.update(id, entity);
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, allEntries = true)
     public void delete(Long id) {
         super.delete(id);
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId", "admins", "users"}, allEntries = true)
     @Transactional
     public void deleteMembership(Long userId, String groupName) {
         if(!isAdmin(groupName) && !userId.equals(AuthHelper.getUser().getId())) {
@@ -101,13 +101,13 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId","admins", "users"}, allEntries = true)
     public void deleteAllData() {
         super.deleteAllData();
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId", "admins", "users"}, allEntries = true)
     @Transactional
     public void deleteAllMembershipsForUserId(Long id) {
         membershipRepository.deleteAllByUserId(id);
@@ -122,7 +122,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId", "admins", "users"}, allEntries = true)
     public void changeRole(String groupName, String role, Long userId) {
         if (!isAdmin(groupName)) {
             throw new PermissionNeededException(groupName);
@@ -152,7 +152,7 @@ public class MembershipServiceImpl extends GenericServiceImpl<Membership, Long> 
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "membershipsByUserId", "admins", "users"}, allEntries = true)
     @Transactional
     public void deleteAllMembershipsForGroupId(Long id) {
         expenseService.deleteAllByGroupId(id);

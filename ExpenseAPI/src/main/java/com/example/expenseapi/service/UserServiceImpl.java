@@ -58,8 +58,8 @@ public class UserServiceImpl extends GenericServiceImpl<User, Long> implements U
         if (AuthHelper.isGroupNameInvalid(groupName))
             throw new UserNotInGroupException(groupName, AuthHelper.getUser().getId());
         Specification<User> spec = Specification.where(null);
-        spec = spec.and(UserSpecification.nameContains(filter.getName()));
-        spec = spec.and(UserSpecification.surnameContains(filter.getSurname()));
+        spec = spec.and(UserSpecification.nameMatches(filter.getName(), 2));
+        spec = spec.and(UserSpecification.surnameMatches(filter.getSurname(), 2));
         spec = spec.and(UserSpecification.notInGroup(groupName));
         return userRepository.findAll(spec).stream()
                 .map(userMapper::userToUserDTO)

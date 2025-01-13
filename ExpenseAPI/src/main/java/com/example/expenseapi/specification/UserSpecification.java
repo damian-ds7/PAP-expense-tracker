@@ -4,31 +4,38 @@ import com.example.expenseapi.pojo.Group;
 import com.example.expenseapi.pojo.Membership;
 import com.example.expenseapi.pojo.TemporaryMembership;
 import com.example.expenseapi.pojo.User;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UserSpecification {
-    public static Specification<User> nameContains(String name) {
-        return ((root, query, criteriaBuilder) -> {
-            if (name == null) {
-                return criteriaBuilder.conjunction();
+    public static Specification<User> nameMatches(String name, int maxDistance) {
+        return (root, query, criteriaBuilder) -> {
+            if (name == null || name.trim().isEmpty()) {
+                return criteriaBuilder.disjunction();
             }
-            String pattern = "%" + name.toLowerCase() + "%";
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), pattern);
-        });
+            Expression<Integer> editDistance = criteriaBuilder.function(
+                    "UTL_MATCH.edit_distance",
+                    Integer.class,
+                    criteriaBuilder.lower(root.get("name")),
+                    criteriaBuilder.literal(name.toLowerCase())
+            );
+            return criteriaBuilder.lessThanOrEqualTo(editDistance, maxDistance);
+        };
     }
 
-    public static Specification<User> surnameContains(String surname) {
-        return (((root, query, criteriaBuilder) -> {
-            if (surname == null) {
-                return criteriaBuilder.conjunction();
+    public static Specification<User> surnameMatches(String surname, int maxDistance) {
+        return (root, query, criteriaBuilder) -> {
+            if (surname == null || surname.trim().isEmpty()) {
+                return criteriaBuilder.disjunction();
             }
-            String pattern = "%" + surname.toLowerCase() + "%";
-            return criteriaBuilder.like(criteriaBuilder.lower(root.get("surname")), pattern);
-        }));
+            Expression<Integer> editDistance = criteriaBuilder.function(
+                    "UTL_MATCH.edit_distance",
+                    Integer.class,
+                    criteriaBuilder.lower(root.get("surname")),
+                    criteriaBuilder.literal(surname.toLowerCase())
+            );
+            return criteriaBuilder.lessThanOrEqualTo(editDistance, maxDistance);
+        };
     }
 
     public static Specification<User> notInGroup(String groupName) {

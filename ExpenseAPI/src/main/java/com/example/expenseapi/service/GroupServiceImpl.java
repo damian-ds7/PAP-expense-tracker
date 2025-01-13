@@ -48,7 +48,7 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
     }
 
     @Override
-    @CacheEvict(value = {"baseGroups", "activeGroups"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
+    @CacheEvict(value = {"baseGroups", "activeGroups", "admins", "users"}, keyGenerator = "userBasedKeyGenerator", allEntries = true)
     public Group save(Group entity) {
         String email = AuthHelper.getUserEmail();
         User userEntity = userService.findByEmail(email)
