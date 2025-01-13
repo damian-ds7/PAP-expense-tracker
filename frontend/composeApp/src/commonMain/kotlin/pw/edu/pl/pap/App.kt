@@ -20,6 +20,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import pw.edu.pl.pap.di.authModule
+import pw.edu.pl.pap.di.configModule
 import pw.edu.pl.pap.screenComponents.RootComponent
 import pw.edu.pl.pap.ui.addExpense.NewExpenseScreen
 import pw.edu.pl.pap.ui.chartsScreen.ChartsScreen
@@ -44,7 +45,8 @@ fun App(rootComponent: RootComponent, baseUrl: String) {
         startKoin {
 //            properties(mapOf("baseUrl" to newUrl))
             properties(mapOf("baseUrl" to baseUrl))
-            modules(authModule)
+            modules(authModule, configModule)
+            rootComponent.loadConfigData()
         }
     }
 
