@@ -3,6 +3,7 @@ package pw.edu.pl.pap.repositories.data
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
+import org.koin.java.KoinJavaComponent.inject
 import pw.edu.pl.pap.api.data.GroupApi
 import pw.edu.pl.pap.data.databaseAssociatedData.NewGroup
 import pw.edu.pl.pap.data.databaseAssociatedData.User
@@ -82,8 +83,10 @@ class GroupRepository(val api: GroupApi) {
     }
 
     suspend fun refreshGroups() {
-        _currentUserGroup.value = null
         getGroups()
+        if (_currentUserGroup.value !in _allGroups.value) {
+            _currentUserGroup.value = _allGroups.value.first()
+        }
         getUsersInCurrentGroup()
     }
 }

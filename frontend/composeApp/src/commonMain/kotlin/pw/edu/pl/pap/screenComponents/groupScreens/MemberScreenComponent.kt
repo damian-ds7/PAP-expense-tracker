@@ -131,13 +131,11 @@ class MemberScreenComponent(
 
     private suspend fun kickMember() {
         runBlocking { membershipRepository.kickMember(user, currentUserGroup.value!!) }
-        groupRepository.getUsersInCurrentGroup()
-        //TODO test it
+        groupRepository.refreshGroups()
     }
 
     private suspend fun leave(){
         membershipRepository.kickMember(user, currentUserGroup.value!!)
         groupRepository.refreshGroups()
-        //TODO test it when api is fixed
     }
 }
