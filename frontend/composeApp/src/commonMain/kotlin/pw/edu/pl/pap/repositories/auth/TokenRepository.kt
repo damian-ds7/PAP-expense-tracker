@@ -14,11 +14,15 @@ class TokenRepository(private val storage: TokenStorage, private val refreshToke
 
     suspend fun checkRefreshToken(): Boolean {
         val refreshToken = storage.getToken() ?: return  false
-        val response = refreshTokenApi.refresh(RefreshToken(refreshToken))
-        if (response.status.isSuccess()) {
-            val accessToken: String = response.body()
-            setTokens(Tokens(accessToken, refreshToken))
-            return true
+        try {
+            val response = refreshTokenApi.refresh(RefreshToken(refreshToken))
+            if (response.status.isSuccess()) {
+                val accessToken: String = response.body()
+                setTokens(Tokens(accessToken, refreshToken))
+                return true
+            }
+        } catch (e: Exception) {
+            return false
         }
         return false
     }
