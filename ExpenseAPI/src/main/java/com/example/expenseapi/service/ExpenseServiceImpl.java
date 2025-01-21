@@ -20,6 +20,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,8 +44,9 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     private final MethodOfPaymentRepository methodOfPaymentRepository;
     private final ExpenseMapper expenseMapper;
     private final UserMapper userMapper;
+    private final KeyGenerator userBasedKeyGenerator;
 
-    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper, UserMapper userMapper) {
+    public ExpenseServiceImpl(ExpenseRepository repository, CategoryRepository categoryRepository, CurrencyRepository currencyRepository, MembershipRepository membershipRepository, MethodOfPaymentRepository methodOfPaymentRepository, ExpenseMapper expenseMapper, UserMapper userMapper, KeyGenerator userBasedKeyGenerator) {
         super(repository);
         this.expenseRepository = repository;
         this.categoryRepository = categoryRepository;
@@ -53,6 +55,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
         this.methodOfPaymentRepository = methodOfPaymentRepository;
         this.expenseMapper = expenseMapper;
         this.userMapper = userMapper;
+        this.userBasedKeyGenerator = userBasedKeyGenerator;
     }
 
     @CacheEvict(value = {
@@ -143,7 +146,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    @Cacheable(value = "expInfoGroup", key = "#group")
+    @Cacheable(value = "expInfoGroup", keyGenerator = "userBasedKeyGenerator")
     public ExpInfo getExpInfo(String group) {
         List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
         List<ExpenseDTO> userExpenses = groupExpenses.stream()
