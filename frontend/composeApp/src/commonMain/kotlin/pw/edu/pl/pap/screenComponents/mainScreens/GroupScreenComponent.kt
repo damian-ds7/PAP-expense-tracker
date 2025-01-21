@@ -26,7 +26,7 @@ class GroupScreenComponent(
     private val _inputFieldsData = mutableStateListOf<InputFieldData>()
     val inputFieldsData: List<InputFieldData> get() = _inputFieldsData
 
-    val isAdmin = userRepository.isAdmin
+    var isAdmin = userRepository.isAdmin
 
     private var users = groupRepository.usersInCurrentGroup.value
     private var userNames = users.map { "${it.name} ${it.surname}" }
@@ -41,6 +41,10 @@ class GroupScreenComponent(
         runBlocking{ getUsers() }
         users = groupRepository.usersInCurrentGroup.value
         userNames = users.map { "${it.name} ${it.surname}" }
+        if (currentUserGroup.value != null) {
+            runBlocking {userRepository.checkIsAdmin(currentUserGroup.value!!)}
+            isAdmin = userRepository.isAdmin
+        }
         setupInputFields()
     }
 
