@@ -20,6 +20,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -143,7 +144,7 @@ public class ExpenseServiceImpl extends GenericServiceImpl<Expense, Long> implem
     }
 
     @Override
-    @Cacheable(value = "expInfoGroup", key = "#group")
+    @Cacheable(value = "expInfoGroup", keyGenerator = "userBasedKeyGenerator")
     public ExpInfo getExpInfo(String group) {
         List<ExpenseDTO> groupExpenses = getExpensesForGroup(group);
         List<ExpenseDTO> userExpenses = groupExpenses.stream()
