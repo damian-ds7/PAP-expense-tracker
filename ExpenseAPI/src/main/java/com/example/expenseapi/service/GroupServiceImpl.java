@@ -19,12 +19,14 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
     private final UserService userService;
     private final MembershipService membershipService;
     private final RoleRepository roleRepository;
+    private final TemporaryMembershipService temporaryMembershipService;
 
-    public GroupServiceImpl(GroupRepository repository, UserService userService, MembershipService membershipService, RoleRepository roleRepository) {
+    public GroupServiceImpl(GroupRepository repository, UserService userService, MembershipService membershipService, RoleRepository roleRepository, TemporaryMembershipService temporaryMembershipService) {
         super(repository);
         this.userService = userService;
         this.membershipService = membershipService;
         this.roleRepository = roleRepository;
+        this.temporaryMembershipService = temporaryMembershipService;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
     @Transactional
     public void delete(Long id) {
         membershipService.deleteAllMembershipsForGroupId(id);
+        temporaryMembershipService.deleteAllTemporaryMembershipsForGroupId(id);
         super.delete(id);
     }
 

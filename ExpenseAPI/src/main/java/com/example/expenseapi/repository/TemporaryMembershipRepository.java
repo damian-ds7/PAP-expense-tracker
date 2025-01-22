@@ -9,4 +9,6 @@ public interface TemporaryMembershipRepository extends JpaRepository<TemporaryMe
     List<TemporaryMembership> findByUserId(Long userId);
     List<TemporaryMembership> findBySenderId(Long senderId);
     void deleteAllByUserId(Long userId);
+
+    void deleteAllByGroupId(Long id);
 }

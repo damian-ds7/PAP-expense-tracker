@@ -13,4 +13,6 @@ public interface TemporaryMembershipService extends GenericService<TemporaryMemb
     List<InvitationDTO> getBySenderId(Long senderId);
 
     void deleteAllTemporaryMembershipsForUser(Long id);
+
+    void deleteAllTemporaryMembershipsForGroupId(Long id);
 }
