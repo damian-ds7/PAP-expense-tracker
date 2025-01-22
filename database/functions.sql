@@ -46,7 +46,7 @@ BEGIN
 END;
 /
 
-create or replace FUNCTION get_expense_price_in_another_curr(expense_id expenses.id%TYPE, curr_id currencies.id%TYPE)
+CREATE OR REPLACE FUNCTION get_expense_price_in_another_curr(expense_id expenses.id%TYPE, curr_id currencies.id%TYPE)
     RETURN expenses.price%TYPE
 AS
     v_price expenses.price%TYPE;
