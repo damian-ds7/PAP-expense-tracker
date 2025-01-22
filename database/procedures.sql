@@ -20,7 +20,7 @@ END;
 /
 
 
-create or replace PROCEDURE calculate_group_expenses(curr_id currencies.id%TYPE)
+CREATE OR REPLACE PROCEDURE calculate_group_expenses(curr_id currencies.id%TYPE)
 AS
     CURSOR cr IS
         SELECT g.name, ROUND(SUM(get_expense_price_in_another_curr(e.id, curr_id)), 2) FROM expenses e
