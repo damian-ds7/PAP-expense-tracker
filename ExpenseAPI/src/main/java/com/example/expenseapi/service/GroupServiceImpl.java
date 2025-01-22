@@ -55,8 +55,8 @@ public class GroupServiceImpl extends GenericServiceImpl<Group, Long> implements
         String email = AuthHelper.getUserEmail();
         User userEntity = userService.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(email));
-        Role role = roleRepository.findById(1L)
-                .orElseThrow(() -> new RoleNotFoundException(1L));
+        Role role = roleRepository.findByName("admin")
+                .orElseThrow(() -> new RoleNotFoundException(3L));
         Group newGroup = super.save(entity);
         membershipService.save(new Membership(userEntity, newGroup, role));
         return newGroup;
